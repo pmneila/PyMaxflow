@@ -66,16 +66,13 @@ This software is licensed under the GPL.
 Bugs and wishes on the version |version|
 ========================================
 
-This is the first version of *PyMaxflow*. It has been used
+This is a beta version of *PyMaxflow*. It has been used
 under different conditions but it has not been thoroughly
 tested. Therefore, you might find bugs.
 
-Moreover, it lacks certain features that you might need,
-such as creating grids with Moore neighborhood.
-
 If you find bugs or have some special needs that you
 think should be available in *PyMaxflow*, please
-let me know (:math:`\textsf{p.mneila@upm.es}`).
+let me know.
 
 Indices and tables
 ==================
