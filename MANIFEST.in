@@ -1,0 +1,16 @@
+include maxflow/src/CMakeLists.txt
+include maxflow/src/*.h
+include maxflow/src/core/*.h
+include maxflow/src/core/*.inc
+
+include examples/*.py
+include examples/a2.png
+
+include doc/Makefile
+include doc/source/conf.py
+include doc/source/*.rst
+include doc/source/_static/*
+include doc/source/_templates/*
+
+include environment.py
+include README.txt
