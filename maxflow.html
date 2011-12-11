@@ -1,0 +1,461 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Maxflow package &mdash; PyMaxflow v0.0.3beta documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.3beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyMaxflow v0.0.3beta documentation" href="index.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyMaxflow v0.0.3beta documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-maxflow">
+<span id="maxflow-package"></span><h1>Maxflow package<a class="headerlink" href="#module-maxflow" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="maxflow">
+<h2>maxflow<a class="headerlink" href="#maxflow" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">maxflow</span></tt> is a Python module for max-flow/min-cut computations. It wraps
+the C++ maxflow library by Vladimir Kolmogorov, which implements the
+algorithm described in</p>
+<blockquote>
+<div>An Experimental Comparison of Min-Cut/Max-Flow Algorithms for Energy
+Minimization in Vision. Yuri Boykov and Vladimir Kolmogorov. TPAMI.</div></blockquote>
+<p>This module aims to simplifying the construction of graphs with complex
+layouts. It provides two Graph classes, <tt class="docutils literal"><span class="pre">Graph[int]</span></tt> and <tt class="docutils literal"><span class="pre">Graph[float]</span></tt>,
+for integer and real data types.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">Graph</span><span class="p">[</span><span class="nb">int</span><span class="p">](</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">maxflow</span><span class="p">()</span>
+<span class="go">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_segments</span><span class="p">()</span>
+<span class="go">array([ True, False], dtype=bool)</span>
+</pre></div>
+</div>
+<p>If you use this library for research purposes, you <strong>MUST</strong> cite the
+aforementioned paper in any resulting publication.</p>
+</div>
+<p>The module <a class="reference internal" href="#module-maxflow" title="maxflow"><tt class="xref py py-mod docutils literal"><span class="pre">maxflow</span></tt></a> has the classes <a class="reference internal" href="#maxflow.GraphInt" title="maxflow.GraphInt"><tt class="xref py py-class docutils literal"><span class="pre">maxflow.GraphInt</span></tt></a> and
+<tt class="xref py py-class docutils literal"><span class="pre">maxflow.GraphFloat</span></tt>. Both have the same methods and behavior.
+They only differ in the data type with which they work. Therefore,
+we only include here the documentation of one of them. You can access these
+classes using the dictionary <tt class="docutils literal"><span class="pre">maxflow.Graph</span></tt>: <tt class="docutils literal"><span class="pre">maxflow.Graph[int]</span></tt> and
+<tt class="docutils literal"><span class="pre">maxflow.Graph[float]</span></tt>.</p>
+<dl class="class">
+<dt id="maxflow.GraphInt">
+<em class="property">class </em><tt class="descclassname">maxflow.</tt><tt class="descname">GraphInt</tt><a class="headerlink" href="#maxflow.GraphInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graph class for the min-cut/max-flow algorithm.</p>
+<dl class="method">
+<dt id="maxflow.GraphInt.__init__">
+<tt class="descname">__init__</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>__init__( (object)self [, (int)est_node_num=0 [, (int)est_edge_num=0]]) -&gt; None :</dt>
+<dd><p class="first">Constructor. Create a graph.</p>
+<p><tt class="docutils literal"><span class="pre">est_node_num</span></tt> gives an estimate of the maximum number of non-terminal
+nodes that can be added to the graph, while <tt class="docutils literal"><span class="pre">est_edge_num</span></tt> is an
+estimate of the maximum number of non-terminal edges.</p>
+<p><strong>Important:</strong> It is possible to add more nodes to the graph than
+est_node_num (and node_num_max can be zero). However, if the count
+is exceeded, then the internal memory is reallocated (increased
+by 50%), which is expensive. Also, temporarily the amount of allocated
+memory would be more than twice than needed. Similarly for edges.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>void __init__(_object* [,long=0 [,long=0]])</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.add_nodes">
+<tt class="descname">add_nodes</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>add_nodes( (GraphInt)self [, (int)num_nodes=1]) -&gt; int :</dt>
+<dd><p class="first">Adds node(s) to the graph. By default, one node is added.
+If <tt class="docutils literal"><span class="pre">num</span></tt>&gt;1, then <tt class="docutils literal"><span class="pre">num</span></tt> nodes are inserted. The method returns
+the identifier of the first node added.</p>
+<p><strong>Important:</strong> see note about the constructor.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>int add_nodes(Graph&lt;long, long, long&gt; {lvalue} [,int=1])</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.add_edge">
+<tt class="descname">add_edge</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_edge" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>add_edge( (GraphInt)self, (int)i, (int)j, (int)cap, (int)rev_cap) -&gt; None :</dt>
+<dd><p class="first">Adds a bidirectional edge between nodes <tt class="docutils literal"><span class="pre">i</span></tt> and <tt class="docutils literal"><span class="pre">j</span></tt> with the
+weights <tt class="docutils literal"><span class="pre">cap</span></tt> and <tt class="docutils literal"><span class="pre">rev_cap</span></tt>.</p>
+<p><strong>Important:</strong> see note about the constructor.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>void add_edge(Graph&lt;long, long, long&gt; {lvalue},int,int,long,long)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.add_tedge">
+<tt class="descname">add_tedge</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_tedge" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>add_tedge( (GraphInt)self, (int)node, (int)cap_source, (int)cap_sink) -&gt; None :</dt>
+<dd><p class="first">Add an edge &#8216;SOURCE-&gt;i&#8217; with capacity <tt class="docutils literal"><span class="pre">cap_source</span></tt> and another edge
+&#8216;i-&gt;SINK&#8217; with capacity <tt class="docutils literal"><span class="pre">cap_sink</span></tt>. This method can be called multiple
+times for each node. Capacities can be negative.</p>
+<p><strong>Note:</strong> No internal memory is allocated by this call. The capacities
+of terminal edges are stored as a pair of values in each node.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>void add_tedge(Graph&lt;long, long, long&gt; {lvalue},int,long,long)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.maxflow">
+<tt class="descname">maxflow</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.maxflow" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>maxflow( (GraphInt)self) -&gt; int :</dt>
+<dd><p class="first">Perform the maxflow computation in the graph. Returns the capacity of
+the minimum cut, which is equivalent to the maximum flow of the graph.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>long maxflow(Graph&lt;long, long, long&gt; {lvalue})</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.get_all_segments">
+<tt class="descname">get_all_segments</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.get_all_segments" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>get_all_segments( (GraphInt)self) -&gt; object :</dt>
+<dd><p class="first">After the maxflow is computed, this function returns which segment
+each node belongs to. The output is a boolean array with is True
+for those nodes which belong to the sink segment and False for those
+nodes which belong to the source segment.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object get_all_segments(Graph&lt;long, long, long&gt; {lvalue})</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.add_grid_nodes">
+<tt class="descname">add_grid_nodes</tt><big>(</big><em>shape</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_grid_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new grid of nodes with the given shape, and returns
+an array of the same shape containing the identifiers of the new nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.add_grid_edges">
+<tt class="descname">add_grid_edges</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_grid_edges" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>add_grid_edges( (GraphInt)self, (object)nodeids, (int)capacity) -&gt; None :</dt>
+<dd><p class="first">Add edges in a grid of nodes of the same capacities for all the
+edges. The array <tt class="docutils literal"><span class="pre">capacity</span></tt> gives the capacity of all edges.
+Its shape must be equal than the shape of <tt class="docutils literal"><span class="pre">nodeids</span></tt>.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>void add_grid_edges(Graph&lt;long, long, long&gt; {lvalue},PyArrayObject const*,long)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.add_grid_edges_direction_local">
+<tt class="descname">add_grid_edges_direction_local</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_grid_edges_direction_local" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>add_grid_edges_direction_local( (GraphInt)self, (object)nodeids, (object)capacities, (object)rcapacities, (int)direction) -&gt; None :</dt>
+<dd><p class="first">Add edges in a grid of nodes. Each edge will have its own capacity
+and reverse capacity, and all edges will be created along the same
+direction. The array <tt class="docutils literal"><span class="pre">capacities</span></tt> must have the same shape than
+<tt class="docutils literal"><span class="pre">nodeids</span></tt>, except for the dimension <tt class="docutils literal"><span class="pre">direction</span></tt>, where the
+size must be equal than the size of <tt class="docutils literal"><span class="pre">nodeids</span></tt> in that dimension - 1.</p>
+<p>The capacity given by <tt class="docutils literal"><span class="pre">capacities[i_1,...i_d,...,i_n]</span></tt> will be
+assigned to the edge between the nodes (i_1,...,i_d,...,i_n) and
+the (i_1,...,i_d+1,...,i_n), where i_d, is the index associated
+to the dimension <tt class="docutils literal"><span class="pre">direction</span></tt>.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>void add_grid_edges_direction_local(Graph&lt;long, long, long&gt; {lvalue},PyArrayObject const*,PyArrayObject const*,PyArrayObject const*,int)</dd>
+</dl>
+</dd>
+<dt>add_grid_edges_direction_local( (GraphInt)self, (object)nodeids, (object)capacities, (int)direction) -&gt; None :</dt>
+<dd><p class="first">This method, provided for convenience, behaves like the previous one.
+In this case the capacities and reverse capacities are equal.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>void add_grid_edges_direction_local(Graph&lt;long, long, long&gt; {lvalue},PyArrayObject const*,PyArrayObject const*,int)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="maxflow.GraphInt.get_grid_segments">
+<tt class="descname">get_grid_segments</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.GraphInt.get_grid_segments" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>get_grid_segments( (GraphInt)self, (object)nodeids) -&gt; object :</dt>
+<dd><p class="first">After the maxflow is computed, this function returns which
+segment the given nodes belong to. The output is a boolean array
+of the same shape than the input array <tt class="docutils literal"><span class="pre">nodeids</span></tt>.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object get_grid_segments(Graph&lt;long, long, long&gt; {lvalue},PyArrayObject const*)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-maxflow.fastmin"></span><div class="section" id="maxflow-fastmin">
+<h2>maxflow.fastmin<a class="headerlink" href="#maxflow-fastmin" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">fastmin</span></tt> provides implementations of the algorithms for
+fast energy minimization described in <a class="reference internal" href="#boykov01">[BOYKOV01]</a>: the alpha-expansion
+and the alpha-beta-swap.</p>
+<table class="docutils citation" frame="void" id="boykov01" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[BOYKOV01]</a></td><td><em>Fast approximate energy minimization via graph cuts.</em>
+Yuri Boykov, Olga Veksler and Ramin Zabih. TPAMI 2001.</td></tr>
+</tbody>
+</table>
+<p>Currently, the functions in this module are restricted to
+grids with von Neumann neighborhood.</p>
+<dl class="function">
+<dt id="maxflow.fastmin.abswap_grid">
+<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">abswap_grid</tt><big>(</big><em>D</em>, <em>V</em>, <em>max_cycles</em>, <em>labels=None</em><big>)</big><a class="headerlink" href="#maxflow.fastmin.abswap_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimize an energy function iterating the alpha-beta-swap
+until convergence or until a maximum number of cycles,
+given by <tt class="docutils literal"><span class="pre">max_cycles</span></tt>, is reached.</p>
+<p><tt class="docutils literal"><span class="pre">D</span></tt> must be a N+1-dimensional array with shape (L,S1,...,SN),
+where L is the number of labels considered. <em>D[lbl,p1,...,pn]</em> is the unary
+cost of assigning the label <em>lbl</em> to the variable <em>(p1,...,pn)</em>.</p>
+<p><tt class="docutils literal"><span class="pre">V</span></tt> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
+assigning the labels <em>lbl1</em> and <em>lbl2</em> to a pair of neighbor variables.
+Note that the abswap algorithm, unlike the aexpansion, does not require
+<tt class="docutils literal"><span class="pre">V</span></tt> to define a metric.</p>
+<p>The optional N-dimensional array <tt class="docutils literal"><span class="pre">labels</span></tt> gives the initial labeling
+for the algorithm. If not given, the function uses a plain initialization
+with all the labels set to 0.</p>
+<p>This function return the labeling reached at the end of the algorithm.
+If the user provides the parameter <tt class="docutils literal"><span class="pre">labels</span></tt>, the algorithm will work
+modifying this array in-place.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="maxflow.fastmin.abswap_grid_step">
+<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">abswap_grid_step</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.fastmin.abswap_grid_step" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>abswap_grid_step( (int)alpha, (int)beta, (object)D, (object)V, (object)labels) -&gt; object :</dt>
+<dd><div class="first admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unless you really need to, you should not call this function.</p>
+</div>
+<p>Perform an iteration of the alpha-beta-swap algorithm.
+<tt class="docutils literal"><span class="pre">labels</span></tt> is a N-dimensional array with shape S=(S_1,...,S_N)
+which holds the labels. The labels should be integer values between
+0 and L-1, where L is the number of labels. <tt class="docutils literal"><span class="pre">D</span></tt> should be an
+N+1-dimensional array with shape (L,S_1,...,S_N).
+D[l,p1,...,pn] is the unary energy of assigning the label l to the
+variable at the position [p1,...,pn].</p>
+<p><tt class="docutils literal"><span class="pre">V</span></tt> should be a two-dimensional array (a matrix) with shape (L,L).
+It encodes the binary term. V[l1,l2] is the energy of assigning the
+labels l1 and l2 to neighbor variables. Both <tt class="docutils literal"><span class="pre">D</span></tt> and <tt class="docutils literal"><span class="pre">V</span></tt> must be of
+the same type. <tt class="docutils literal"><span class="pre">alpha</span></tt> and <tt class="docutils literal"><span class="pre">beta</span></tt> are the variables that can be
+swapped in this step.</p>
+<p>This function modifies the <tt class="docutils literal"><span class="pre">labels</span></tt> array in-place and
+returns a tuple with the graph used for the step and
+the energy of the cut. Note that the energy of the cut is <strong>NOT</strong>
+the energy of the labeling, and cannot be used directly as the
+criterion of convergence.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object abswap_grid_step(int,int,PyArrayObject*,PyArrayObject*,PyArrayObject*)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="maxflow.fastmin.aexpansion_grid">
+<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">aexpansion_grid</tt><big>(</big><em>D</em>, <em>V</em>, <em>max_cycles=None</em>, <em>labels=None</em><big>)</big><a class="headerlink" href="#maxflow.fastmin.aexpansion_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimize an energy function iterating the alpha-expansion until
+convergence or until a maximum number of cycles,
+given by <tt class="docutils literal"><span class="pre">max_cycles</span></tt>, is reached.</p>
+<p><tt class="docutils literal"><span class="pre">D</span></tt> must be an N+1-dimensional array with shape (L,S1,...,SN),
+where L is the number of labels considered. <em>D[lbl,p1,...,pn]</em> is the unary
+cost of assigning the label <em>lbl</em> to the variable <em>(p1,...,pn)</em>.</p>
+<p><tt class="docutils literal"><span class="pre">V</span></tt> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
+assigning the labels <em>lbl1</em> and <em>lbl2</em> to a pair of neighbor variables.
+Note that the distance defined by <tt class="docutils literal"><span class="pre">V</span></tt> must be a metric or the aexpansion
+might fail.</p>
+<p>The optional N-dimensional array <tt class="docutils literal"><span class="pre">labels</span></tt> gives the initial labeling
+of the algorithm. If not given, the function uses a plain initialization
+with all the labels set to 0.</p>
+<p>This function return the labeling reached at the end of the algorithm.
+If the user provides the parameter <tt class="docutils literal"><span class="pre">labels</span></tt>, the algorithm will work
+modifying this array in-place.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="maxflow.fastmin.aexpansion_grid_step">
+<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">aexpansion_grid_step</tt><big>(</big><big>)</big><a class="headerlink" href="#maxflow.fastmin.aexpansion_grid_step" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>aexpansion_grid_step( (int)alpha, (object)D, (object)V, (object)labels) -&gt; object :</dt>
+<dd><div class="first admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unless you really need to, you should not call this function.</p>
+</div>
+<p>Perform an iteration of the alpha-expansion algorithm.
+<tt class="docutils literal"><span class="pre">labels</span></tt> is a N-dimensional array with shape S=(S_1,...,S_N)
+which holds the labels. The labels should be integer values between
+0 and L-1, where L is the number of labels. <tt class="docutils literal"><span class="pre">D</span></tt> should be an
+N+1-dimensional array with shape (L,S_1,...,S_N).
+D[l,p1,...,pn] is the unary energy of assigning the label l to the
+variable at the position [p1,...,pn].</p>
+<p><tt class="docutils literal"><span class="pre">V</span></tt> should be a two-dimensional array (a matrix) with shape (L,L).
+It encodes the binary term. V[l1,l2] is the energy of assigning the
+labels l1 and l2 to neighbor variables. Both <tt class="docutils literal"><span class="pre">D</span></tt> and <tt class="docutils literal"><span class="pre">V</span></tt> must be of
+the same type. <tt class="docutils literal"><span class="pre">alpha</span></tt> indicates the variable that will be expanded
+in this step.</p>
+<p>This function modifies the <tt class="docutils literal"><span class="pre">labels</span></tt> array in-place and
+returns a tuple with the graph used for the step and
+the energy of the cut. Note that the energy of the cut <strong>IS</strong> the
+energy of the labeling, and can be used directly as the criterion
+of convergence.</p>
+<dl class="last docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object aexpansion_grid_step(int,PyArrayObject*,PyArrayObject*,PyArrayObject*)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="maxflow.fastmin.energy_of_grid_labeling">
+<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">energy_of_grid_labeling</tt><big>(</big><em>D</em>, <em>V</em>, <em>labels</em><big>)</big><a class="headerlink" href="#maxflow.fastmin.energy_of_grid_labeling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the energy of the labeling of a grid.</p>
+<p>For details about <tt class="docutils literal"><span class="pre">D</span></tt>, <tt class="docutils literal"><span class="pre">V</span></tt> and <tt class="docutils literal"><span class="pre">labels</span></tt>, see the
+documentation of <tt class="docutils literal"><span class="pre">aexpansion_grid</span></tt>.</p>
+<p>Returns the energy of the labeling.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Maxflow package</a><ul>
+<li><a class="reference internal" href="#maxflow">maxflow</a></li>
+<li><a class="reference internal" href="#maxflow-fastmin">maxflow.fastmin</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial.html"
+                        title="previous chapter">Tutorial</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/maxflow.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             >previous</a> |</li>
+        <li><a href="index.html">PyMaxflow v0.0.3beta documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pablo Márquez Neila.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
