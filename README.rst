@@ -6,13 +6,13 @@ can be downloaded from his `homepage <http://www.cs.ucl.ac.uk/staff/V.Kolmogorov
 Besides the wrapper to the C++ library, PyMaxflow offers
 
 * NumPy integration, 
-* methods for the construction of common graph
+* methods for fast construction of common graph
   layouts in computer vision and graphics,
 * implementation of algorithms for fast energy
   minimization which use the `maxflow` method: the αβ-swap
   and the α-expansion.
 
-Take a look at the `documentation <http://pmneila.github.com/PyMaxflow/>`_.
+Take a look at the `PyMaxflow documentation <http://pmneila.github.com/PyMaxflow/>`_.
 
 Requirements
 ------------
