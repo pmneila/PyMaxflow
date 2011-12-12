@@ -1,4 +1,3 @@
-
 PyMaxflow is a Python library for graph construction and
 maxflow computation (commonly known as `graph cuts`)
 as described in Boykov04. The core of this library is
@@ -10,8 +9,8 @@ Besides the wrapper to the C++ library, PyMaxflow offers
 * methods for the construction of common graph
   layouts in computer vision and graphics,
 * implementation of algorithms for fast energy
-  minimization which use the `maxflow` method: the :math:`\alpha\beta`-swap
-  and the :math:`\alpha`-expansion.
+  minimization which use the `maxflow` method: the αβ-swap
+  and the α-expansion.
 
 Take a look at the `documentation <http://pmneila.github.com/PyMaxflow/>`_.
 
@@ -68,7 +67,7 @@ Documentation
 -------------
 
 The documentation of the package is available under the ``doc``
-directory. To generate the HTML documentation, use
+directory. To generate the HTML documentation, use::
 
   $ cd doc/
   $ make html
