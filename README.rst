@@ -3,15 +3,17 @@ PyMaxflow is a Python library for graph construction and
 maxflow computation (commonly known as `graph cuts`)
 as described in Boykov04. The core of this library is
 the C++ implementation by Vladimir Kolmogorov, which
-can be downloaded from his homepage (http://www.cs.ucl.ac.uk/staff/V.Kolmogorov/).
+can be downloaded from his `homepage <http://www.cs.ucl.ac.uk/staff/V.Kolmogorov/>`_.
 Besides the wrapper to the C++ library, PyMaxflow offers
 
 * NumPy integration, 
 * methods for the construction of common graph
   layouts in computer vision and graphics,
 * implementation of algorithms for fast energy
-  minimization which use the `maxflow` method: the alphabeta-swap
-  and the alpha-expansion.
+  minimization which use the `maxflow` method: the :math:`\alpha\beta`-swap
+  and the :math:`\alpha`-expansion.
+
+Take a look at the `documentation <http://pmneila.github.com/PyMaxflow/>`_.
 
 Requirements
 ------------
