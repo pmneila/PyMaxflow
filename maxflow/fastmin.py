@@ -79,8 +79,8 @@ def abswap_grid(D, V, max_cycles, labels=None):
     
     if labels is None:
         # Avoid using too much memory.
-        if num_labels <= 255:
-            labels = np.uint8(D.argmin(axis=0))
+        if num_labels <= 127:
+            labels = np.int8(D.argmin(axis=0))
         else:
             labels = np.int_(D.argmin(axis=0))
     
@@ -145,8 +145,8 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
     
     if labels is None:
         # Avoid using too much memory.
-        if num_labels <= 255:
-            labels = np.uint8(D.argmin(axis=0))
+        if num_labels <= 127:
+            labels = np.int8(D.argmin(axis=0))
         else:
             labels = np.int_(D.argmin(axis=0))
     
