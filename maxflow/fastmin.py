@@ -75,48 +75,7 @@ def abswap_grid(D, V, max_cycles, labels=None):
     If the user provides the parameter ``labels``, the algorithm will work
     modifying this array in-place.
     """
-    num_labels = D.shape[0]
-    
-    if labels is None:
-        # Avoid using too much memory.
-        if num_labels <= 127:
-            labels = np.int8(D.argmin(axis=0))
-        else:
-            labels = np.int_(D.argmin(axis=0))
-    
-    prev_labels = np.copy(labels)
-    better_energy = np.inf
-    # Cycles.
-    for i in range(max_cycles):
-        print >> sys.stderr, "Cycle", i
-        improved = False
-        # Iterate through the labels.
-        for alpha, beta in combinations(range(num_labels), 2):
-            energy = abswap_grid_step(alpha, beta, D, V, labels)[1]
-            print >> sys.stderr, "Energy of the last cut (α=%r, β=%r): %r" % \
-                    (alpha, beta, energy)
-            
-            # Compute the energy of the labeling.
-            print >> sys.stderr, "Energy of the labeling:",
-            strimproved = ""
-            energy = energy_of_grid_labeling(D, V, labels)
-            
-            # Check if the better energy has been improved.
-            if energy < better_energy:
-                prev_labels = np.copy(labels)
-                better_energy = energy
-                improved = True
-                strimproved = "(Improved!)"
-            else:
-                # If the energy has not been improved, discard the changes.
-                labels = prev_labels
-            print >> sys.stderr, energy, strimproved
-        
-        # Finish the minimization when convergence is reached.
-        if not improved:
-            break
-    
-    return labels
+    raise NotImplementedError, "No disponible para esta práctica"
 
 def aexpansion_grid(D, V, max_cycles=None, labels=None):
     """
@@ -141,37 +100,5 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
     If the user provides the parameter ``labels``, the algorithm will work
     modifying this array in-place.
     """
-    num_labels = D.shape[0]
-    
-    if labels is None:
-        # Avoid using too much memory.
-        if num_labels <= 127:
-            labels = np.int8(D.argmin(axis=0))
-        else:
-            labels = np.int_(D.argmin(axis=0))
-    
-    if max_cycles is None:
-        rng = count()
-    else:
-        rng = range(max_cycles)
-    
-    better_energy = np.inf
-    # Cycles.
-    for i in rng:
-        print >> sys.stderr, "Cycle", i
-        improved = False
-        # Iterate through the labels.
-        for alpha in range(num_labels):
-            energy = aexpansion_grid_step(alpha, D, V, labels)[1]
-            strimproved = ""
-            # Check if the better energy has been improved.
-            if energy < better_energy:
-                better_energy = energy
-                improved = True
-                strimproved = " (Improved!)"
-            print >> sys.stderr, "Energy of the last cut (α=%r): %r%s" % (alpha, energy, strimproved)
-        
-        # Finish the minimization when convergence is reached.
-        if not improved:
-            break
-    return labels
+    raise NotImplementedError, "No disponible para esta práctica"
+
