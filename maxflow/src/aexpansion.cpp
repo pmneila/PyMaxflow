@@ -58,9 +58,6 @@ py::object aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
     std::fill(ind, ind+ndim, 0);
     for(int node_index = 0; node_index < num_nodes; ++node_index)
     {
-        // Update the index.
-        incr_indices(ind, ndim, shape);
-        
         // Take the label of current pixel.
         S label = *reinterpret_cast<S*>(PyArray_GetPtr(labels, ind));
         // Discard pixels not in the set P_{ab}.
@@ -103,6 +100,9 @@ py::object aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
             g->add_edge(node_index, extra_index, dist_label_alpha, dist_label_alpha);
             g->add_edge(nnode_index, extra_index, dist_nlabel_alpha, dist_nlabel_alpha);
         }
+        
+        // Update the index.
+        incr_indices(ind, ndim, shape);
     }
     
     // The graph cut.

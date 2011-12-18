@@ -64,9 +64,6 @@ py::object abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
     std::fill(ind, ind+ndim, 0);
     for(int i = 0; i < num_nodes; ++i)
     {
-        // Update the index.
-        incr_indices(ind, ndim, shape);
-        
         // Offset of the current pixel.
         //int labels_index = labels_indexbase + j * PyArray_STRIDE(labels, 1);
         int labels_index = std::inner_product(ind, ind+ndim, strides, 0);
@@ -114,6 +111,9 @@ py::object abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
         }
         
         g->add_tweights(node_index, ta, tb);
+        
+        // Update the index.
+        incr_indices(ind, ndim, shape);
     }
     
     // The graph cut.
