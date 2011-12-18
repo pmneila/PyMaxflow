@@ -112,11 +112,11 @@ py::object aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
     std::fill(ind, ind+ndim, 0);
     for(int node_index = 0; node_index < num_nodes; ++node_index)
     {
-        // Update the index.
-        incr_indices(ind, ndim, shape);
-        
         if(g->what_segment(node_index) == SINK)
             *reinterpret_cast<S*>(PyArray_GetPtr(labels, ind)) = alpha;
+        
+        // Update the index.
+        incr_indices(ind, ndim, shape);
     }
     
     delete [] head_ind;
