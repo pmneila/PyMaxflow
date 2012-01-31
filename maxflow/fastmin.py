@@ -52,7 +52,7 @@ def energy_of_grid_labeling(D, V, labels):
     
     return unary + binary
 
-def abswap_grid(D, V, max_cycles, labels=None):
+def abswap_grid(D, V, max_cycles=None, labels=None):
     """
     Minimize an energy function iterating the alpha-beta-swap
     until convergence or until a maximum number of cycles,
@@ -84,10 +84,15 @@ def abswap_grid(D, V, max_cycles, labels=None):
         else:
             labels = np.int_(D.argmin(axis=0))
     
+    if max_cycles is None:
+        rng = count()
+    else:
+        rng = range(max_cycles)
+    
     prev_labels = np.copy(labels)
     better_energy = np.inf
     # Cycles.
-    for i in range(max_cycles):
+    for i in rng:
         print >> sys.stderr, "Cycle", i
         improved = False
         # Iterate through the labels.
