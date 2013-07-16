@@ -1,4 +1,3 @@
-
 import maxflow
 
 # Create a graph with integer capacities.
@@ -19,5 +18,5 @@ flow = g.maxflow()
 print "Maximum flow:", flow
 
 # Print the segment of each node.
-print "Segment of the node 0:", g.what_segment(n0)
-print "Segment of the node 1:", g.what_segment(n0 + 1)
+print "Segment of the node 0:", g.get_segment(n0)
+print "Segment of the node 1:", g.get_segment(n0 + 1)
