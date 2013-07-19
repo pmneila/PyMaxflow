@@ -27,6 +27,11 @@ void incr_indices(npy_intp* ind, int ndim, const npy_intp* shape)
     }
 }
 
+int times(int a, int b)
+{
+    return a*b;
+}
+
 template<class GraphT>
 py::object get_all_segments(GraphT& g)
 {

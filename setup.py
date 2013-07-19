@@ -1,25 +1,21 @@
 # -*- encoding: utf-8 -*-
 
 import sys
-from setuptools import setup, Extension
+#from setuptools import setup, Extension
+from distutils.core import setup
+from Cython.Build import cythonize
+
 import numpy
-import environment as env
 
 # Get the version number.
 ver_dict = {}
 execfile("maxflow/version.py", ver_dict)
 __version_str__ = ver_dict["__version_str__"]
 
-if not env.ready and sys.argv[1] != 'sdist':
-    print >> sys.stderr, "ERROR: The project is not configured. Please edit environment.py and follow the instructions."
-    sys.exit(1)
-
 numpy_include_dir = numpy.get_include()
 
-maxflow_module = Extension('_maxflow',
-                            include_dirs=[numpy_include_dir, env.boost_include_dir],
-                            libraries=[env.boost_python_lib],
-                            library_dirs=[env.boost_libs_dir],
+maxflow_module = cythonize('maxflow/src/_maxflow.pyx',
+                            include_dirs=[numpy_include_dir],
                             sources=["maxflow/src/python.cpp", 
                                      "maxflow/src/abswap.cpp",
                                      "maxflow/src/aexpansion.cpp",
@@ -67,5 +63,5 @@ setup(name="PyMaxflow",
         "Topic :: Scientific/Engineering :: Mathematics"
     ],
     packages=["maxflow"],
-    ext_modules=[maxflow_module]
+    ext_modules=maxflow_module
     )
