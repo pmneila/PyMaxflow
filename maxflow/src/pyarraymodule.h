@@ -48,12 +48,14 @@ typedef mpl::vector<char, short, int, long, long long> signed_integer_types;
 typedef mpl::begin<signed_integer_types>::type signed_integer_types_begin;
 typedef mpl::end<signed_integer_types>::type signed_integer_types_end;
 
+void* myPyArray_GetPtr(const PyArrayObject *obj, npy_intp* ind);
+
 template<typename T>
 T PyArray_SafeGet(const PyArrayObject* aobj, const npy_intp* indaux)
 {
     // HORROR.
     npy_intp* ind = const_cast<npy_intp*>(indaux);
-    void* ptr = PyArray_GetPtr(const_cast<PyArrayObject*>(aobj), ind);
+    void* ptr = myPyArray_GetPtr(aobj, ind);
     switch(PyArray_TYPE(aobj))
     {
     case PyArray_BOOL:

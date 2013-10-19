@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 
 import sys
-#from setuptools import setup, Extension
-from distutils.core import setup
+from setuptools import setup, Extension
+#from distutils.core import setup
 from Cython.Build import cythonize
 
 import numpy
@@ -14,15 +14,11 @@ __version_str__ = ver_dict["__version_str__"]
 
 numpy_include_dir = numpy.get_include()
 
-maxflow_module = cythonize('maxflow/src/_maxflow.pyx',
-                            include_dirs=[numpy_include_dir],
-                            sources=["maxflow/src/python.cpp", 
-                                     "maxflow/src/abswap.cpp",
-                                     "maxflow/src/aexpansion.cpp",
-                                     "maxflow/src/pyarray_index.cpp",
-                                     "maxflow/src/core/graph.cpp",
-                                     "maxflow/src/core/maxflow.cpp"]
-                          )
+maxflow_module = cythonize('maxflow/src/_maxflow.pyx')
+
+maxflow_module[0].include_dirs.append(numpy_include_dir)
+maxflow_module[0].sources.append("maxflow/src/pyarray_index.cpp")
+maxflow_module[0].sources.append("maxflow/src/core/maxflow.cpp")
 
 setup(name="PyMaxflow",
     version=__version_str__,
