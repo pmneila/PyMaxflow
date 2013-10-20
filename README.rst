@@ -20,17 +20,16 @@ Requirements
 You need the following libraries installed on you system in order to
 build PyMaxflow:
 
-* `Boost.Python <http://www.boost.org/>`_
+* `Boost <http://www.boost.org/>`_
 * `NumPy <http://numpy.scipy.org/>`_
 
 
 Installation
 ------------
 
-Edit the file ``environment.py`` according to the configuration
-of your system. Change the ``ready`` variable to ``True`` when
-finished. Then, open a terminal and write::
+Open a terminal and write::
 
+  $ cd path/to/PyMaxflow
   $ python setup.py build
   ... lots of text ...
 
@@ -39,29 +38,6 @@ package with::
 
   $ sudo python setup.py install
 
-
-Alternative build
------------------
-
-If you do not have ``setuptools`` installed on your system,
-an alternative build which uses CMake is available::
-
-  $ cd maxflow/src
-  $ mkdir build
-  $ cd build
-  $ cmake ../
-  ... text ...
-
-Edit the ``CMakeCache.txt`` if you want. It is important to
-set the ``CMAKE_BUILD_TYPE`` variable to ``Release``. Then,
-compile the code with::
-
-  $ make
-  ... text ...
-
-The directory ``maxflow`` contains the full package now. You should
-move it to a proper place included in your Python path, or change
-the Python path accordingly.
 
 Documentation
 -------------
