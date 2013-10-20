@@ -31,11 +31,11 @@ def energy_of_grid_labeling(D, V, labels):
     Returns the energy of the labeling.
     """
     
-    num_labels = D.shape[0]
+    num_labels = D.shape[-1]
     ndim = labels.ndim
     
     # Sum of the unary terms.
-    unary = np.sum([D[i,labels==i].sum() for i in range(num_labels)])
+    unary = np.sum([D[labels==i,i].sum() for i in range(num_labels)])
     
     slice0 = [slice(None)]*ndim
     slice1 = [slice(None)]*ndim
@@ -75,14 +75,14 @@ def abswap_grid(D, V, max_cycles=None, labels=None):
     If the user provides the parameter ``labels``, the algorithm will work
     modifying this array in-place.
     """
-    num_labels = D.shape[0]
+    num_labels = D.shape[-1]
     
     if labels is None:
         # Avoid using too much memory.
         if num_labels <= 127:
-            labels = np.int8(D.argmin(axis=0))
+            labels = np.int8(D.argmin(axis=-1))
         else:
-            labels = np.int_(D.argmin(axis=0))
+            labels = np.int_(D.argmin(axis=-1))
     
     if max_cycles is None:
         rng = count()

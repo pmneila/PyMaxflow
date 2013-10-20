@@ -201,15 +201,15 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
     
     // Some shape checks.
     if(PyArray_NDIM(d) != ndim+1)
-        throw std::runtime_error("the unary term matrix D must be LxS (L=number of labels, S=shape of labels array)");
+        throw std::runtime_error("the unary term matrix D must be SxL (L=number of labels, S=shape of labels array)");
     if(PyArray_NDIM(v) != 2 || PyArray_DIM(v, 0) != PyArray_DIM(v, 1))
         throw std::runtime_error("the binary term matrix V must be LxL (L=number of labels)");
-    if(PyArray_DIM(v,0) != PyArray_DIM(d,0))
+    if(PyArray_DIM(v,0) != PyArray_DIM(d,ndim))
         throw std::runtime_error("the number of labels given by D differs from the number of labels given by V");
     if(PyArray_TYPE(v) != mpl::at<numpy_typemap,T>::type::value)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
-    if(!std::equal(shape, shape+ndim, &PyArray_DIMS(d)[1]))
-        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (L,S1,...,SN)");
+    if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
+        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
     
     // Create the graph.
     // The number of nodes and edges is unknown at this point,
@@ -222,7 +222,7 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
     
     // For each pixel in labels...
     npy_intp* head_ind = new npy_intp[ndim+1];
-    npy_intp* ind = &head_ind[1];
+    npy_intp* ind = head_ind;
     npy_intp* nind = new npy_intp[ndim];
     std::fill(ind, ind+ndim, 0);
     
@@ -246,9 +246,9 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
         reverse[labels_index] = node_index;
         
         // T-links weights initialization.
-        head_ind[0] = alpha;
+        head_ind[ndim] = alpha;
         T ta = *reinterpret_cast<T*>(PyArray_GetPtr(d, head_ind));
-        head_ind[0] = beta;
+        head_ind[ndim] = beta;
         T tb = *reinterpret_cast<T*>(PyArray_GetPtr(d, head_ind));
         
         // Process the neighbors.

@@ -50,9 +50,9 @@ def abswap_grid_step(int alpha, int beta, np.ndarray D, np.ndarray V, np.ndarray
     ``labels`` is a N-dimensional array with shape S=(S_1,...,S_N)
     which holds the labels. The labels should be integer values between
     0 and L-1, where L is the number of labels. ``D`` should be an
-    N+1-dimensional array with shape (L,S_1,...,S_N).
-    D[l,p1,...,pn] is the unary energy of assigning the label l to the
-    variable at the position [p1,...,pn].
+    N+1-dimensional array with shape (S_1,...,S_N,L).
+    D[p1,...,pn,l] is the unary energy of assigning the label l to the
+    variable at the position [p1,...,pn,l].
     
     ``V`` should be a two-dimensional array (a matrix) with shape (L,L).
     It encodes the binary term. V[l1,l2] is the energy of assigning the
