@@ -1,22 +1,9 @@
 
-#define EXTMODULE_IMPORT_ARRAY
 #include "pyarray_index.h"
 
 #include <iterator>
 #include <cstring>
 #include <algorithm>
-
-void* myPyArray_GetPtr(const PyArrayObject *obj, npy_intp* ind)
-{
-    int n = PyArray_NDIM(obj);
-    npy_intp *strides = PyArray_STRIDES(obj);
-    char *dptr = reinterpret_cast<char*>(PyArray_DATA(obj));
-
-    while (n--) {
-        dptr += (*strides++) * (*ind++);
-    }
-    return (void *)dptr;
-}
 
 pyarray_index::pyarray_index(int ndim)
     : ndim(ndim)

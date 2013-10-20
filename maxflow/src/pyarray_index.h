@@ -2,9 +2,6 @@
 #ifndef _PYARRAY_INDEX_H
 #define _PYARRAY_INDEX_H
 
-#include <Python.h>
-#include <stdexcept>
-
 #include "pyarraymodule.h"
 
 class pyarray_index

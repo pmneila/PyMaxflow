@@ -1,0 +1,2 @@
+
+#define PY_ARRAY_UNIQUE_SYMBOL maxflow_PyArray_API

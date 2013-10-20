@@ -19,7 +19,7 @@ import sys
 from itertools import count, combinations
 import numpy as np
 import _maxflow
-from _maxflow import abswap_grid_step, aexpansion_grid_step
+from _maxflow import aexpansion_grid_step, abswap_grid_step
 
 def energy_of_grid_labeling(D, V, labels):
     """
@@ -167,7 +167,7 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
         improved = False
         # Iterate through the labels.
         for alpha in range(num_labels):
-            energy = aexpansion_grid_step(alpha, D, V, labels)[1]
+            energy, _ = aexpansion_grid_step(alpha, D, V, labels)
             strimproved = ""
             # Check if the better energy has been improved.
             if energy < better_energy:

@@ -248,13 +248,19 @@ public:
 		assert(i>=0 && i<node_num && nodes[i].is_in_changed_list); 
 		nodes[i].is_in_changed_list = 0;
 	}
-
-
-
+	
+	// Grid methods.
 	void add_grid_edges(const PyArrayObject* nodeids, const captype& cap);
 	void add_grid_tedges(const PyArrayObject* nodeids,
             const PyArrayObject* sourcecaps, const PyArrayObject* sinkcaps);
-	void get_grid_segments(const PyArrayObject* nodeids);
+	PyArrayObject* get_grid_segments(const PyArrayObject* nodeids);
+	void add_grid_edges_direction(const PyArrayObject* nodeids, 
+	        const captype& capacity,
+	        const captype& rcapacity,
+	        int direction);
+	// void add_grid_edges_direction(const PyArrayObject* nodeids, const captype& capacity, int direction);
+	void add_grid_edges_direction_local(const PyArrayObject* nodeids, 
+        const PyArrayObject* capacities, const PyArrayObject* rcapacities, int direction);
 
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -381,9 +387,9 @@ template <typename captype, typename tcaptype, typename flowtype>
 {
 	assert(i >= 0 && i < node_num);
 	if(node_num == 0)
-		throw std::runtime_error("cannot add an edge; no nodes in the graph");
+		throw std::runtime_error("cannot add terminal edges; no nodes in the graph");
 	if(i >= node_num || i < 0)
-        i %= node_num;
+		throw std::runtime_error("cannot add terminal edges; the node is not in the graph");
     
 	tcaptype delta = nodes[i].tr_cap;
 	if (delta > 0) cap_source += delta;
@@ -404,10 +410,10 @@ template <typename captype, typename tcaptype, typename flowtype>
 	if(node_num == 0)
 		throw std::runtime_error("cannot add an edge; no nodes in the graph");
 	if(_i >= node_num || _i < 0)
-        _i %= node_num;
+        throw std::runtime_error("cannot add an edge; the first node is not in the graph");
     if(_j >= node_num || _j < 0)
-        _j %= node_num;
-
+        throw std::runtime_error("cannot add an edge; the second node is not in the graph");
+    
 	if (arc_last == arc_max) reallocate_arcs();
 
 	arc *a = arc_last ++;
@@ -612,84 +618,6 @@ template <typename captype, typename tcaptype, typename flowtype>
 	}
 }
 
-template <typename captype, typename tcaptype, typename flowtype>
-void Graph<captype,tcaptype,flowtype>::add_grid_edges(const PyArrayObject* nodeids,
-            const typename Graph<captype,tcaptype,flowtype>::captype& cap)
-{
-    int ndim = PyArray_NDIM(nodeids);
-    
-    for(pyarray_iterator it(nodeids); !it.atEnd(); ++it)
-    {
-        npy_intp* coord = it.getIndex();
-        int id1 = PyArray_SafeGet<int>(nodeids, coord);
-        
-        for(int d = 0; d < ndim; ++d)
-        {
-            if(coord[d] - 1 < 0)
-                continue;
-            
-            --coord[d];
-            int id2 = PyArray_SafeGet<int>(nodeids, coord);
-            ++coord[d];
-            
-            add_edge(id1, id2, cap, cap);
-        }
-    }
-}
-
-template <typename captype, typename tcaptype, typename flowtype>
-void Graph<captype,tcaptype,flowtype>::add_grid_tedges(const PyArrayObject* nodeids,
-            const PyArrayObject* sourcecaps, const PyArrayObject* sinkcaps)
-{
-    typedef typename Graph<captype,tcaptype,flowtype>::captype captype;
-    
-    int ndim = PyArray_NDIM(nodeids);
-    npy_intp* shape = PyArray_DIMS(nodeids);
-    
-    // Shape checks.
-    if(ndim != PyArray_NDIM(sourcecaps))
-        throw std::runtime_error("the number of dimensions of the nodeids and capacities arrays must be equal");
-    if(PyArray_NDIM(sourcecaps) != PyArray_NDIM(sinkcaps))
-        throw std::runtime_error("the number of dimensions of source and sink arrays must be equal");
-    if(!std::equal(shape, shape+ndim, PyArray_DIMS(sourcecaps)))
-        throw std::runtime_error("nodeids and sourcecaps arrays must have the same shape");
-    if(!std::equal(PyArray_DIMS(sourcecaps), PyArray_DIMS(sourcecaps)+ndim, PyArray_DIMS(sinkcaps)))
-        throw std::runtime_error("source and sink capacity arrays must have the same shape");
-    
-    for(pyarray_iterator it(nodeids); !it.atEnd(); ++it)
-    {
-        npy_intp* coord = it.getIndex();
-        int id = PyArray_SafeGet<int>(nodeids, coord);
-        captype source = PyArray_SafeGet<captype>(sourcecaps, coord);
-        captype sink = PyArray_SafeGet<captype>(sinkcaps, coord);
-        add_tweights(id, source, sink);
-    }
-}
-
-#include <iostream>
-
-template <typename captype, typename tcaptype, typename flowtype>
-void Graph<captype,tcaptype,flowtype>::get_grid_segments(const PyArrayObject* nodeids)
-{
-    std::cout << "ASDF -2" << std::endl;
-    int ndim = PyArray_NDIM(nodeids);
-    std::cout << "ASDF -1, ndim=" << ndim << std::endl;
-    npy_intp* shape = PyArray_DIMS(nodeids);
-    std::cout << "ASDF 0, shape=" << shape[0] << std::endl;
-    PyArrayObject* res = reinterpret_cast<PyArrayObject*>(
-                            PyArray_SimpleNew(ndim, shape, NPY_BOOL));
-    
-    std::cout << "ASDF 1" << std::endl;
-    for(pyarray_iterator it(nodeids); !it.atEnd(); ++it)
-    {
-        npy_intp* coord = it.getIndex();
-	    std::cout << "ASDF 2" << std::endl;
-        int id = PyArray_SafeGet<int>(nodeids, coord);
-	    std::cout << "ASDF 3" << std::endl;
-        *reinterpret_cast<bool*>(myPyArray_GetPtr(res, coord)) = what_segment(id) == SINK;
-    }
-    
-    return; res;
-}
+#include "../grid.h"
 
 #endif

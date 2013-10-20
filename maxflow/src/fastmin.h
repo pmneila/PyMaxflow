@@ -6,12 +6,14 @@
 #ifndef _FASTMIN_H
 #define _FASTMIN_H
 
-#include <boost/python.hpp>
+#include <Python.h>
 
-struct PyArrayObject;
-boost::python::object abswap(int alpha, int beta, PyArrayObject* d,
+#include "core/graph.h"
+#include "_maxflow.h"
+
+PyObject* abswap(int alpha, int beta, PyArrayObject* d,
                 PyArrayObject* v, PyArrayObject* labels);
-boost::python::object aexpansion(int alpha, PyArrayObject* d,
+PyObject* aexpansion(int alpha, PyArrayObject* d,
                 PyArrayObject* v, PyArrayObject* labels);
 
 /// Type dispatcher.
@@ -23,7 +25,7 @@ struct name##_ \
     typedef typename mpl::deref<integer_types_it>::type L; \
     typedef typename mpl::next<integer_types_it>::type next; \
     \
-    inline static py::object apply parameters \
+    inline static PyObject* apply parameters \
     { \
         if(PyArray_TYPE(typecheck) == mpl::at<numpy_typemap,L>::type::value) \
             return name<T,L>call; \
@@ -34,7 +36,7 @@ struct name##_ \
 template<class T> \
 struct name##_<T, signed_integer_types_end> \
 { \
-    inline static py::object apply parameters \
+    inline static PyObject* apply parameters \
     { \
         throw std::runtime_error("invalid type for labels (should be any integer type)"); \
     } \

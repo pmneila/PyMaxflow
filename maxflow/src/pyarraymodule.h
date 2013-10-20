@@ -2,10 +2,11 @@
 #ifndef _EXTMODULE_H
 #define _EXTMODULE_H
 
+#include <Python.h>
+#include <stdexcept>
+
 #define PY_ARRAY_UNIQUE_SYMBOL maxflow_PyArray_API
-#if !defined(EXTMODULE_IMPORT_ARRAY)
 #define NO_IMPORT_ARRAY
-#endif
 #include "numpy/arrayobject.h"
 
 #include <boost/mpl/clear.hpp>
@@ -39,23 +40,21 @@ typedef mpl::map<
     > numpy_typemap;
 
 // Integer types vector.
-typedef mpl::vector<char, short, int, long, long long,
-                    unsigned char, unsigned short, unsigned int,
-                    unsigned long, unsigned long long> integer_types;
-typedef mpl::begin<integer_types>::type integer_types_begin;
-typedef mpl::end<integer_types>::type integer_types_end;
+// typedef mpl::vector<char, short, int, long, long long,
+//                     unsigned char, unsigned short, unsigned int,
+//                     unsigned long, unsigned long long> integer_types;
+//typedef mpl::begin<integer_types>::type integer_types_begin;
+//typedef mpl::end<integer_types>::type integer_types_end;
 typedef mpl::vector<char, short, int, long, long long> signed_integer_types;
 typedef mpl::begin<signed_integer_types>::type signed_integer_types_begin;
 typedef mpl::end<signed_integer_types>::type signed_integer_types_end;
-
-void* myPyArray_GetPtr(const PyArrayObject *obj, npy_intp* ind);
 
 template<typename T>
 T PyArray_SafeGet(const PyArrayObject* aobj, const npy_intp* indaux)
 {
     // HORROR.
     npy_intp* ind = const_cast<npy_intp*>(indaux);
-    void* ptr = myPyArray_GetPtr(aobj, ind);
+    void* ptr = PyArray_GetPtr(const_cast<PyArrayObject*>(aobj), ind);
     switch(PyArray_TYPE(aobj))
     {
     case PyArray_BOOL:
