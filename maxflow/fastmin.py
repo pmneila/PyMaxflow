@@ -146,14 +146,14 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
     If the user provides the parameter ``labels``, the algorithm will work
     modifying this array in-place.
     """
-    num_labels = D.shape[0]
+    num_labels = D.shape[-1]
     
     if labels is None:
         # Avoid using too much memory.
         if num_labels <= 127:
-            labels = np.int8(D.argmin(axis=0))
+            labels = np.int8(D.argmin(axis=-1))
         else:
-            labels = np.int_(D.argmin(axis=0))
+            labels = np.int_(D.argmin(axis=-1))
     
     if max_cycles is None:
         rng = count()

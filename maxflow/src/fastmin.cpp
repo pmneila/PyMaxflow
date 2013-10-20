@@ -68,15 +68,15 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
     
     // Some shape checks.
     if(PyArray_NDIM(d) != ndim+1)
-        throw std::runtime_error("the unary term matrix D must be LxS (L=number of labels, S=shape of labels array)");
+        throw std::runtime_error("the unary term matrix D must be SxL (L=number of labels, S=shape of labels array)");
     if(PyArray_NDIM(v) != 2 || PyArray_DIM(v, 0) != PyArray_DIM(v, 1))
         throw std::runtime_error("the binary term matrix V must be LxL (L=number of labels)");
-    if(PyArray_DIM(v,0) != PyArray_DIM(d,0))
+    if(PyArray_DIM(v,0) != PyArray_DIM(d, ndim))
         throw std::runtime_error("the number of labels given by D differs from the number of labels given by V");
     if(PyArray_TYPE(v) != mpl::at<numpy_typemap,T>::type::value)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
-    if(!std::equal(shape, shape+ndim, &PyArray_DIMS(d)[1]))
-        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (L,S1,...,SN)");
+    if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
+        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
     
     // Create the graph.
     // The number of nodes and edges is unknown at this point,
@@ -90,7 +90,7 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
     
     // For each pixel in labels...
     npy_intp* head_ind = new npy_intp[ndim+1];
-    npy_intp* ind = &head_ind[1];
+    npy_intp* ind = head_ind;
     npy_intp* nind = new npy_intp[ndim];
     std::fill(ind, ind+ndim, 0);
     for(int node_index = 0; node_index < num_nodes; ++node_index)
@@ -98,12 +98,12 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
         // Take the label of current pixel.
         S label = *reinterpret_cast<S*>(PyArray_GetPtr(labels, ind));
         // Discard pixels not in the set P_{ab}.
-        head_ind[0] = alpha;
+        head_ind[ndim] = alpha;
         T t1 = *reinterpret_cast<T*>(PyArray_GetPtr(d, head_ind));
         T t2 = std::numeric_limits<T>::max();
         if(label != alpha)
         {
-            head_ind[0] = label;
+            head_ind[ndim] = label;
             t2 = *reinterpret_cast<T*>(PyArray_GetPtr(d, head_ind));
         }
         
