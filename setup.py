@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-import sys
-from setuptools import setup, Extension
+from distutils.core import setup
 #from distutils.core import setup
 from Cython.Build import cythonize
 
