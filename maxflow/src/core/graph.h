@@ -487,7 +487,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 	inline termtype Graph<captype,tcaptype,flowtype>::what_segment(node_id i, termtype default_segm)
 {
     if(i >= node_num || i < 0)
-        i %= node_num;
+        throw std::runtime_error("cannot get the segment of the node; the node is not in the graph");
 	if (nodes[i].parent)
 	{
 		return (nodes[i].is_sink) ? SINK : SOURCE;

@@ -87,8 +87,8 @@ cdef extern from "core/graph.h":
         
         T maxflow()
         
-        T what_segment(int)
-        np.ndarray get_grid_segments(np.ndarray)
+        T what_segment(int) except +
+        np.ndarray get_grid_segments(np.ndarray) except +
     
 
 cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
