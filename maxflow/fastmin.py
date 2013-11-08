@@ -97,7 +97,7 @@ def abswap_grid(D, V, max_cycles=None, labels=None):
         improved = False
         # Iterate through the labels.
         for alpha, beta in combinations(range(num_labels), 2):
-            energy = abswap_grid_step(alpha, beta, D, V, labels)[1]
+            energy, _ = abswap_grid_step(alpha, beta, D, V, labels)
             print >> sys.stderr, "Energy of the last cut (α=%r, β=%r): %r" % \
                     (alpha, beta, energy)
             
