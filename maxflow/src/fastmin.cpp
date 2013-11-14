@@ -11,6 +11,11 @@
 #include "fastmin.h"
 #include "core/graph.h"
 
+// This avoids linker errors on Windows
+#undef DL_IMPORT
+#define DL_IMPORT(t) t
+#include "_maxflow.h"
+
 #include <boost/mpl/at.hpp>
 
 void incr_indices(npy_intp* ind, int ndim, const npy_intp* shape)

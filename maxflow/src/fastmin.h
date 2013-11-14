@@ -9,7 +9,6 @@
 #include <Python.h>
 
 #include "core/graph.h"
-#include "_maxflow.h"
 
 PyObject* abswap(int alpha, int beta, PyArrayObject* d,
                 PyArrayObject* v, PyArrayObject* labels);
