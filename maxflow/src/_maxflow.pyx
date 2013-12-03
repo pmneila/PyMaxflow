@@ -161,10 +161,13 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         of terminal edges are stored as a pair of values in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, object weights, object structure, int symmetric):
+    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
         """
         TODO.
         """
+        if structure is None:
+            pass
+        
         self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
     def add_grid_edges_direction(self, np.ndarray nodeids, long capacity, long rcapacity, int direction):
         """THIS METHOD IS DEPRECATED. Use add_grid_edges instead."""
@@ -330,10 +333,13 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         of terminal edges are stored as a pair of values in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, object weights, object structure, int symmetric):
+    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
         """
         TODO.
         """
+        if structure is None:
+            pass
+        
         self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
     def add_grid_edges_direction(self, np.ndarray nodeids, double capacity, double rcapacity, int direction):
         self.thisptr.add_grid_edges_direction(nodeids, capacity, rcapacity, direction)

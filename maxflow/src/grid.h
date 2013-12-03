@@ -78,13 +78,22 @@ void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,
     
     int ndim = PyArray_NDIM(_nodeids);
     PyArrayObject* nodeids = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY((PyObject*)_nodeids, NPY_INT, 0, 0, NPY_ALIGNED));
-    PyArrayObject* weights = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_weights, (mpl::at<numpy_typemap,captype>::type::value), 0, 0, NPY_ALIGNED));
+    PyArrayObject* weights = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_weights, (mpl::at<numpy_typemap,captype>::type::value), 0, ndim, NPY_ALIGNED));
+    if(weights == NULL)
+    {
+        Py_DECREF(nodeids);
+        throw std::runtime_error("invalid number of dimensions");
+    }
+    
     PyArrayObject* structureArr = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_structure, (mpl::at<numpy_typemap,captype>::type::value), 0, ndim, NPY_ALIGNED));
+    if(structureArr == NULL)
+    {
+        Py_DECREF(weights);
+        Py_DECREF(nodeids);
+        throw std::runtime_error("invalid number of dimensions");
+    }
     
     npy_intp* shape = PyArray_DIMS(nodeids);
-    
-    if(structureArr == NULL)
-        throw std::runtime_error("invalid number of dimensions");
     
     // Extract the structure in a sparse format.
     Structure structure;
@@ -111,7 +120,12 @@ void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,
                                      NULL);
     
     if(iter == NULL)
+    {
+        Py_DECREF(structureArr);
+        Py_DECREF(weights);
+        Py_DECREF(nodeids);
         throw std::runtime_error("unknown error creating a NpyIter");
+    }
     
     NpyIter_IterNextFunc* iternext = NpyIter_GetIterNext(iter, NULL);
     NpyIter_GetMultiIndexFunc* getMI = NpyIter_GetGetMultiIndex(iter, NULL);
