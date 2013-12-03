@@ -155,7 +155,7 @@ public:
 	// the first arc returned will be i->j, and the second j->i.
 	// If there are no more arcs, then the function can still be called, but
 	// the returned arc_id is undetermined.
-	typedef size_t arc_id;
+	typedef uintptr_t arc_id;
 	arc_id get_first_arc();
 	arc_id get_next_arc(arc_id a);
 

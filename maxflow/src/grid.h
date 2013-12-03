@@ -4,6 +4,7 @@
 
 #include <boost/mpl/at.hpp>
 #include <vector>
+#include <algorithm>
 
 template<typename captype>
 void getSparseStructure(PyArrayObject* structureArr,
@@ -23,7 +24,7 @@ void getSparseStructure(PyArrayObject* structureArr,
         int s = structureShape[i];
         
         // Every dimension must be odd.
-        if(s & 1 == 0)
+        if((s & 1) == 0)
         {
             throw std::runtime_error("the structure array must have an odd shape");
         }

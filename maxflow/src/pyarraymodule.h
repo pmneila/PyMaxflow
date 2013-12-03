@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <stdexcept>
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define PY_ARRAY_UNIQUE_SYMBOL maxflow_PyArray_API
 #define NO_IMPORT_ARRAY
 #include "numpy/arrayobject.h"
@@ -57,33 +58,33 @@ T PyArray_SafeGet(const PyArrayObject* aobj, const npy_intp* indaux)
     void* ptr = PyArray_GetPtr(const_cast<PyArrayObject*>(aobj), ind);
     switch(PyArray_TYPE(aobj))
     {
-    case PyArray_BOOL:
+    case NPY_BOOL:
         return static_cast<T>(*reinterpret_cast<bool*>(ptr));
-    case PyArray_BYTE:
+    case NPY_BYTE:
         return static_cast<T>(*reinterpret_cast<char*>(ptr));
-    case PyArray_SHORT:
+    case NPY_SHORT:
         return static_cast<T>(*reinterpret_cast<short*>(ptr));
-    case PyArray_INT:
+    case NPY_INT:
         return static_cast<T>(*reinterpret_cast<int*>(ptr));
-    case PyArray_LONG:
+    case NPY_LONG:
         return static_cast<T>(*reinterpret_cast<long*>(ptr));
-    case PyArray_LONGLONG:
+    case NPY_LONGLONG:
         return static_cast<T>(*reinterpret_cast<long long*>(ptr));
-    case PyArray_UBYTE:
+    case NPY_UBYTE:
         return static_cast<T>(*reinterpret_cast<unsigned char*>(ptr));
-    case PyArray_USHORT:
+    case NPY_USHORT:
         return static_cast<T>(*reinterpret_cast<unsigned short*>(ptr));
-    case PyArray_UINT:
+    case NPY_UINT:
         return static_cast<T>(*reinterpret_cast<unsigned int*>(ptr));
-    case PyArray_ULONG:
+    case NPY_ULONG:
         return static_cast<T>(*reinterpret_cast<unsigned long*>(ptr));
-    case PyArray_ULONGLONG:
+    case NPY_ULONGLONG:
         return static_cast<T>(*reinterpret_cast<unsigned long long*>(ptr));
-    case PyArray_FLOAT:
+    case NPY_FLOAT:
         return static_cast<T>(*reinterpret_cast<float*>(ptr));
-    case PyArray_DOUBLE:
+    case NPY_DOUBLE:
         return static_cast<T>(*reinterpret_cast<double*>(ptr));
-    case PyArray_LONGDOUBLE:
+    case NPY_LONGDOUBLE:
         return static_cast<T>(*reinterpret_cast<long double*>(ptr));
     default:
         throw std::runtime_error("data type not supported");
@@ -98,46 +99,46 @@ T PyArray_SafeSet(PyArrayObject* aobj, const npy_intp* indaux, const T& value)
     void* ptr = PyArray_GetPtr(aobj, ind);
     switch(PyArray_TYPE(aobj))
     {
-    case PyArray_BOOL:
+    case NPY_BOOL:
         *reinterpret_cast<bool*>(ptr) = static_cast<bool>(value);
         break;
-    case PyArray_BYTE:
+    case NPY_BYTE:
         *reinterpret_cast<char*>(ptr) = static_cast<char>(value);
         break;
-    case PyArray_SHORT:
+    case NPY_SHORT:
         *reinterpret_cast<short*>(ptr) = static_cast<short>(value);
         break;
-    case PyArray_INT:
+    case NPY_INT:
         *reinterpret_cast<int*>(ptr) = static_cast<int>(value);
         break;
-    case PyArray_LONG:
+    case NPY_LONG:
         *reinterpret_cast<long*>(ptr) = static_cast<long>(value);
         break;
-    case PyArray_LONGLONG:
+    case NPY_LONGLONG:
         *reinterpret_cast<long long*>(ptr) = static_cast<long long>(value);
         break;
-    case PyArray_UBYTE:
+    case NPY_UBYTE:
         *reinterpret_cast<unsigned char*>(ptr) = static_cast<unsigned char>(value);
         break;
-    case PyArray_USHORT:
+    case NPY_USHORT:
         *reinterpret_cast<unsigned short*>(ptr) = static_cast<unsigned short>(value);
         break;
-    case PyArray_UINT:
+    case NPY_UINT:
         *reinterpret_cast<unsigned int*>(ptr) = static_cast<unsigned int>(value);
         break;
-    case PyArray_ULONG:
+    case NPY_ULONG:
         *reinterpret_cast<unsigned long*>(ptr) = static_cast<unsigned long>(value);
         break;
-    case PyArray_ULONGLONG:
+    case NPY_ULONGLONG:
         *reinterpret_cast<unsigned long long*>(ptr) = static_cast<unsigned long long>(value);
         break;
-    case PyArray_FLOAT:
+    case NPY_FLOAT:
         *reinterpret_cast<float*>(ptr) = static_cast<float>(value);
         break;
-    case PyArray_DOUBLE:
+    case NPY_DOUBLE:
         *reinterpret_cast<double*>(ptr) = static_cast<double>(value);
         break;
-    case PyArray_LONGDOUBLE:
+    case NPY_LONGDOUBLE:
         *reinterpret_cast<long double*>(ptr) = static_cast<long double>(value);
         break;
     default:
