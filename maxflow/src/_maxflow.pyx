@@ -77,7 +77,7 @@ cdef extern from "core/graph.h":
         int add_node(int)
         void add_edge(int, int, T, T) except +
         void add_tweights(int, T, T) except +
-        void add_grid_edges(np.ndarray, T) except +
+        void add_grid_edges(np.ndarray, object, object, int) except +
         void add_grid_edges_direction(np.ndarray, T, T, int) except +
         void add_grid_edges_direction_local(np.ndarray, np.ndarray, np.ndarray, int) except +
         void add_grid_tedges(np.ndarray, np.ndarray, np.ndarray) except +
@@ -89,6 +89,13 @@ cdef extern from "core/graph.h":
         
         T what_segment(int) except +
         np.ndarray get_grid_segments(np.ndarray) except +
+        
+        # Inspection methods
+        int get_first_arc()
+        int get_next_arc(int a)
+        int get_arc_from(int a)
+        int get_arc_to(int a)
+        T get_rcap(int a)
     
 
 cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
@@ -154,24 +161,21 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         of terminal edges are stored as a pair of values in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, long capacity):
+    def add_grid_edges(self, np.ndarray nodeids, object weights, object structure, int symmetric):
         """
-        Add edges in a grid of non-terminal nodes of the same capacities for
-        all the edges. ``capacity`` gives the capacity of all edges.
-        
-        This is equivalent to call add_edge for many pairs of nodes with the same
-        capacity, but much faster.
-        
-        To add edges between non-terminal nodes and terminal nodes, see
-        ``add_grid_tedges``.
+        TODO.
         """
-        self.thisptr.add_grid_edges(nodeids, capacity)
+        self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
     def add_grid_edges_direction(self, np.ndarray nodeids, long capacity, long rcapacity, int direction):
+        """THIS METHOD IS DEPRECATED. Use add_grid_edges instead."""
         self.thisptr.add_grid_edges_direction(nodeids, capacity, rcapacity, direction)
     def add_grid_edges_direction(self, np.ndarray nodeids, long capacity, int direction):
+        """THIS METHOD IS DEPRECATED. Use add_grid_edges instead."""
         self.thisptr.add_grid_edges_direction(nodeids, capacity, capacity, direction)
     def add_grid_edges_direction_local(self, np.ndarray nodeids, np.ndarray capacity, np.ndarray rcapacity, int direction):
         """
+        THIS METHOD IS DEPRECATED. Use add_grid_edges instead.
+        
         Add edges in a grid of nodes. Each edge will have its own capacity
         and reverse capacity, and all edges will be created along the same
         direction. The array ``capacities`` must have the same shape than
@@ -186,6 +190,8 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         self.thisptr.add_grid_edges_direction_local(nodeids, capacity, rcapacity, direction)
     def add_grid_edges_direction_local(self, np.ndarray nodeids, np.ndarray capacity, int direction):
         """
+        THIS METHOD IS DEPRECATED. Use add_grid_edges instead.
+        
         This method, provided for convenience, behaves like the previous one.
         In this case the capacities and reverse capacities are equal.
         """
@@ -240,6 +246,27 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         This is equivalent to call ``get_segment`` for many nodes, but much faster.
         """
         return self.thisptr.get_grid_segments(nodeids)
+    def get_nx_graph(self):
+        
+        import networkx as nx
+        g = nx.DiGraph()
+        g.add_nodes_from(range(self.get_node_count()))
+        
+        cdef int num_edges = self.get_edge_count()
+        e = self.thisptr.get_first_arc()
+        for i in xrange(num_edges):
+            
+            n1 = self.thisptr.get_arc_from(e)
+            n2 = self.thisptr.get_arc_to(e)
+            w = self.thisptr.get_rcap(e)
+            if(g.has_edge(n1, n2)):
+                g[n1][n2]['weight'] += w
+            else:
+                g.add_edge(n1, n2, weight=w)
+            e = self.thisptr.get_next_arc(e)
+        
+        return g
+    
 
 cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
     cdef Graph[double, double, double]* thisptr
@@ -303,18 +330,11 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         of terminal edges are stored as a pair of values in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, double capacity):
+    def add_grid_edges(self, np.ndarray nodeids, object weights, object structure, int symmetric):
         """
-        Add edges in a grid of non-terminal nodes of the same capacities for
-        all the edges. ``capacity`` gives the capacity of all edges.
-        
-        This is equivalent to call add_edge for many pairs of nodes with the same
-        capacity, but much faster.
-        
-        To add edges between non-terminal nodes and terminal nodes, see
-        ``add_grid_tedges``.
+        TODO.
         """
-        self.thisptr.add_grid_edges(nodeids, capacity)
+        self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
     def add_grid_edges_direction(self, np.ndarray nodeids, double capacity, double rcapacity, int direction):
         self.thisptr.add_grid_edges_direction(nodeids, capacity, rcapacity, direction)
     def add_grid_edges_direction(self, np.ndarray nodeids, double capacity, int direction):
@@ -389,3 +409,34 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         This is equivalent to call ``get_segment`` for many nodes, but much faster.
         """
         return self.thisptr.get_grid_segments(nodeids)
+    # def get_first_edge(self):
+    #     return self.thisptr.get_first_arc()
+    # def get_next_edge(self, int edge):
+    #     return self.thisptr.get_next_arc(edge)
+    # def get_edge_from(self, int edge):
+    #     return self.thisptr.get_arc_from(edge)
+    # def get_edge_to(self, int edge):
+    #     return self.thisptr.get_arc_to(edge)
+    # def get_edge_cap(self, int edge):
+    #     return self.thisptr.get_rcap(edge)
+    def get_nx_graph(self):
+        
+        import networkx as nx
+        g = nx.DiGraph()
+        g.add_nodes_from(range(self.get_node_count()))
+        
+        cdef int num_edges = self.get_edge_count()
+        e = self.thisptr.get_first_arc()
+        for i in xrange(num_edges):
+            
+            n1 = self.thisptr.get_arc_from(e)
+            n2 = self.thisptr.get_arc_to(e)
+            w = self.thisptr.get_rcap(e)
+            if(g.has_edge(n1, n2)):
+                g[n1][n2]['weight'] += w
+            else:
+                g.add_edge(n1, n2, weight=w)
+            e = self.thisptr.get_next_arc(e)
+        
+        return g
+    

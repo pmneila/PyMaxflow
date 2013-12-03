@@ -2,7 +2,187 @@
 #ifndef _GRID_H
 #define _GRID_H
 
+#include <boost/mpl/at.hpp>
+#include <vector>
+
+template<typename captype>
+void getSparseStructure(PyArrayObject* structureArr,
+    int ndim,
+    std::vector<std::pair<std::vector<int>, captype> >* structure)
+{
+    typedef typename std::pair<std::vector<int>, captype> StructElem;
+    
+    // Check shape of the structure array.
+    int structureNDIM = PyArray_NDIM(structureArr);
+    npy_intp* structureShape = PyArray_DIMS(structureArr);
+    int dimsdiff = ndim - structureNDIM;
+    
+    std::vector<int> center(ndim, 0);
+    for(int i = 0; i < structureNDIM; ++i)
+    {
+        int s = structureShape[i];
+        
+        // Every dimension must be odd.
+        if(s & 1 == 0)
+        {
+            throw std::runtime_error("the structure array must have an odd shape");
+        }
+        
+        center[i + dimsdiff] = s >> 1;
+    }
+    
+    // Create the sparse representation of the structure
+    NpyIter* iter = NpyIter_New(structureArr,
+                                NPY_ITER_READONLY | NPY_ITER_MULTI_INDEX,
+                                NPY_KEEPORDER,
+                                NPY_NO_CASTING,
+                                NULL);
+    
+    if(iter == NULL)
+        throw std::runtime_error("unknown error creating a NpyIter");
+    
+    NpyIter_IterNextFunc* iternext = NpyIter_GetIterNext(iter, NULL);
+    NpyIter_GetMultiIndexFunc* getMI = NpyIter_GetGetMultiIndex(iter, NULL);
+    char** dataptr = NpyIter_GetDataPtrArray(iter);
+    
+    npy_intp* mi = new npy_intp[ndim];
+    std::fill(mi, mi+ndim, 0);
+    do
+    {
+        captype v = *reinterpret_cast<captype*>(*dataptr);
+        if(v == captype(0))
+            continue;
+        
+        getMI(iter, &mi[dimsdiff]);
+        if(std::equal(mi, mi+ndim, center.begin()))
+            continue;
+        
+        // Subtract the center coord
+        std::transform(mi, mi+ndim, center.begin(), mi, std::minus<int>());
+        
+        structure->push_back(StructElem(std::vector<int>(mi, mi+ndim), v));
+    }while(iternext(iter));
+    delete [] mi;
+    
+    NpyIter_Deallocate(iter);
+}
+
 template <typename captype, typename tcaptype, typename flowtype>
+void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,
+                        PyObject* _weights,
+                        PyObject* _structure,
+                        int symmetric)
+{
+    typedef typename std::pair<std::vector<int>, captype> StructElem;
+    typedef std::vector<StructElem> Structure;
+    
+    int ndim = PyArray_NDIM(_nodeids);
+    PyArrayObject* nodeids = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY((PyObject*)_nodeids, NPY_INT, 0, 0, NPY_ALIGNED));
+    PyArrayObject* weights = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_weights, (mpl::at<numpy_typemap,captype>::type::value), 0, 0, NPY_ALIGNED));
+    PyArrayObject* structureArr = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_structure, (mpl::at<numpy_typemap,captype>::type::value), 0, ndim, NPY_ALIGNED));
+    
+    npy_intp* shape = PyArray_DIMS(nodeids);
+    
+    if(structureArr == NULL)
+        throw std::runtime_error("invalid number of dimensions");
+    
+    // Extract the structure in a sparse format.
+    Structure structure;
+    try
+    {
+        getSparseStructure(structureArr, ndim, &structure);
+    }
+    catch(std::exception& e)
+    {
+            Py_DECREF(structureArr);
+            Py_DECREF(weights);
+            Py_DECREF(nodeids);
+            throw e;
+    }
+    
+    // Create the edges
+    PyArrayObject* op[2] = {nodeids, weights};
+    npy_uint32 op_flags[2] = {NPY_ITER_READONLY, NPY_ITER_READONLY};
+    NpyIter* iter = NpyIter_MultiNew(2, op,
+                                     NPY_ITER_MULTI_INDEX,
+                                     NPY_KEEPORDER,
+                                     NPY_NO_CASTING,
+                                     op_flags,
+                                     NULL);
+    
+    if(iter == NULL)
+        throw std::runtime_error("unknown error creating a NpyIter");
+    
+    NpyIter_IterNextFunc* iternext = NpyIter_GetIterNext(iter, NULL);
+    NpyIter_GetMultiIndexFunc* getMI = NpyIter_GetGetMultiIndex(iter, NULL);
+    char** dataptr = NpyIter_GetDataPtrArray(iter);
+    
+    npy_intp* mi = new npy_intp[ndim];
+    npy_intp* n_mi = new npy_intp[ndim];
+    
+    // Iterate over the full array.
+    do
+    {
+        getMI(iter, mi);
+        
+        int i = *reinterpret_cast<int*>(dataptr[0]);
+        captype w = *reinterpret_cast<captype*>(dataptr[1]);
+        
+        // Neighbors...
+        for(typename Structure::const_iterator it = structure.begin(); it != structure.end(); ++it)
+        {
+            const std::vector<int>& offset = it->first;
+            std::transform(mi, mi+ndim, offset.begin(), n_mi, std::plus<int>());
+            
+            // Check if the neighbor is valid.
+            bool valid_neigh = true;
+            for(int d = 0; d < ndim && valid_neigh; ++d)
+            {
+                if(n_mi[d] < 0 || n_mi[d] >= shape[d])
+                {
+                    // TODO: Topology
+                    valid_neigh = false;
+                }
+            }
+            if(!valid_neigh)
+                continue;
+            
+            // Get the neighbor.
+            int j = *reinterpret_cast<int*>(PyArray_GetPtr(nodeids, n_mi));
+            
+            captype capacity = w * it->second;
+            
+            add_edge(i, j, capacity, symmetric ? capacity : captype(0));
+        }
+        
+    }while(iternext(iter));
+    delete [] mi;
+    delete [] n_mi;
+    
+    NpyIter_Deallocate(iter);
+    
+    Py_DECREF(structureArr);
+    Py_DECREF(weights);
+    Py_DECREF(nodeids);
+}
+
+template <typename captype, typename tcaptype, typename flowtype> 
+    inline int Graph<captype,tcaptype,flowtype>::get_arc_from(size_t _a)
+{
+    arc* a = reinterpret_cast<arc*>(_a);
+    assert(a >= arcs && a < arc_last);
+    return (node_id) (a->sister->head - nodes);
+}
+
+template <typename captype, typename tcaptype, typename flowtype> 
+    inline int Graph<captype,tcaptype,flowtype>::get_arc_to(size_t _a)
+{
+    arc* a = reinterpret_cast<arc*>(_a);
+    assert(a >= arcs && a < arc_last);
+    return (node_id) (a->head - nodes);
+}
+
+/*template <typename captype, typename tcaptype, typename flowtype>
 void Graph<captype,tcaptype,flowtype>::add_grid_edges(const PyArrayObject* nodeids,
             const captype& cap)
 {
@@ -25,7 +205,7 @@ void Graph<captype,tcaptype,flowtype>::add_grid_edges(const PyArrayObject* nodei
             add_edge(id1, id2, cap, cap);
         }
     }
-}
+}*/
 
 template <typename captype, typename tcaptype, typename flowtype>
 void Graph<captype,tcaptype,flowtype>::add_grid_tedges(const PyArrayObject* nodeids,

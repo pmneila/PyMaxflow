@@ -155,7 +155,7 @@ public:
 	// the first arc returned will be i->j, and the second j->i.
 	// If there are no more arcs, then the function can still be called, but
 	// the returned arc_id is undetermined.
-	typedef arc* arc_id;
+	typedef size_t arc_id;
 	arc_id get_first_arc();
 	arc_id get_next_arc(arc_id a);
 
@@ -163,6 +163,8 @@ public:
 	int get_node_num() { return node_num; }
 	int get_arc_num() { return (int)(arc_last - arcs); }
 	void get_arc_ends(arc_id a, node_id& i, node_id& j); // returns i,j to that a = i->j
+	node_id get_arc_from(arc_id a);
+	node_id get_arc_to(arc_id a);
 
 	///////////////////////////////////////////////////
 	// 3. Functions for reading residual capacities. //
@@ -171,7 +173,7 @@ public:
 	// returns residual capacity of SOURCE->i minus residual capacity of i->SINK
 	tcaptype get_trcap(node_id i); 
 	// returns residual capacity of arc a
-	captype get_rcap(arc* a);
+	captype get_rcap(arc_id a);
 
 	/////////////////////////////////////////////////////////////////
 	// 4. Functions for setting residual capacities.               //
@@ -250,7 +252,9 @@ public:
 	}
 	
 	// Grid methods.
-	void add_grid_edges(const PyArrayObject* nodeids, const captype& cap);
+	// void add_grid_edges(const PyArrayObject* nodeids, const captype& cap);
+	void add_grid_edges(PyArrayObject* nodeids, PyObject* weights,
+						PyObject* structure, int symmetric);
 	void add_grid_tedges(const PyArrayObject* nodeids,
             const PyArrayObject* sourcecaps, const PyArrayObject* sinkcaps);
 	PyArrayObject* get_grid_segments(const PyArrayObject* nodeids);
@@ -401,11 +405,14 @@ template <typename captype, typename tcaptype, typename flowtype>
 template <typename captype, typename tcaptype, typename flowtype> 
 	inline void Graph<captype,tcaptype,flowtype>::add_edge(node_id _i, node_id _j, captype cap, captype rev_cap)
 {
-	assert(_i >= 0 && _i < node_num);
-	assert(_j >= 0 && _j < node_num);
-	assert(_i != _j);
+	assert(_i >= -1 && _i < node_num);
+	assert(_j >= -1 && _j < node_num);
+	assert(_i != -1 || _i != _j);
 	assert(cap >= 0);
 	assert(rev_cap >= 0);
+	
+	if(_i == -1 || _j == -1)
+		return;
 	
 	if(node_num == 0)
 		throw std::runtime_error("cannot add an edge; no nodes in the graph");
@@ -435,20 +442,22 @@ template <typename captype, typename tcaptype, typename flowtype>
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline typename Graph<captype,tcaptype,flowtype>::arc* Graph<captype,tcaptype,flowtype>::get_first_arc()
+	inline size_t Graph<captype,tcaptype,flowtype>::get_first_arc()
 {
-	return arcs;
+	return reinterpret_cast<size_t>(arcs);
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline typename Graph<captype,tcaptype,flowtype>::arc* Graph<captype,tcaptype,flowtype>::get_next_arc(arc* a) 
+	inline size_t Graph<captype,tcaptype,flowtype>::get_next_arc(size_t _a) 
 {
-	return a + 1; 
+	arc* a = reinterpret_cast<arc*>(_a);
+	return reinterpret_cast<size_t>(a + 1);
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline void Graph<captype,tcaptype,flowtype>::get_arc_ends(arc* a, node_id& i, node_id& j)
+	inline void Graph<captype,tcaptype,flowtype>::get_arc_ends(size_t _a, node_id& i, node_id& j)
 {
+	arc* a = reinterpret_cast<arc*>(_a);
 	assert(a >= arcs && a < arc_last);
 	i = (node_id) (a->sister->head - nodes);
 	j = (node_id) (a->head - nodes);
@@ -462,8 +471,9 @@ template <typename captype, typename tcaptype, typename flowtype>
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline captype Graph<captype,tcaptype,flowtype>::get_rcap(arc* a)
+	inline captype Graph<captype,tcaptype,flowtype>::get_rcap(arc_id _a)
 {
+	arc* a = reinterpret_cast<arc*>(_a);
 	assert(a >= arcs && a < arc_last);
 	return a->r_cap;
 }
