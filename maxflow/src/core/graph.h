@@ -29,8 +29,6 @@
 	If you use this option, you should cite
 	the aforementioned paper in any resulting publication.
 */
-	
-
 
 /*
 	For description, license, example usage see README.TXT.
@@ -45,7 +43,7 @@
 #include <assert.h>
 // NOTE: in UNIX you need to use -DNDEBUG preprocessor option to supress assert's!!!
 
-#include "../pyarray_index.h"
+#include "../pyarraymodule.h"
 
 typedef enum
 {
@@ -255,17 +253,10 @@ public:
 	// void add_grid_edges(const PyArrayObject* nodeids, const captype& cap);
 	void add_grid_edges(PyArrayObject* nodeids, PyObject* weights,
 						PyObject* structure, int symmetric);
-	void add_grid_tedges(const PyArrayObject* nodeids,
-            const PyArrayObject* sourcecaps, const PyArrayObject* sinkcaps);
-	PyArrayObject* get_grid_segments(const PyArrayObject* nodeids);
-	void add_grid_edges_direction(const PyArrayObject* nodeids, 
-	        const captype& capacity,
-	        const captype& rcapacity,
-	        int direction);
-	// void add_grid_edges_direction(const PyArrayObject* nodeids, const captype& capacity, int direction);
-	void add_grid_edges_direction_local(const PyArrayObject* nodeids, 
-        const PyArrayObject* capacities, const PyArrayObject* rcapacities, int direction);
-
+	void add_grid_tedges(PyArrayObject* nodeids,
+            PyObject* sourcecaps, PyObject* sinkcaps);
+	PyArrayObject* get_grid_segments(PyArrayObject* nodeids);
+	
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -389,7 +380,11 @@ template <typename captype, typename tcaptype, typename flowtype>
 template <typename captype, typename tcaptype, typename flowtype> 
 	inline void Graph<captype,tcaptype,flowtype>::add_tweights(node_id i, tcaptype cap_source, tcaptype cap_sink)
 {
-	assert(i >= 0 && i < node_num);
+	assert(i >= -1 && i < node_num);
+	
+	if(i == -1)
+		return;
+	
 	if(node_num == 0)
 		throw std::runtime_error("cannot add terminal edges; no nodes in the graph");
 	if(i >= node_num || i < 0)

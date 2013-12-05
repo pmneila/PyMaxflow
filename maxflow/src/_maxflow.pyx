@@ -78,16 +78,14 @@ cdef extern from "core/graph.h":
         void add_edge(int, int, T, T) except +
         void add_tweights(int, T, T) except +
         void add_grid_edges(np.ndarray, object, object, int) except +
-        void add_grid_edges_direction(np.ndarray, T, T, int) except +
-        void add_grid_edges_direction_local(np.ndarray, np.ndarray, np.ndarray, int) except +
-        void add_grid_tedges(np.ndarray, np.ndarray, np.ndarray) except +
+        void add_grid_tedges(np.ndarray, object, object) except +
         
         int get_node_num()
         int get_arc_num()
         
         T maxflow()
         
-        T what_segment(int) except +
+        int what_segment(int) except +
         np.ndarray get_grid_segments(np.ndarray) except +
         
         # Inspection methods
@@ -96,6 +94,7 @@ cdef extern from "core/graph.h":
         int get_arc_from(int a)
         int get_arc_to(int a)
         T get_rcap(int a)
+        T get_trcap(int node)
     
 
 cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
@@ -169,37 +168,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
             pass
         
         self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
-    def add_grid_edges_direction(self, np.ndarray nodeids, long capacity, long rcapacity, int direction):
-        """THIS METHOD IS DEPRECATED. Use add_grid_edges instead."""
-        self.thisptr.add_grid_edges_direction(nodeids, capacity, rcapacity, direction)
-    def add_grid_edges_direction(self, np.ndarray nodeids, long capacity, int direction):
-        """THIS METHOD IS DEPRECATED. Use add_grid_edges instead."""
-        self.thisptr.add_grid_edges_direction(nodeids, capacity, capacity, direction)
-    def add_grid_edges_direction_local(self, np.ndarray nodeids, np.ndarray capacity, np.ndarray rcapacity, int direction):
-        """
-        THIS METHOD IS DEPRECATED. Use add_grid_edges instead.
-        
-        Add edges in a grid of nodes. Each edge will have its own capacity
-        and reverse capacity, and all edges will be created along the same
-        direction. The array ``capacities`` must have the same shape than
-        ``nodeids``, except for the dimension ``direction``, where the
-        size must be equal than the size of ``nodeids`` in that dimension - 1.
-        
-        The capacity given by ``capacities[i_1,...i_d,...,i_n]`` will be
-        assigned to the edge between the nodes (i_1,...,i_d,...,i_n) and
-        the (i_1,...,i_d+1,...,i_n), where i_d, is the index associated
-        to the dimension ``direction``.
-        """
-        self.thisptr.add_grid_edges_direction_local(nodeids, capacity, rcapacity, direction)
-    def add_grid_edges_direction_local(self, np.ndarray nodeids, np.ndarray capacity, int direction):
-        """
-        THIS METHOD IS DEPRECATED. Use add_grid_edges instead.
-        
-        This method, provided for convenience, behaves like the previous one.
-        In this case the capacities and reverse capacities are equal.
-        """
-        self.thisptr.add_grid_edges_direction_local(nodeids, capacity, capacity, direction)
-    def add_grid_tedges(self, np.ndarray nodeids, np.ndarray sourcecaps, np.ndarray sinkcaps):
+    def add_grid_tedges(self, np.ndarray nodeids, sourcecaps, sinkcaps):
         """
         Add terminal edges to a grid of nodes, given their identifiers in
         ``nodeids``. ``sourcecaps`` and ``sinkcaps`` are arrays with the
@@ -250,13 +219,26 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         """
         return self.thisptr.get_grid_segments(nodeids)
     def get_nx_graph(self):
+        """
+        Build a NetworkX DiGraph with the status of the maxflow network. Note that
+        this function is slow and should be used only for debugging purposes.
+        
+        It requires the Python NetworkX package.
+        """
         
         import networkx as nx
         g = nx.DiGraph()
+        
+        # Add non-terminal nodes
         g.add_nodes_from(range(self.get_node_count()))
         
+        # Add non-terminal edges with capacities
         cdef int num_edges = self.get_edge_count()
         e = self.thisptr.get_first_arc()
+        
+        cdef int n1
+        cdef int n2
+        cdef long w
         for i in xrange(num_edges):
             
             n1 = self.thisptr.get_arc_from(e)
@@ -267,6 +249,25 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
             else:
                 g.add_edge(n1, n2, weight=w)
             e = self.thisptr.get_next_arc(e)
+        
+        # Add terminal nodes
+        g.add_nodes_from(['s', 't'])
+        
+        # Add terminal edges
+        cdef int num_nodes = self.get_node_count()
+        cdef long rcap
+        cdef int segment
+        for i in xrange(num_nodes):
+            
+            segment = self.thisptr.what_segment(i)
+            
+            g.node[i]['segment'] = segment
+            
+            rcap = self.thisptr.get_trcap(i)
+            if rcap > 0.0:
+                g.add_edge('s', i, weight=rcap)
+            elif rcap < 0.0:
+                g.add_edge(i, 't', weight=-rcap)
         
         return g
     
@@ -341,31 +342,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
             pass
         
         self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
-    def add_grid_edges_direction(self, np.ndarray nodeids, double capacity, double rcapacity, int direction):
-        self.thisptr.add_grid_edges_direction(nodeids, capacity, rcapacity, direction)
-    def add_grid_edges_direction(self, np.ndarray nodeids, double capacity, int direction):
-        self.thisptr.add_grid_edges_direction(nodeids, capacity, capacity, direction)
-    def add_grid_edges_direction_local(self, np.ndarray nodeids, np.ndarray capacity, np.ndarray rcapacity, int direction):
-        """
-        Add edges in a grid of nodes. Each edge will have its own capacity
-        and reverse capacity, and all edges will be created along the same
-        direction. The array ``capacities`` must have the same shape than
-        ``nodeids``, except for the dimension ``direction``, where the
-        size must be equal than the size of ``nodeids`` in that dimension - 1.
-        
-        The capacity given by ``capacities[i_1,...i_d,...,i_n]`` will be
-        assigned to the edge between the nodes (i_1,...,i_d,...,i_n) and
-        the (i_1,...,i_d+1,...,i_n), where i_d, is the index associated
-        to the dimension ``direction``.
-        """
-        self.thisptr.add_grid_edges_direction_local(nodeids, capacity, rcapacity, direction)
-    def add_grid_edges_direction_local(self, np.ndarray nodeids, np.ndarray capacity, int direction):
-        """
-        This method, provided for convenience, behaves like the previous one.
-        In this case the capacities and reverse capacities are equal.
-        """
-        self.thisptr.add_grid_edges_direction_local(nodeids, capacity, capacity, direction)
-    def add_grid_tedges(self, np.ndarray nodeids, np.ndarray sourcecaps, np.ndarray sinkcaps):
+    def add_grid_tedges(self, np.ndarray nodeids, sourcecaps, sinkcaps):
         """
         Add terminal edges to a grid of nodes, given their identifiers in
         ``nodeids``. ``sourcecaps`` and ``sinkcaps`` are arrays with the
@@ -415,24 +392,27 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         This is equivalent to call ``get_segment`` for many nodes, but much faster.
         """
         return self.thisptr.get_grid_segments(nodeids)
-    # def get_first_edge(self):
-    #     return self.thisptr.get_first_arc()
-    # def get_next_edge(self, int edge):
-    #     return self.thisptr.get_next_arc(edge)
-    # def get_edge_from(self, int edge):
-    #     return self.thisptr.get_arc_from(edge)
-    # def get_edge_to(self, int edge):
-    #     return self.thisptr.get_arc_to(edge)
-    # def get_edge_cap(self, int edge):
-    #     return self.thisptr.get_rcap(edge)
     def get_nx_graph(self):
+        """
+        Build a NetworkX DiGraph with the status of the maxflow network. Note that
+        this function is slow and should be used only for debugging purposes.
+        
+        It requires the Python NetworkX package.
+        """
         
         import networkx as nx
         g = nx.DiGraph()
+        
+        # Add non-terminal nodes
         g.add_nodes_from(range(self.get_node_count()))
         
+        # Add non-terminal edges with capacities
         cdef int num_edges = self.get_edge_count()
         e = self.thisptr.get_first_arc()
+        
+        cdef int n1
+        cdef int n2
+        cdef double w
         for i in xrange(num_edges):
             
             n1 = self.thisptr.get_arc_from(e)
@@ -443,6 +423,25 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
             else:
                 g.add_edge(n1, n2, weight=w)
             e = self.thisptr.get_next_arc(e)
+        
+        # Add terminal nodes
+        g.add_nodes_from(['s', 't'])
+        
+        # Add terminal edges
+        cdef int num_nodes = self.get_node_count()
+        cdef double rcap
+        cdef int segment
+        for i in xrange(num_nodes):
+            
+            segment = self.thisptr.what_segment(i)
+            
+            g.node[i]['segment'] = segment
+            
+            rcap = self.thisptr.get_trcap(i)
+            if rcap > 0.0:
+                g.add_edge('s', i, weight=rcap)
+            elif rcap < 0.0:
+                g.add_edge(i, 't', weight=-rcap)
         
         return g
     
