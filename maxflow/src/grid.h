@@ -6,6 +6,11 @@
 #include <vector>
 #include <algorithm>
 
+// Some defines for backwards compatibility with previous APIs of NumPy
+#ifndef NPY_ARRAY_FORCECAST
+#define NPY_ARRAY_FORCECAST NPY_FORCECAST
+#endif
+
 template<typename captype>
 void getSparseStructure(PyArrayObject* structureArr,
     int ndim,
@@ -67,8 +72,6 @@ void getSparseStructure(PyArrayObject* structureArr,
     
     NpyIter_Deallocate(iter);
 }
-
-#include <iostream>
 
 template <typename captype, typename tcaptype, typename flowtype>
 void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,

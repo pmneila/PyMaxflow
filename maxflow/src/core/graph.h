@@ -402,11 +402,10 @@ template <typename captype, typename tcaptype, typename flowtype>
 {
 	assert(_i >= -1 && _i < node_num);
 	assert(_j >= -1 && _j < node_num);
-	assert(_i != -1 || _i != _j);
 	assert(cap >= 0);
 	assert(rev_cap >= 0);
 	
-	if(_i == -1 || _j == -1)
+	if(_i == -1 || _j == -1 || _i == _j)
 		return;
 	
 	if(node_num == 0)

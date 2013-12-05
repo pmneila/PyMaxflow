@@ -157,7 +157,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         times for each node. Capacities can be negative.
         
         **Note:** No internal memory is allocated by this call. The capacities
-        of terminal edges are stored as a pair of values in each node.
+        of terminal edges are stored in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
     def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
@@ -165,7 +165,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         TODO.
         """
         if structure is None:
-            pass
+            structure = vonNeumann_structure(nodeids.ndim, symmetric)
         
         self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
     def add_grid_tedges(self, np.ndarray nodeids, sourcecaps, sinkcaps):
@@ -331,7 +331,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         times for each node. Capacities can be negative.
         
         **Note:** No internal memory is allocated by this call. The capacities
-        of terminal edges are stored as a pair of values in each node.
+        of terminal edges are stored in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
     def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
@@ -339,7 +339,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         TODO.
         """
         if structure is None:
-            pass
+            structure = vonNeumann_structure(nodeids.ndim, symmetric)
         
         self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
     def add_grid_tedges(self, np.ndarray nodeids, sourcecaps, sinkcaps):
@@ -445,3 +445,69 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         
         return g
     
+
+def moore_structure(ndim=2, directed=False):
+    """
+    Build a structure matrix corresponding to the Moore neighborhood with the
+    given dimensionality ``ndim``.
+    
+    In an directed structure, only half of the neighbors are considered. In
+    undirected structures, all the neighbors are considered. For example, in two
+    dimensions, this is the matrix for an directed Moore structure::
+    
+        0 0 0
+        0 0 1
+        1 1 1
+    
+    The matrix for an undirected Moore structure is::
+    
+        1 1 1
+        1 0 1
+        1 1 1
+    
+    The directed structure is suitable for the add_grid_edges method of the
+    Graph class when the ``symmetric`` parameter is True.
+    """
+    
+    if not directed:
+        return np.ones((3,)*ndim)
+    
+    flat = np.ones(3**ndim)
+    flat[:3**ndim/2 + 1] = 0
+    return np.reshape(flat, (3,)*ndim)
+
+def vonNeumann_structure(ndim=2, directed=False):
+    """
+    Build a structure matrix corresponding to the von Neumann neighborhood with
+    the given dimensionality ``ndim``.
+    
+    In an directed structure, only half of the neighbors are considered. In
+    undirected structures, all the neighbors are considered. For example, in two
+    dimensions, this is the matrix for an directed von Neumann structure::
+    
+        0 0 0
+        0 0 1
+        0 1 0
+    
+    The matrix for an undirected von Neumann structure is::
+    
+        0 1 0
+        1 0 1
+        0 1 0
+    
+    The directed structure is suitable for the add_grid_edges method of the
+    Graph class when the ``symmetric`` parameter is True.
+    """
+    
+    res = np.zeros((3,)*ndim)
+    for i in xrange(ndim):
+        
+        idx = [1,]*ndim
+        idx[i] = 2
+        res[tuple(idx)] = 1
+        
+        if not directed:
+            idx[i] = 0
+            res[tuple(idx)] = 1
+    
+    return res
