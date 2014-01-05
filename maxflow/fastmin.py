@@ -58,8 +58,8 @@ def abswap_grid(D, V, max_cycles=None, labels=None):
     until convergence or until a maximum number of cycles,
     given by ``max_cycles``, is reached.
     
-    ``D`` must be a N+1-dimensional array with shape (L,S1,...,SN),
-    where L is the number of labels considered. *D[lbl,p1,...,pn]* is the unary
+    ``D`` must be a N+1-dimensional array with shape (S1,...,SN,L),
+    where L is the number of labels considered. *D[p1,...,pn,lbl]* is the unary
     cost of assigning the label *lbl* to the variable *(p1,...,pn)*.
     
     ``V`` is a two-dimensional array. *V[lbl1,lbl2]* is the binary cost of
@@ -129,8 +129,8 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
     convergence or until a maximum number of cycles,
     given by ``max_cycles``, is reached.
     
-    ``D`` must be an N+1-dimensional array with shape (L,S1,...,SN),
-    where L is the number of labels considered. *D[lbl,p1,...,pn]* is the unary
+    ``D`` must be an N+1-dimensional array with shape (S1,...,SN,L),
+    where L is the number of labels considered. *D[p1,...,pn,lbl]* is the unary
     cost of assigning the label *lbl* to the variable *(p1,...,pn)*.
     
     ``V`` is a two-dimensional array. *V[lbl1,lbl2]* is the binary cost of
