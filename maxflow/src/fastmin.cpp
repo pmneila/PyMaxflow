@@ -175,9 +175,9 @@ DISPATCHER(aexpansion, (int alpha, PyArrayObject* d, PyArrayObject* v, PyArrayOb
 PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
                 PyArrayObject* labels)
 {
-    if(PyArray_TYPE(d) == PyArray_DOUBLE)
+    if(PyArray_TYPE(d) == NPY_DOUBLE)
         return aexpansion_<double,signed_integer_types_begin>::apply(alpha, d, v, labels);
-    else if(PyArray_TYPE(d) == PyArray_LONG)
+    else if(PyArray_TYPE(d) == NPY_LONG)
         return aexpansion_<long,signed_integer_types_begin>::apply(alpha, d, v, labels);
     else
         throw std::runtime_error("the type of the unary term D is not valid (should be np.double or np.int)");
@@ -308,10 +308,10 @@ DISPATCHER(abswap, (int alpha, int beta, PyArrayObject* d, PyArrayObject* v, PyA
 PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
                 PyArrayObject* labels)
 {
-    if(PyArray_TYPE(d) == PyArray_DOUBLE)
+    if(PyArray_TYPE(d) == NPY_DOUBLE)
         return abswap_<double,signed_integer_types_begin>::apply(alpha, beta, d, v, labels);
         //return abswap<double,unsigned char>(alpha, beta, d, v, labels);
-    else if(PyArray_TYPE(d) == PyArray_LONG)
+    else if(PyArray_TYPE(d) == NPY_LONG)
         return abswap_<long,signed_integer_types_begin>::apply(alpha, beta, d, v, labels);
         //return abswap<long,unsigned char>(alpha, beta, d, v, labels);
     else

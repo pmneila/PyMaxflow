@@ -11,7 +11,7 @@ algorithm described in
         An Experimental Comparison of Min-Cut/Max-Flow Algorithms for Energy
         Minimization in Vision. Yuri Boykov and Vladimir Kolmogorov. TPAMI.
 
-This module aims to simplifying the construction of graphs with complex
+This module aims to simplify the construction of graphs with complex
 layouts. It provides two Graph classes, ``Graph[int]`` and ``Graph[float]``,
 for integer and real data types.
 
@@ -28,14 +28,14 @@ Example:
 >>> g.get_segments()
 array([ True, False], dtype=bool)
 
-If you use this library for research purposes, you **MUST** cite the
-aforementioned paper in any resulting publication
+If you use this library for research purposes, you must cite the aforementioned
+paper in any resulting publication.
 """
 
 import numpy as np
 import _maxflow
-from _maxflow import GraphInt, GraphFloat
+from _maxflow import GraphInt, GraphFloat, moore_structure, vonNeumann_structure
 from version import __version__, __version_str__, \
-        __version_core__, __author__, __author_core__
+        __version_core__
 
 Graph = {int:GraphInt, float:GraphFloat}
