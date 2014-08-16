@@ -1,19 +1,20 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial &mdash; PyMaxflow v0.0.3beta documentation</title>
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <title>Tutorial &mdash; PyMaxflow 1.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.0.3beta',
+        URL_ROOT:    './',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="PyMaxflow v0.0.3beta documentation" href="index.html" />
+    <link rel="top" title="PyMaxflow 1.2.0 documentation" href="index.html" />
     <link rel="next" title="Maxflow package" href="maxflow.html" />
     <link rel="prev" title="Welcome to PyMaxflow’s documentation!" href="index.html" /> 
   </head>
@@ -42,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to PyMaxflow’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">PyMaxflow v0.0.3beta documentation</a> &raquo;</li> 
+        <li><a href="index.html">PyMaxflow 1.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,12 +59,7 @@ aimed to those who know the maximum flow problem
 and its applications to computer vision and graphics.
 It explains how to use the <em>PyMaxflow</em> library
 in some key problems, but it assumes that the reader
-knows the theoretic grounds behind them.</p>
-<p>If the concepts <em>maxflow</em>, <em>mincut</em> or <em>Markov Random Field</em>
-are not familiar to you, this tutorial might
-be a waste of time. In that case, you may want to read
-the <a class="reference external" href="http://en.wikipedia.org/wiki/Maximum_flow_problem">Wikipedia page</a>
-on this topic and the tutorial <a class="reference internal" href="#boykov06">[BOYKOV06]</a>.</p>
+knows the theoretical background of graph-cuts.</p>
 <div class="section" id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>Once you have installed the PyMaxflow library, you can
@@ -78,29 +74,29 @@ import it as usual:</p>
 <p>The first example consists on constructing and finding the maximum
 flow of a custom graph:</p>
 <a class="reference internal image-reference" href="_images/graph.png"><img alt="_images/graph.png" src="_images/graph.png" style="width: 233.5px; height: 363.0px;" /></a>
-<p>This graph has two <em>terminal</em> nodes, the source <img class="math" src="_images/math/f37bba504894945c07a32f5496d74299a37aa51c.png" alt="s"/> and the sink <img class="math" src="_images/math/e0d2bf360290fd61d1c1557e763f2622363b3d35.png" alt="t"/>,
-and two <em>non-terminal</em> nodes, labelled 0 and 1. The code for building
+<p>This graph has two <em>terminal</em> nodes, the source <img class="math" src="_images/math/6859317dd1b439cef34131bcd4bafee8393444e0.png" alt="s"/> and the sink <img class="math" src="_images/math/ef9270877405055756d345facd044e4ab297f858.png" alt="t"/>,
+and two <em>non-terminal</em> nodes, labeled 0 and 1. The code for building
 this graph is:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">maxflow</span>
 
 <span class="c"># Create a graph with integer capacities.</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">Graph</span><span class="p">[</span><span class="nb">int</span><span class="p">](</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="c"># Add two (non-terminal) nodes. Get the index to the first one.</span>
-<span class="n">n0</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="c"># Create two edges (forwards and backwards) with the given capacities.</span>
 <span class="c"># The indices of the nodes are always consecutive.</span>
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">n0</span><span class="p">,</span> <span class="n">n0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="c"># Set the capacities of the terminal edges...</span>
 <span class="c"># ...for the first node.</span>
-<span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="n">n0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="c"># ...for the second node.</span>
-<span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="n">n0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Pretty straightforward, but some details worth mentioning.
 First, the data type of the capacities can be <em>integer</em>,
 as in the example, or <em>float</em>. In that case, the
-graph construction should be:</p>
+graph construction would be:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">Graph</span><span class="p">[</span><span class="nb">float</span><span class="p">](</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -109,7 +105,7 @@ estimation of the number of nodes and the number
 of non-terminal edges. These estimations do not need
 to be perfect, not even approximate. But a better
 estimation will lead to a better performance in terms
-of memory consumption. Please, consult the
+of memory usage. Please, consult the
 documentation of the constructor for more details.
 In this example, we exactly know how many nodes
 and non-terminal edges the graph has when
@@ -128,20 +124,21 @@ terminal node) are created with <tt class="docutils literal"><span class="pre">a
 </div>
 <p>Finally, we want to know the shape of the partition
 given by the minimum cut:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Segment of the node 0:&quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">get_segment</span><span class="p">(</span><span class="n">n0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Segment of the node 1:&quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">get_segment</span><span class="p">(</span><span class="n">n0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Segment of the node 0:&quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">get_segment</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Segment of the node 1:&quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">get_segment</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>The method <tt class="docutils literal"><span class="pre">get_segment</span></tt> returns <tt class="docutils literal"><span class="pre">maxflow.SOURCE</span></tt> when the
+<p>The method <tt class="docutils literal"><span class="pre">get_segment</span></tt> returns <tt class="docutils literal"><span class="pre">1</span></tt> when the
 given node belongs to the partition of the source node (i.e., the
 minimum cut severs the terminal edge from the node to the sink),
-or <tt class="docutils literal"><span class="pre">maxflow.SINK</span></tt> otherwise (i.e., the minimum cut severs
+or <tt class="docutils literal"><span class="pre">0</span></tt> otherwise (i.e., the minimum cut severs
 the terminal edge from the source to the node).</p>
 <p>This example is available in <tt class="file docutils literal"><span class="pre">examples/simple.py</span></tt>. If you
-run this code, you it will print:</p>
-<div class="highlight-python"><pre>Maximum flow: 8
-Segment of the node 0: SINK
-Segment of the node 1: SOURCE</pre>
+run this code, it will print:</p>
+<div class="highlight-python"><div class="highlight"><pre>Maximum flow: 8
+Segment of the node 0: 1
+Segment of the node 1: 0
+</pre></div>
 </div>
 <p>This means that the minimum cut severs the graph in this way:</p>
 <a class="reference internal image-reference" href="_images/graph2.png"><img alt="_images/graph2.png" src="_images/graph2.png" style="width: 233.5px; height: 363.0px;" /></a>
@@ -150,10 +147,9 @@ of the capacities of these edges is equal to the maximum flow 8.</p>
 </div>
 <div class="section" id="binary-image-restoration">
 <h2>Binary image restoration<a class="headerlink" href="#binary-image-restoration" title="Permalink to this headline">¶</a></h2>
-<p>Now we proceed to a more involved example.
-It is known that one of the first applications of the maxflow
-problem is the restoration of binary images.
-We take the binary image</p>
+<p>In this example we will learn to build 4-connected grid layouts with
+a few calls. This kind of layouts is very common is tasks such as
+binary image restoration. We take the binary image</p>
 <img alt="_images/a.png" src="_images/a.png" />
 <p>and add strong gaussian noise to it:</p>
 <img alt="_images/a2.png" src="_images/a2.png" />
@@ -169,25 +165,25 @@ of your browser. You can load it into Python with:</p>
 </div>
 <p>We will restore the image minimizing the energy</p>
 <div class="math">
-<p><img src="_images/math/def4c219d2d0c2e4e2064b60f53791da187614f2.png" alt="E(\mathbf{x}) = \sum_i D_i(x_i) + \sum_{(i,j)\in\mathcal{C}} K|x_i - x_j|." /></p>
-</div><p><img class="math" src="_images/math/2e099c2bbb0f22a490996e0e7efbb31c5da5ed9c.png" alt="\mathbf{x} \in \{0,1\}^N"/> are the labels of the restored image, <img class="math" src="_images/math/fc97ef67268cd4e91bacdf12b8901d7036c9a056.png" alt="N"/>
-is the number of pixels. The unary term <img class="math" src="_images/math/c1ca728dc29b6f961b44600a9e531f22ea551b9d.png" alt="D_i(0)"/> (resp <img class="math" src="_images/math/e1cdb9af85722e4f253827a938645801c9e50413.png" alt="D_i(1)"/>)
+<p><img src="_images/math/de2cc98d930d3a9d9d4fd2062ef9e4ee2940f212.png" alt="E(\mathbf{x}) = \sum_i D_i(x_i) + \sum_{(i,j)\in\mathcal{C}} K|x_i - x_j|."/></p>
+</div><p><img class="math" src="_images/math/482d4d4c26ca2bb3fd7024124872e08638be07fe.png" alt="\mathbf{x} \in \{0,1\}^N"/> are the values of the restored image, <img class="math" src="_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/>
+is the number of pixels. The unary term <img class="math" src="_images/math/50b3128aaa0b47e5e5d2f5457166460ddef7b8e8.png" alt="D_i(0)"/> (resp <img class="math" src="_images/math/be5290fe2808c224a36e05d607c3aed4c017630e.png" alt="D_i(1)"/>)
 is the penalty for assigning the value 0 (resp 1) to the i-th pixel. Each
-<img class="math" src="_images/math/8dfcbccbc64a91b700ee90d800d2d0a0c2cda992.png" alt="D_i"/> depends on the values of the noisy image, which are denoted as
-<img class="math" src="_images/math/245a5501248a6ea24f520f76d4140cedf08e1674.png" alt="p_i"/>:</p>
+<img class="math" src="_images/math/217d2ba699204ed8efccc30c003d1f4e775e1350.png" alt="D_i"/> depends on the values of the noisy image, which are denoted as
+<img class="math" src="_images/math/be005a6163eb06f81800d3f41ee8408927fec9d7.png" alt="p_i"/>:</p>
 <div class="math">
-<p><img src="_images/math/a46a5933ba980b82d62b2b12792b6717af67bc3e.png" alt="D_i(x_i) = \begin{cases} p_i &amp; \textrm{if } x_i=0\\ 255-p_i &amp; \textrm{if } x_i=1 \end{cases}." /></p>
-</div><p>Thus, <img class="math" src="_images/math/8dfcbccbc64a91b700ee90d800d2d0a0c2cda992.png" alt="D_i"/> is low when assigning the label 0 to dark pixels or the
+<p><img src="_images/math/ce06af22322b21c7a25a1eb47a96d59f6fe674d1.png" alt="D_i(x_i) = \begin{cases} p_i &amp; \textrm{if } x_i=0\\ 255-p_i &amp; \textrm{if } x_i=1 \end{cases}."/></p>
+</div><p>Thus, <img class="math" src="_images/math/217d2ba699204ed8efccc30c003d1f4e775e1350.png" alt="D_i"/> is low when assigning the label 0 to dark pixels or the
 label 1 to bright pixels, and high otherwise.
-The value <img class="math" src="_images/math/dfb064112b6c94470339f6571f69d07afc1c024c.png" alt="K"/> is the regularization strength. The larger <img class="math" src="_images/math/dfb064112b6c94470339f6571f69d07afc1c024c.png" alt="K"/>
+The value <img class="math" src="_images/math/28e003020d0ae96250b302d7d779c791f183f707.png" alt="K"/> is the regularization strength. The larger <img class="math" src="_images/math/28e003020d0ae96250b302d7d779c791f183f707.png" alt="K"/>
 the smoother the restoration. We fix it to 50.</p>
 <p>The maximum flow algorithm is widely used to minimize energy functions of this
 type. We build a graph which represents the above energy. This graph has as many
 non-terminal nodes as pixels in the image. The nodes are connected in a grid
 arrangement, so that the nodes corresponding to neighbor pixels are connected
 by a forward and a backward edge. The capacities of all non-terminal edges
-is <img class="math" src="_images/math/dfb064112b6c94470339f6571f69d07afc1c024c.png" alt="K"/>. The capacities of the edges from the source node are set
-to <img class="math" src="_images/math/c1ca728dc29b6f961b44600a9e531f22ea551b9d.png" alt="D_i(0)"/>, and the capacities of the edges to the sink node are <img class="math" src="_images/math/e1cdb9af85722e4f253827a938645801c9e50413.png" alt="D_i(1)"/>.</p>
+is <img class="math" src="_images/math/28e003020d0ae96250b302d7d779c791f183f707.png" alt="K"/>. The capacities of the edges from the source node are set
+to <img class="math" src="_images/math/50b3128aaa0b47e5e5d2f5457166460ddef7b8e8.png" alt="D_i(0)"/>, and the capacities of the edges to the sink node are <img class="math" src="_images/math/be5290fe2808c224a36e05d607c3aed4c017630e.png" alt="D_i(1)"/>.</p>
 <p>We could build this graph as in the first example. First, we would add all the nodes.
 Then, we would iterate over the nodes adding the edges properly. However, this is extremely
 slow in Python, especially when dealing with large images or stacks of images.
@@ -218,12 +214,11 @@ the capacities of the terminal edges for multiple nodes:</p>
 <p>The method <tt class="docutils literal"><span class="pre">get_grid_segments</span></tt> returns an array with
 the same shape than <tt class="docutils literal"><span class="pre">nodeids</span></tt>. It is almost equivalent to calling
 <tt class="docutils literal"><span class="pre">get_segment</span></tt> once for each node in <tt class="docutils literal"><span class="pre">nodeids</span></tt>, but much faster.
-For the i-th cell, the array stores <tt class="xref docutils literal"><span class="pre">False</span></tt>
-if the i-th node belongs to the <tt class="docutils literal"><span class="pre">maxflow.SOURCE</span></tt> segment (i.e., the
-corresponding pixel has the label 1) and <tt class="xref docutils literal"><span class="pre">True</span></tt> if the
-node belongs to the <tt class="docutils literal"><span class="pre">maxflow.SINK</span></tt> segment (i.e., the corresponding
-pixel has the label 0). We now get the labels for each pixel
-and reshape the result using the shape of the original image:</p>
+For the i-th cell, the array stores <tt class="docutils literal"><span class="pre">False</span></tt>
+if the i-th node belongs to the source segment (i.e., the
+corresponding pixel has the label 1) and <tt class="docutils literal"><span class="pre">True</span></tt> if the
+node belongs to the sink segment (i.e., the corresponding
+pixel has the label 0). We now get the labels for each pixel:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># The labels should be 1 where sgm is False and 0 otherwise.</span>
 <span class="n">img2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">sgm</span><span class="p">))</span>
 <span class="c"># Show the result.</span>
@@ -238,13 +233,40 @@ and reshape the result using the shape of the original image:</p>
 and the restoration of this example (right):</p>
 <a class="reference internal image-reference" href="_images/comparison.png"><img alt="_images/comparison.png" src="_images/comparison.png" style="width: 625.5px; height: 300.0px;" /></a>
 </div>
-<div class="section" id="fast-approximate-energy-minimization">
-<h2>Fast approximate energy minimization<a class="headerlink" href="#fast-approximate-energy-minimization" title="Permalink to this headline">¶</a></h2>
-<p>TO DO.</p>
+<div class="section" id="complex-grids-with-add-grid-edges">
+<h2>Complex grids with <tt class="docutils literal"><span class="pre">add_grid_edges</span></tt><a class="headerlink" href="#complex-grids-with-add-grid-edges" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This section is a draft. It has to be improved and extended with
+more examples and figures.</p>
+</div>
+</div></blockquote>
+<p>The method <tt class="docutils literal"><span class="pre">add_grid_edges</span></tt> is a powerful tool to create complex layouts. The
+first argument, <tt class="docutils literal"><span class="pre">nodeids</span></tt> is an array of node identifiers with the shape of
+the grid of nodes where the edges will be added. The edges to add and their
+final capacities are computed using the arguments <tt class="docutils literal"><span class="pre">weights</span></tt> and <tt class="docutils literal"><span class="pre">structure</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">weights</span></tt> is an array and its shape must be broadcastable to the shape of
+<tt class="docutils literal"><span class="pre">nodeids</span></tt>. Thus every node will have a associated weight. <tt class="docutils literal"><span class="pre">structure</span></tt> is
+an array with the same dimensions as <tt class="docutils literal"><span class="pre">nodeids</span></tt> and with an odd shape. It
+defines the local neighborhood of every node.</p>
+<p>Given a node, the <tt class="docutils literal"><span class="pre">structure</span></tt> array is centered on it. Edges are created
+from that node to the nodes of its neighborhood corresponding to nonzero entries
+of <tt class="docutils literal"><span class="pre">structure</span></tt>. The capacity of the new edge will be the product of the
+weight of the initial node and the corresponding value in <tt class="docutils literal"><span class="pre">structure</span></tt>.
+Additionally, a reverse edge with the same capacity will be added if
+the argument <tt class="docutils literal"><span class="pre">symmetric</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt> (by default).</p>
+<p>Therefore, the <tt class="docutils literal"><span class="pre">weights</span></tt> argument allows to define an inhomogeneous graph,
+with different capacities in different areas of the grid. On the other hand,
+besides defining the local neighborhood of each node, <tt class="docutils literal"><span class="pre">structure</span></tt> enables
+anisotropic edges, with different capacities depending on their orientation.</p>
+<p>The file <tt class="file docutils literal"><span class="pre">examples/layout_examples.py</span></tt> contains several different layouts
+than can be created with <tt class="docutils literal"><span class="pre">add_grid_edges</span></tt>. Also, the documentation of
+<a class="reference internal" href="maxflow.html#maxflow.GraphInt.add_grid_edges" title="maxflow.GraphInt.add_grid_edges"><tt class="xref py py-meth docutils literal"><span class="pre">maxflow.GraphInt.add_grid_edges()</span></tt></a> contains some more examples.</p>
 <table class="docutils citation" frame="void" id="boykov06" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[BOYKOV06]</a></td><td><em>Graph Cuts in Vision and Graphics: Theories and Applications</em>.
+<tr><td class="label">[BOYKOV06]</td><td><em>Graph Cuts in Vision and Graphics: Theories and Applications</em>.
 Yuri Boykov, Olga Veksler.</td></tr>
 </tbody>
 </table>
@@ -263,7 +285,7 @@ Yuri Boykov, Olga Veksler.</td></tr>
 <li><a class="reference internal" href="#getting-started">Getting started</a></li>
 <li><a class="reference internal" href="#a-first-example">A first example</a></li>
 <li><a class="reference internal" href="#binary-image-restoration">Binary image restoration</a></li>
-<li><a class="reference internal" href="#fast-approximate-energy-minimization">Fast approximate energy minimization</a></li>
+<li><a class="reference internal" href="#complex-grids-with-add-grid-edges">Complex grids with <tt class="docutils literal"><span class="pre">add_grid_edges</span></tt></a></li>
 </ul>
 </li>
 </ul>
@@ -282,7 +304,7 @@ Yuri Boykov, Olga Veksler.</td></tr>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -311,12 +333,12 @@ Yuri Boykov, Olga Veksler.</td></tr>
         <li class="right" >
           <a href="index.html" title="Welcome to PyMaxflow’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">PyMaxflow v0.0.3beta documentation</a> &raquo;</li> 
+        <li><a href="index.html">PyMaxflow 1.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Pablo Márquez Neila.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011-2014, Pablo Márquez Neila.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>
