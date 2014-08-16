@@ -12,7 +12,7 @@ classes using the dictionary ``maxflow.Graph``: ``maxflow.Graph[int]`` and
 ``maxflow.Graph[float]``.
 
 .. autoclass:: GraphInt
-   :members: __init__, add_nodes, add_edge, add_tedge, maxflow, what_segment, get_all_segments, add_grid_nodes, add_grid_edges, add_grid_edges_direction_local, get_grid_segments
+   :members: __init__, add_nodes, add_grid_nodes, add_edge, add_tedge, add_grid_edges, maxflow, get_segment, get_grid_segments, get_nx_graph
 
 .. automodule:: maxflow.fastmin
    :members:

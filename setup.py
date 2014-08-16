@@ -16,7 +16,7 @@ numpy_include_dir = numpy.get_include()
 maxflow_module = cythonize('maxflow/src/_maxflow.pyx')
 
 maxflow_module[0].include_dirs.append(numpy_include_dir)
-# maxflow_module[0].sources.append("maxflow/src/pyarray_index.cpp")
+maxflow_module[0].include_dirs.append("/usr/local/include")
 maxflow_module[0].sources.append("maxflow/src/core/maxflow.cpp")
 maxflow_module[0].sources.append("maxflow/src/fastmin.cpp")
 # maxflow_module[0].extra_compile_args.append("-Wall")
@@ -25,7 +25,7 @@ setup(name="PyMaxflow",
     version=__version_str__,
     description="A mincut/maxflow package for Python",
     author="Pablo Márquez Neila",
-    author_email="p.mneila@upm.es",
+    author_email="pablo.marquezneila@epfl.ch",
     url="",
     license="GPL",
     long_description="""

@@ -16,13 +16,7 @@ aimed to those who know the maximum flow problem
 and its applications to computer vision and graphics.
 It explains how to use the *PyMaxflow* library
 in some key problems, but it assumes that the reader
-knows the theoretic grounds behind them.
-
-If the concepts *maxflow*, *mincut* or *Markov Random Field*
-are not familiar to you, this tutorial might
-be a waste of time. In that case, you may want to read
-the `Wikipedia page <http://en.wikipedia.org/wiki/Maximum_flow_problem>`_
-on this topic and the tutorial [BOYKOV06]_.
+knows the theoretical background of graph-cuts.
 
 Getting started
 ---------------
@@ -43,7 +37,7 @@ flow of a custom graph:
    :scale: 50 %
 
 This graph has two *terminal* nodes, the source :math:`s` and the sink :math:`t`,
-and two *non-terminal* nodes, labelled 0 and 1. The code for building
+and two *non-terminal* nodes, labeled 0 and 1. The code for building
 this graph is::
 
   import maxflow
@@ -51,20 +45,20 @@ this graph is::
   # Create a graph with integer capacities.
   g = maxflow.Graph[int](2, 2)
   # Add two (non-terminal) nodes. Get the index to the first one.
-  n0 = g.add_nodes(2)
+  nodes = g.add_nodes(2)
   # Create two edges (forwards and backwards) with the given capacities.
   # The indices of the nodes are always consecutive.
-  g.add_edge(n0, n0 + 1, 1, 2)
+  g.add_edge(nodes[0], nodes[1], 1, 2)
   # Set the capacities of the terminal edges...
   # ...for the first node.
-  g.add_tedge(n0, 2, 5)
+  g.add_tedge(nodes[0], 2, 5)
   # ...for the second node.
-  g.add_tedge(n0 + 1, 9, 4)
+  g.add_tedge(nodes[1], 9, 4)
 
 Pretty straightforward, but some details worth mentioning.
 First, the data type of the capacities can be *integer*,
 as in the example, or *float*. In that case, the
-graph construction should be::
+graph construction would be::
 
   g = maxflow.Graph[float](2, 2)
 
@@ -73,7 +67,7 @@ estimation of the number of nodes and the number
 of non-terminal edges. These estimations do not need
 to be perfect, not even approximate. But a better
 estimation will lead to a better performance in terms
-of memory consumption. Please, consult the
+of memory usage. Please, consult the
 documentation of the constructor for more details.
 In this example, we exactly know how many nodes
 and non-terminal edges the graph has when
@@ -95,21 +89,21 @@ Now we can find the maximum flow in the graph::
 Finally, we want to know the shape of the partition
 given by the minimum cut::
 
-  print "Segment of the node 0:", g.get_segment(n0)
-  print "Segment of the node 1:", g.get_segment(n0 + 1)
+  print "Segment of the node 0:", g.get_segment(nodes[0])
+  print "Segment of the node 1:", g.get_segment(nodes[1])
 
-The method ``get_segment`` returns ``maxflow.SOURCE`` when the
+The method ``get_segment`` returns ``1`` when the
 given node belongs to the partition of the source node (i.e., the
 minimum cut severs the terminal edge from the node to the sink),
-or ``maxflow.SINK`` otherwise (i.e., the minimum cut severs
+or ``0`` otherwise (i.e., the minimum cut severs
 the terminal edge from the source to the node).
 
 This example is available in :file:`examples/simple.py`. If you
-run this code, you it will print::
+run this code, it will print::
 
   Maximum flow: 8
-  Segment of the node 0: SINK
-  Segment of the node 1: SOURCE
+  Segment of the node 0: 1
+  Segment of the node 1: 0
 
 This means that the minimum cut severs the graph in this way:
 
@@ -122,10 +116,9 @@ of the capacities of these edges is equal to the maximum flow 8.
 Binary image restoration
 ------------------------
 
-Now we proceed to a more involved example.
-It is known that one of the first applications of the maxflow
-problem is the restoration of binary images. 
-We take the binary image
+In this example we will learn to build 4-connected grid layouts with
+a few calls. This kind of layouts is very common is tasks such as
+binary image restoration. We take the binary image
 
 .. image:: _static/a.png
 
@@ -148,7 +141,7 @@ We will restore the image minimizing the energy
 .. math::
    E(\mathbf{x}) = \sum_i D_i(x_i) + \sum_{(i,j)\in\mathcal{C}} K|x_i - x_j|.
 
-:math:`\mathbf{x} \in \{0,1\}^N` are the labels of the restored image, :math:`N`
+:math:`\mathbf{x} \in \{0,1\}^N` are the values of the restored image, :math:`N`
 is the number of pixels. The unary term :math:`D_i(0)` (resp :math:`D_i(1)`)
 is the penalty for assigning the value 0 (resp 1) to the i-th pixel. Each
 :math:`D_i` depends on the values of the noisy image, which are denoted as
@@ -201,11 +194,10 @@ The method ``get_grid_segments`` returns an array with
 the same shape than ``nodeids``. It is almost equivalent to calling
 ``get_segment`` once for each node in ``nodeids``, but much faster.
 For the i-th cell, the array stores ``False``
-if the i-th node belongs to the ``maxflow.SOURCE`` segment (i.e., the
+if the i-th node belongs to the source segment (i.e., the
 corresponding pixel has the label 1) and ``True`` if the
-node belongs to the ``maxflow.SINK`` segment (i.e., the corresponding
-pixel has the label 0). We now get the labels for each pixel 
-and reshape the result using the shape of the original image::
+node belongs to the sink segment (i.e., the corresponding
+pixel has the label 0). We now get the labels for each pixel::
 
   # The labels should be 1 where sgm is False and 0 otherwise.
   img2 = np.int_(np.logical_not(sgm))
@@ -225,10 +217,37 @@ and the restoration of this example (right):
 .. image:: _static/comparison.png
    :scale: 50 %
 
-Fast approximate energy minimization
-------------------------------------
+Complex grids with ``add_grid_edges``
+-------------------------------------
 
-TO DO.
+ .. note:: This section is a draft. It has to be improved and extended with
+           more examples and figures.
+
+The method ``add_grid_edges`` is a powerful tool to create complex layouts. The
+first argument, ``nodeids`` is an array of node identifiers with the shape of
+the grid of nodes where the edges will be added. The edges to add and their
+final capacities are computed using the arguments ``weights`` and ``structure``.
+
+``weights`` is an array and its shape must be broadcastable to the shape of
+``nodeids``. Thus every node will have a associated weight. ``structure`` is
+an array with the same dimensions as ``nodeids`` and with an odd shape. It
+defines the local neighborhood of every node.
+
+Given a node, the ``structure`` array is centered on it. Edges are created
+from that node to the nodes of its neighborhood corresponding to nonzero entries
+of ``structure``. The capacity of the new edge will be the product of the
+weight of the initial node and the corresponding value in ``structure``.
+Additionally, a reverse edge with the same capacity will be added if
+the argument ``symmetric`` is ``True`` (by default).
+
+Therefore, the ``weights`` argument allows to define an inhomogeneous graph,
+with different capacities in different areas of the grid. On the other hand,
+besides defining the local neighborhood of each node, ``structure`` enables
+anisotropic edges, with different capacities depending on their orientation.
+
+The file :file:`examples/layout_examples.py` contains several different layouts
+than can be created with ``add_grid_edges``. Also, the documentation of
+:py:meth:`maxflow.GraphInt.add_grid_edges` contains some more examples.
 
 .. [BOYKOV06] *Graph Cuts in Vision and Graphics: Theories and Applications*.
    Yuri Boykov, Olga Veksler.

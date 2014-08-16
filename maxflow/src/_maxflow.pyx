@@ -89,10 +89,10 @@ cdef extern from "core/graph.h":
         np.ndarray get_grid_segments(np.ndarray) except +
         
         # Inspection methods
-        int get_first_arc()
-        int get_next_arc(int a)
-        int get_arc_from(int a)
-        int get_arc_to(int a)
+        long get_first_arc()
+        long get_next_arc(long a)
+        long get_arc_from(long a)
+        long get_arc_to(long a)
         T get_rcap(int a)
         T get_trcap(int node)
     
@@ -162,7 +162,202 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         self.thisptr.add_tweights(i, cap_source, cap_sink)
     def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
         """
-        TODO.
+        Add edges to a grid of nodes in a structured manner.
+        
+        The grid of nodes is given by ``nodeids``, that contains the
+        identifiers of the nodes. ``weights`` is an array containing the
+        capacities of the edges starting at every node. ``nodeids``
+        and ``weights`` must have the same shape or be broadcastable to
+        the same shape.
+        
+        ``structure`` indicates the neighborhood around each node. For every
+        node the ``structure`` array will be centered on it (in a sliding
+        window manner) and edges will be added from the central node to the
+        nodes corresponding to non-zero entries of ``structure``. The
+        capacities of these added edges is computed as the product between the
+        weight corresponding to the central node and the value in ``structure``.
+        
+        If ``structure`` is None (by default), it is equivalent to the output of
+        vonNeumann_structure(ndim=nodeids.ndim, directed=symmetric). This
+        creates a 4-connected grid.
+        
+        If symmetric is True, for every edge i->j another edge j->i with the
+        same capacity will be added.
+        
+        
+        Examples
+        
+        Standard 4-connected grid, all capacities set to 1:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((250, 250))
+        >>> structure = np.array([[0, 0, 0],
+                                  [0, 0, 1],
+                                  [0, 1, 0]])
+        >>> # Or structure = maxflow.vonNeumann_structure(ndim=2, directed=True)
+        >>> g.add_grid_edges(nodeids, weights, structure=structure,
+                symmetric=True)
+        
+        ::
+        
+            XXX----1--->XXX----1--->XXX
+            XXX<---1----XXX<---1----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           1| |1       1| |1       1| |1
+            | |         | |         | |
+            V |         V |         V |
+            XXX----1--->XXX----1--->XXX    ...
+            XXX<---1----XXX<---1----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           1| |1       1| |1       1| |1
+            | |         | |         | |
+            V |         V |         V |
+            XXX----1--->XXX----1--->XXX
+            XXX<---1----XXX<---1----XXX
+            
+                          .                .
+                          .                 .
+                          .                  .
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different positions,
+        not symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 0, 0],
+                                  [0, 0, 1],
+                                  [0, 1, 0]])
+        >>> weights = np.array([[1, 2, 3],
+                                [4, 5, 6],
+                                [7, 8, 9]])
+        >>> g.add_grid_edges(nodeids, weights=weights, structure=structure,
+                symmetric=False)
+        
+        ::
+        
+            XXX----1--->XXX----2--->XXX
+            XXX         XXX         XXX
+            |           |           | 
+            |           |           | 
+           1|          2|          3| 
+            |           |           | 
+            V           V           V 
+            XXX----4--->XXX----5--->XXX 
+            XXX         XXX         XXX
+            |           |           |
+            |           |           |
+           4|          5|          6|
+            |           |           |
+            V           V           V
+            XXX----7--->XXX----8--->XXX
+            XXX         XXX         XXX
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different positions,
+        symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 0, 0],
+                                  [0, 0, 1],
+                                  [0, 1, 0]])
+        >>> weights = np.array([[1, 2, 3],
+                                [4, 5, 6],
+                                [7, 8, 9]])
+        >>> g.add_grid_edges(nodeids, weights=weights, structure=structure,
+                symmetric=True)
+        
+        ::
+        
+            XXX----1--->XXX----2--->XXX
+            XXX<---1----XXX<---2----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           1| |1       2| |2       3| |3
+            | |         | |         | |
+            V |         V |         V |
+            XXX----4--->XXX----5--->XXX 
+            XXX<---4----XXX<---5----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           4| |4       5| |5       6| |6
+            | |         | |         | |
+            V |         V |         V |
+            XXX----7--->XXX----8--->XXX
+            XXX<---7----XXX<---8----XXX
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different positions,
+        undirected structure and not symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 1, 0],
+                                  [1, 0, 1],
+                                  [0, 1, 0]])
+        >>> weights = np.array([[1, 2, 3],
+                                [4, 5, 6],
+                                [7, 8, 9]])
+        >>> g.add_grid_edges(nodeids, weights=weights, structure=structure,
+                symmetric=False)
+        
+        ::
+        
+            XXX----1--->XXX----2--->XXX
+            XXX<---2----XXX<---3----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           1| |4       2| |5       3| |6
+            | |         | |         | |
+            V |         V |         V |
+            XXX----4--->XXX----5--->XXX 
+            XXX<---5----XXX<---6----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           4| |7       5| |8       6| |9
+            | |         | |         | |
+            V |         V |         V |
+            XXX----7--->XXX----8--->XXX
+            XXX<---8----XXX<---9----XXX
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different orientations,
+        not symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 1, 0],
+                                  [4, 0, 2],
+                                  [0, 3, 0]])
+        >>> g.add_grid_edges(nodeids, weights=1, structure=structure,
+                symmetric=False)
+        
+        ::
+        
+            XXX----2--->XXX----2--->XXX
+            XXX<---4----XXX<---4----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           3| |1       3| |1       3| |1
+            | |         | |         | |
+            V |         V |         V |
+            XXX----2--->XXX----2--->XXX 
+            XXX<---4----XXX<---4----XXX
+            | ^         | ^         | ^ 
+            | |         | |         | |
+           3| |1       3| |1       3| |1
+            | |         | |         | |
+            V |         V |         V |
+            XXX----2--->XXX----2--->XXX
+            XXX<---4----XXX<---4----XXX
+        
         """
         if structure is None:
             structure = vonNeumann_structure(nodeids.ndim, symmetric)
@@ -234,7 +429,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         
         # Add non-terminal edges with capacities
         cdef int num_edges = self.get_edge_count()
-        e = self.thisptr.get_first_arc()
+        cdef long e = self.thisptr.get_first_arc()
         
         cdef int n1
         cdef int n2
@@ -244,10 +439,12 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
             n1 = self.thisptr.get_arc_from(e)
             n2 = self.thisptr.get_arc_to(e)
             w = self.thisptr.get_rcap(e)
-            if(g.has_edge(n1, n2)):
-                g[n1][n2]['weight'] += w
-            else:
-                g.add_edge(n1, n2, weight=w)
+            
+            if w != 0:
+                if g.has_edge(n1, n2):
+                    g[n1][n2]['weight'] += w
+                else:
+                    g.add_edge(n1, n2, weight=w)
             e = self.thisptr.get_next_arc(e)
         
         # Add terminal nodes
@@ -336,8 +533,198 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         self.thisptr.add_tweights(i, cap_source, cap_sink)
     def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
         """
-        TODO.
-        """
+        Add edges to a grid of nodes in a structured manner.
+        
+        The grid of nodes is given by ``nodeids``, that contains the
+        identifiers of the nodes. ``weights`` is an array containing the
+        capacities of the edges starting at every node. ``nodeids``
+        and ``weights`` must have the same shape or be broadcastable to
+        the same shape.
+        
+        ``structure`` indicates the neighborhood around each node. For every
+        node the ``structure`` array will be centered on it (in a sliding
+        window manner) and edges will be added from the central node to the
+        nodes corresponding to non-zero entries of ``structure``. The
+        capacities of these added edges is computed as the product between the
+        weight corresponding to the central node and the value in ``structure``.
+        
+        If ``structure`` is None (by default), it is equivalent to the output of
+        vonNeumann_structure(ndim=nodeids.ndim, directed=symmetric). This
+        creates a 4-connected grid.
+        
+        If symmetric is True, for every edge i->j another edge j->i with the
+        same capacity will be added.
+        
+        
+        Examples
+        
+        Standard 4-connected grid, all capacities set to 1:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((250, 250))
+        >>> structure = np.array([[0, 0, 0],
+                                  [0, 0, 1],
+                                  [0, 1, 0]])
+        >>> # Or structure = maxflow.vonNeumann_structure(ndim=2, directed=True)
+        >>> g.add_grid_edges(nodeids, weights, structure=structure,
+                symmetric=True)
+        
+        
+        XXX----1--->XXX----1--->XXX
+        XXX<---1----XXX<---1----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       1| |1       1| |1       1| |1
+        | |         | |         | |
+        V |         V |         V |
+        XXX----1--->XXX----1--->XXX    ...
+        XXX<---1----XXX<---1----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       1| |1       1| |1       1| |1
+        | |         | |         | |
+        V |         V |         V |
+        XXX----1--->XXX----1--->XXX
+        XXX<---1----XXX<---1----XXX
+        
+                      .                .
+                      .                 .
+                      .                  .
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different positions,
+        not symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 0, 0],
+                                  [0, 0, 1],
+                                  [0, 1, 0]])
+        >>> weights = np.array([[1, 2, 3],
+                                [4, 5, 6],
+                                [7, 8, 9]])
+        >>> g.add_grid_edges(nodeids, weights=weights, structure=structure,
+                symmetric=False)
+        
+        
+        XXX----1--->XXX----2--->XXX
+        XXX         XXX         XXX
+        |           |           | 
+        |           |           | 
+       1|          2|          3| 
+        |           |           | 
+        V           V           V 
+        XXX----4--->XXX----5--->XXX 
+        XXX         XXX         XXX
+        |           |           |
+        |           |           |
+       4|          5|          6|
+        |           |           |
+        V           V           V
+        XXX----7--->XXX----8--->XXX
+        XXX         XXX         XXX
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different positions,
+        symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 0, 0],
+                                  [0, 0, 1],
+                                  [0, 1, 0]])
+        >>> weights = np.array([[1, 2, 3],
+                                [4, 5, 6],
+                                [7, 8, 9]])
+        >>> g.add_grid_edges(nodeids, weights=weights, structure=structure,
+                symmetric=True)
+        
+        
+        XXX----1--->XXX----2--->XXX
+        XXX<---1----XXX<---2----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       1| |1       2| |2       3| |3
+        | |         | |         | |
+        V |         V |         V |
+        XXX----4--->XXX----5--->XXX 
+        XXX<---4----XXX<---5----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       4| |4       5| |5       6| |6
+        | |         | |         | |
+        V |         V |         V |
+        XXX----7--->XXX----8--->XXX
+        XXX<---7----XXX<---8----XXX
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different positions,
+        undirected structure and not symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 1, 0],
+                                  [1, 0, 1],
+                                  [0, 1, 0]])
+        >>> weights = np.array([[1, 2, 3],
+                                [4, 5, 6],
+                                [7, 8, 9]])
+        >>> g.add_grid_edges(nodeids, weights=weights, structure=structure,
+                symmetric=False)
+        
+        
+        XXX----1--->XXX----2--->XXX
+        XXX<---2----XXX<---3----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       1| |4       2| |5       3| |6
+        | |         | |         | |
+        V |         V |         V |
+        XXX----4--->XXX----5--->XXX 
+        XXX<---5----XXX<---6----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       4| |7       5| |8       6| |9
+        | |         | |         | |
+        V |         V |         V |
+        XXX----7--->XXX----8--->XXX
+        XXX<---8----XXX<---9----XXX
+        
+        
+        
+        4-connected 3x3 grid, different capacities for different orientations,
+        not symmetric:
+        
+        >>> g = maxflow.GraphFloat()
+        >>> nodeids = g.add_grid_nodes((3, 3))
+        >>> structure = np.array([[0, 1, 0],
+                                  [4, 0, 2],
+                                  [0, 3, 0]])
+        >>> g.add_grid_edges(nodeids, weights=1, structure=structure,
+                symmetric=False)
+        
+        
+        XXX----2--->XXX----2--->XXX
+        XXX<---4----XXX<---4----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       3| |1       3| |1       3| |1
+        | |         | |         | |
+        V |         V |         V |
+        XXX----2--->XXX----2--->XXX 
+        XXX<---4----XXX<---4----XXX
+        | ^         | ^         | ^ 
+        | |         | |         | |
+       3| |1       3| |1       3| |1
+        | |         | |         | |
+        V |         V |         V |
+        XXX----2--->XXX----2--->XXX
+        XXX<---4----XXX<---4----XXX
+        
+       """
         if structure is None:
             structure = vonNeumann_structure(nodeids.ndim, symmetric)
         
@@ -408,7 +795,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         
         # Add non-terminal edges with capacities
         cdef int num_edges = self.get_edge_count()
-        e = self.thisptr.get_first_arc()
+        cdef long e = self.thisptr.get_first_arc()
         
         cdef int n1
         cdef int n2
@@ -418,10 +805,12 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
             n1 = self.thisptr.get_arc_from(e)
             n2 = self.thisptr.get_arc_to(e)
             w = self.thisptr.get_rcap(e)
-            if(g.has_edge(n1, n2)):
-                g[n1][n2]['weight'] += w
-            else:
-                g.add_edge(n1, n2, weight=w)
+            
+            if w != 0.0:
+                if(g.has_edge(n1, n2)):
+                    g[n1][n2]['weight'] += w
+                else:
+                    g.add_edge(n1, n2, weight=w)
             e = self.thisptr.get_next_arc(e)
         
         # Add terminal nodes
