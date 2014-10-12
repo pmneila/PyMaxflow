@@ -62,7 +62,8 @@ Minimization in Vision. Yuri Boykov and Vladimir Kolmogorov. TPAMI.</div></block
 layouts. It provides two Graph classes, <tt class="docutils literal"><span class="pre">Graph[int]</span></tt> and <tt class="docutils literal"><span class="pre">Graph[float]</span></tt>,
 for integer and real data types.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">Graph</span><span class="p">[</span><span class="nb">int</span><span class="p">](</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">maxflow</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">Graph</span><span class="p">[</span><span class="nb">int</span><span class="p">](</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -104,7 +105,7 @@ weights <tt class="docutils literal"><span class="pre">cap</span></tt> and <tt c
 
 <dl class="method">
 <dt id="maxflow.GraphInt.add_grid_edges">
-<tt class="descname">add_grid_edges</tt><big>(</big><em>self</em>, <em>ndarray nodeids</em>, <em>weights=1</em>, <em>structure=None</em>, <em>int symmetric=1</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_grid_edges" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_grid_edges</tt><big>(</big><em>self</em>, <em>ndarray nodeids</em>, <em>weights=1</em>, <em>structure=None</em>, <em>int symmetric=0</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_grid_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add edges to a grid of nodes in a structured manner.</p>
 <p>The grid of nodes is given by <tt class="docutils literal"><span class="pre">nodeids</span></tt>, that contains the
 identifiers of the nodes. <tt class="docutils literal"><span class="pre">weights</span></tt> is an array containing the
@@ -323,9 +324,29 @@ of the same shape than the input array <tt class="docutils literal"><span class=
 <dl class="method">
 <dt id="maxflow.GraphInt.get_nx_graph">
 <tt class="descname">get_nx_graph</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.get_nx_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build a NetworkX DiGraph with the status of the maxflow network. Note that
-this function is slow and should be used only for debugging purposes.</p>
-<p>It requires the Python NetworkX package.</p>
+<dd><p>Build a NetworkX DiGraph with the status of the maxflow network. The
+resulting graph will contain the terminal and non-terminal nodes and
+edges. The attribute <tt class="docutils literal"><span class="pre">weight</span></tt> of every edge will be set to its
+residual capacity. If the residual capacity of an edge is 0, the edge is
+not included in the DiGraph.</p>
+<p>The residual capacity for an edge is defined as the full capacity of the
+edge (set with the methods <tt class="docutils literal"><span class="pre">add_tedge</span></tt>, <tt class="docutils literal"><span class="pre">add_edge</span></tt> and their
+corresponding grid equivalents, <tt class="docutils literal"><span class="pre">add_grid_tedges</span></tt> and
+<tt class="docutils literal"><span class="pre">add_grid_edges</span></tt>) minus the amount of flow passing through it.
+Therefore, the weights of the DiGraph depend on the amount of flow
+passing through the network and, in turn, this depends on whether the
+call to <tt class="docutils literal"><span class="pre">get_nx_graph</span></tt> is done before or after calling
+<tt class="docutils literal"><span class="pre">GraphInt.maxflow</span></tt>.</p>
+<p>Before calling the <tt class="docutils literal"><span class="pre">GraphInt.maxflow</span></tt>, there is no flow and therefore
+the residual capacity of every edge is equal to its full capacity.</p>
+<p>After calling <tt class="docutils literal"><span class="pre">GraphInt.maxflow</span></tt>, a virtual flow traverses the network
+from the source node to the sink node, and the residual capacities will
+be lower than the full capacities. Note that in this case, since
+<tt class="docutils literal"><span class="pre">get_nx_graph</span></tt> ignores edges with residual capacity 0, the edges in
+the minimum cut will not be included in the final DiGraph.</p>
+<p>Note that this function is slow and should be used only for debugging
+purposes.</p>
+<p>This method requires the Python NetworkX package.</p>
 </dd></dl>
 
 <dl class="method">
@@ -363,8 +384,8 @@ grids with von Neumann neighborhood.</p>
 <dd><p>Minimize an energy function iterating the alpha-beta-swap
 until convergence or until a maximum number of cycles,
 given by <tt class="docutils literal"><span class="pre">max_cycles</span></tt>, is reached.</p>
-<p><tt class="docutils literal"><span class="pre">D</span></tt> must be a N+1-dimensional array with shape (L,S1,...,SN),
-where L is the number of labels considered. <em>D[lbl,p1,...,pn]</em> is the unary
+<p><tt class="docutils literal"><span class="pre">D</span></tt> must be a N+1-dimensional array with shape (S1,...,SN,L),
+where L is the number of labels considered. <em>D[p1,...,pn,lbl]</em> is the unary
 cost of assigning the label <em>lbl</em> to the variable <em>(p1,...,pn)</em>.</p>
 <p><tt class="docutils literal"><span class="pre">V</span></tt> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
 assigning the labels <em>lbl1</em> and <em>lbl2</em> to a pair of neighbor variables.
@@ -384,8 +405,8 @@ modifying this array in-place.</p>
 <dd><p>Minimize an energy function iterating the alpha-expansion until
 convergence or until a maximum number of cycles,
 given by <tt class="docutils literal"><span class="pre">max_cycles</span></tt>, is reached.</p>
-<p><tt class="docutils literal"><span class="pre">D</span></tt> must be an N+1-dimensional array with shape (L,S1,...,SN),
-where L is the number of labels considered. <em>D[lbl,p1,...,pn]</em> is the unary
+<p><tt class="docutils literal"><span class="pre">D</span></tt> must be an N+1-dimensional array with shape (S1,...,SN,L),
+where L is the number of labels considered. <em>D[p1,...,pn,lbl]</em> is the unary
 cost of assigning the label <em>lbl</em> to the variable <em>(p1,...,pn)</em>.</p>
 <p><tt class="docutils literal"><span class="pre">V</span></tt> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
 assigning the labels <em>lbl1</em> and <em>lbl2</em> to a pair of neighbor variables.

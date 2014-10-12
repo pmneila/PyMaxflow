@@ -260,9 +260,12 @@ the argument <tt class="docutils literal"><span class="pre">symmetric</span></tt
 with different capacities in different areas of the grid. On the other hand,
 besides defining the local neighborhood of each node, <tt class="docutils literal"><span class="pre">structure</span></tt> enables
 anisotropic edges, with different capacities depending on their orientation.</p>
-<p>The file <tt class="file docutils literal"><span class="pre">examples/layout_examples.py</span></tt> contains several different layouts
-than can be created with <tt class="docutils literal"><span class="pre">add_grid_edges</span></tt>. Also, the documentation of
-<a class="reference internal" href="maxflow.html#maxflow.GraphInt.add_grid_edges" title="maxflow.GraphInt.add_grid_edges"><tt class="xref py py-meth docutils literal"><span class="pre">maxflow.GraphInt.add_grid_edges()</span></tt></a> contains some more examples.</p>
+<p>The file <tt class="file docutils literal"><span class="pre">examples/layout_examples.py</span></tt> and the documentation of
+<a class="reference internal" href="maxflow.html#maxflow.GraphInt.add_grid_edges" title="maxflow.GraphInt.add_grid_edges"><tt class="xref py py-meth docutils literal"><span class="pre">maxflow.GraphInt.add_grid_edges()</span></tt></a> contain several different layouts
+than can be created with <tt class="docutils literal"><span class="pre">add_grid_edges</span></tt>. A more involved example is in
+<tt class="file docutils literal"><span class="pre">examples/layout_example2.py</span></tt>, where a complex graph is created using
+several calls to <a class="reference internal" href="maxflow.html#maxflow.GraphInt.add_grid_edges" title="maxflow.GraphInt.add_grid_edges"><tt class="xref py py-meth docutils literal"><span class="pre">maxflow.GraphInt.add_grid_edges()</span></tt></a> and
+<tt class="xref py py-meth docutils literal"><span class="pre">maxflow.GraphInt.add_grid_tedges()</span></tt>.</p>
 <table class="docutils citation" frame="void" id="boykov06" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
