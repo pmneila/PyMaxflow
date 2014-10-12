@@ -18,7 +18,6 @@ grids with von Neumann neighborhood.
 import sys
 from itertools import count, combinations
 import numpy as np
-import _maxflow
 from _maxflow import aexpansion_grid_step, abswap_grid_step
 
 def energy_of_grid_labeling(D, V, labels):

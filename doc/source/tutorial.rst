@@ -245,9 +245,12 @@ with different capacities in different areas of the grid. On the other hand,
 besides defining the local neighborhood of each node, ``structure`` enables
 anisotropic edges, with different capacities depending on their orientation.
 
-The file :file:`examples/layout_examples.py` contains several different layouts
-than can be created with ``add_grid_edges``. Also, the documentation of
-:py:meth:`maxflow.GraphInt.add_grid_edges` contains some more examples.
+The file :file:`examples/layout_examples.py` and the documentation of
+:py:meth:`maxflow.GraphInt.add_grid_edges` contain several different layouts
+than can be created with ``add_grid_edges``. A more involved example is in
+:file:`examples/layout_example2.py`, where a complex graph is created using
+several calls to :py:meth:`maxflow.GraphInt.add_grid_edges` and
+:py:meth:`maxflow.GraphInt.add_grid_tedges`.
 
 .. [BOYKOV06] *Graph Cuts in Vision and Graphics: Theories and Applications*.
    Yuri Boykov, Olga Veksler.

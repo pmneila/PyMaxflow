@@ -17,6 +17,7 @@ for integer and real data types.
 
 Example:
 
+>>> import maxflow
 >>> g = maxflow.Graph[int](2, 2)
 >>> g.add_nodes(2)
 0
@@ -35,7 +36,9 @@ paper in any resulting publication.
 import numpy as np
 import _maxflow
 from _maxflow import GraphInt, GraphFloat, moore_structure, vonNeumann_structure
-from version import __version__, __version_str__, \
-        __version_core__
+from version import __version__, __version_str__, __version_core__
 
-Graph = {int:GraphInt, float:GraphFloat}
+Graph = {int: GraphInt, float: GraphFloat}
+
+__all__ = ['Graph', "GraphInt", "GraphFloat", "np", "_maxflow",
+           "moore_structure", "vonNeumann_structure"]

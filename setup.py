@@ -60,5 +60,6 @@ setup(name="PyMaxflow",
         "Topic :: Scientific/Engineering :: Mathematics"
     ],
     packages=["maxflow"],
-    ext_modules=maxflow_module
+    ext_modules=maxflow_module,
+    requires=['numpy', 'Cython']
     )

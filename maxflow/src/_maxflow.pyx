@@ -160,7 +160,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         of terminal edges are stored in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
+    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=0):
         """
         Add edges to a grid of nodes in a structured manner.
         
@@ -415,10 +415,34 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         return self.thisptr.get_grid_segments(nodeids)
     def get_nx_graph(self):
         """
-        Build a NetworkX DiGraph with the status of the maxflow network. Note that
-        this function is slow and should be used only for debugging purposes.
+        Build a NetworkX DiGraph with the status of the maxflow network. The
+        resulting graph will contain the terminal and non-terminal nodes and
+        edges. The attribute ``weight`` of every edge will be set to its
+        residual capacity. If the residual capacity of an edge is 0, the edge is
+        not included in the DiGraph.
         
-        It requires the Python NetworkX package.
+        The residual capacity for an edge is defined as the full capacity of the
+        edge (set with the methods ``add_tedge``, ``add_edge`` and their
+        corresponding grid equivalents, ``add_grid_tedges`` and
+        ``add_grid_edges``) minus the amount of flow passing through it.
+        Therefore, the weights of the DiGraph depend on the amount of flow
+        passing through the network and, in turn, this depends on whether the
+        call to ``get_nx_graph`` is done before or after calling
+        ``GraphInt.maxflow``.
+        
+        Before calling the ``GraphInt.maxflow``, there is no flow and therefore
+        the residual capacity of every edge is equal to its full capacity.
+        
+        After calling ``GraphInt.maxflow``, a virtual flow traverses the network
+        from the source node to the sink node, and the residual capacities will
+        be lower than the full capacities. Note that in this case, since
+        ``get_nx_graph`` ignores edges with residual capacity 0, the edges in
+        the minimum cut will not be included in the final DiGraph.
+        
+        Note that this function is slow and should be used only for debugging
+        purposes.
+        
+        This method requires the Python NetworkX package.
         """
         
         import networkx as nx
@@ -531,7 +555,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         of terminal edges are stored in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=1):
+    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=0):
         """
         Add edges to a grid of nodes in a structured manner.
         
@@ -781,10 +805,35 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         return self.thisptr.get_grid_segments(nodeids)
     def get_nx_graph(self):
         """
-        Build a NetworkX DiGraph with the status of the maxflow network. Note that
-        this function is slow and should be used only for debugging purposes.
+        Build a NetworkX DiGraph with the status of the maxflow network. The
+        resulting graph will contain the terminal and non-terminal nodes and
+        edges. The attribute ``weight`` of every edge will be set to its
+        residual capacity. If the residual capacity of an edge is 0, the edge is
+        not included in the DiGraph.
         
-        It requires the Python NetworkX package.
+        The residual capacity for an edge is defined as the full capacity of the
+        edge (set with the methods ``add_tedge``, ``add_edge`` and their
+        corresponding grid equivalents, ``add_grid_tedges`` and
+        ``add_grid_edges``) minus the amount of flow passing through it.
+        Therefore, the weights of the DiGraph depend on the amount of flow
+        passing through the network and, in turn, this depends on whether the
+        call to ``get_nx_graph`` is done before or after calling
+        ``GraphFloat.maxflow``.
+        
+        Before calling the ``GraphFloat.maxflow``, there is no flow and
+        therefore the residual capacity of every edge is equal to its full
+        capacity.
+        
+        After calling ``GraphFloat.maxflow``, a virtual flow traverses the
+        network from the source node to the sink node, and the residual
+        capacities will be lower than the full capacities. Note that in this
+        case, since ``get_nx_graph`` ignores edges with residual capacity 0, the
+        edges in the minimum cut will not be included in the final DiGraph.
+        
+        Note that this function is slow and should be used only for debugging
+        purposes.
+        
+        This method requires the Python NetworkX package.
         """
         
         import networkx as nx
