@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from distutils.core import setup
+import runpy
 from distutils.extension import Extension
 from distutils.util import get_platform
 from Cython.Build import cythonize
@@ -8,9 +9,7 @@ from Cython.Build import cythonize
 import numpy
 
 # Get the version number.
-ver_dict = {}
-execfile("maxflow/version.py", ver_dict)
-__version_str__ = ver_dict["__version_str__"]
+__version_str__ = runpy.run_path("maxflow/version.py")["__version_str__"]
 
 numpy_include_dir = numpy.get_include()
 
@@ -28,7 +27,8 @@ maxflow_module = Extension(
     ]
 )
 
-setup(name="PyMaxflow",
+setup(
+    name="PyMaxflow",
     version=__version_str__,
     description="A mincut/maxflow package for Python",
     author="Pablo Márquez Neila",
@@ -43,13 +43,13 @@ setup(name="PyMaxflow",
     `homepage <http://www.cs.ucl.ac.uk/staff/V.Kolmogorov/>`_.
     Besides the wrapper to the C++ library, PyMaxflow offers
 
-    * NumPy integration, 
+    * NumPy integration,
     * methods for the construction of common graph
       layouts in computer vision and graphics,
     * implementation of algorithms for fast energy
       minimization which use the `maxflow` method:
       the alpha-beta-swap and the alpha-expansion.
-    
+
     """,
     classifiers=[
         "Development Status :: 4 - Beta",
