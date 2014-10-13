@@ -2,6 +2,8 @@
 
 from distutils.core import setup
 import runpy
+from distutils.extension import Extension
+from distutils.util import get_platform
 from Cython.Build import cythonize
 
 import numpy
@@ -11,13 +13,18 @@ __version_str__ = runpy.run_path("maxflow/version.py")["__version_str__"]
 
 numpy_include_dir = numpy.get_include()
 
-maxflow_module = cythonize('maxflow/src/_maxflow.pyx')
-
-maxflow_module[0].include_dirs.append(numpy_include_dir)
-maxflow_module[0].include_dirs.append("/usr/local/include")
-maxflow_module[0].sources.append("maxflow/src/core/maxflow.cpp")
-maxflow_module[0].sources.append("maxflow/src/fastmin.cpp")
-# maxflow_module[0].extra_compile_args.append("-Wall")
+maxflow_module = Extension(
+    "maxflow._maxflow",
+    [
+        "maxflow/src/_maxflow.pyx",
+        "maxflow/src/core/maxflow.cpp",
+        "maxflow/src/fastmin.cpp"
+    ],
+    language="c++", include_dirs=[
+        numpy_include_dir,
+        "/usr/local/include"
+    ]
+)
 
 setup(
     name="PyMaxflow",
@@ -25,7 +32,7 @@ setup(
     description="A mincut/maxflow package for Python",
     author="Pablo Márquez Neila",
     author_email="pablo.marquezneila@epfl.ch",
-    url="",
+    url="https://github.com/pmneila/PyMaxflow",
     license="GPL",
     long_description="""
     PyMaxflow is a Python library for graph construction and
@@ -58,7 +65,8 @@ setup(
         "Topic :: Scientific/Engineering :: Computer Vision",
         "Topic :: Scientific/Engineering :: Mathematics"
     ],
+    platforms=[get_platform()],
     packages=["maxflow"],
-    ext_modules=maxflow_module,
+    ext_modules=cythonize([maxflow_module]),
     requires=['numpy', 'Cython']
     )
