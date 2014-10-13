@@ -20,7 +20,8 @@ maxflow_module = Extension(
         "maxflow/src/core/maxflow.cpp",
         "maxflow/src/fastmin.cpp"
     ],
-    language="c++", include_dirs=[
+    language="c++",
+    include_dirs=[
         numpy_include_dir,
         "/usr/local/include"
     ]
