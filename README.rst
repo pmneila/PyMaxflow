@@ -26,7 +26,7 @@ build PyMaxflow:
 Installation via PyPI
 ---------------------
 
-Open a terminal and write
+Open a terminal and write::
 
   $ pip install PyMaxflow
 
