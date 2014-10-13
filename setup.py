@@ -3,7 +3,6 @@
 from distutils.core import setup
 import runpy
 from distutils.extension import Extension
-from distutils.util import get_platform
 from Cython.Build import cythonize
 
 import numpy
@@ -61,13 +60,11 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: C++",
         "Programming Language :: Python",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Image Recognition",
-        "Topic :: Scientific/Engineering :: Computer Vision",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Mathematics"
     ],
-    platforms=[get_platform()],
     packages=["maxflow"],
     ext_modules=cythonize([maxflow_module]),
     requires=['numpy', 'Cython']
-    )
+)

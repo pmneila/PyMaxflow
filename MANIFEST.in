@@ -1,16 +1,28 @@
+include maxflow/*.py
+
 include maxflow/src/CMakeLists.txt
-include maxflow/src/*.h
+include maxflow/src/_maxflow.pyx
+include maxflow/src/pyarraymodule.h
+include maxflow/src/pyarray_symbol.h
+include maxflow/src/grid.h
+include maxflow/src/fastmin.h
+include maxflow/src/fastmin.cpp
+exclude maxflow/src/_maxflow.cpp
+
 include maxflow/src/core/*.h
 include maxflow/src/core/*.inc
+include maxflow/src/core/*.cpp
+include maxflow/src/core/README.TXT
 
 include examples/*.py
-include examples/a2.png
+include examples/*.png
 
 include doc/Makefile
+include doc/make.bat
 include doc/source/conf.py
 include doc/source/*.rst
 include doc/source/_static/*
 include doc/source/_templates/*
 
-include environment.py
-include README.txt
+include setup.py
+include README.rst

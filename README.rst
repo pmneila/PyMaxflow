@@ -23,11 +23,21 @@ build PyMaxflow:
 * `Boost <http://www.boost.org/>`_
 * `NumPy <http://numpy.scipy.org/>`_
 
+Installation via PyPI
+---------------------
 
-Installation
-------------
+Open a terminal and write
 
-Open a terminal and write::
+  $ pip install PyMaxflow
+
+Depending on your local configuration, you might need admin privileges. In that
+case, login as root or use ``sudo`` before ``pip install``.
+
+Manual installation
+-------------------
+
+Download the source code or clone the Github repository. Then, open a terminal
+and write::
 
   $ cd path/to/PyMaxflow
   $ python setup.py build
