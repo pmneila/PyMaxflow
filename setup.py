@@ -22,7 +22,6 @@ maxflow_module = Extension(
     language="c++",
     include_dirs=[
         numpy_include_dir,
-        "/usr/local/include"
     ]
 )
 

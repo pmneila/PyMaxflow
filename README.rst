@@ -20,12 +20,11 @@ Requirements
 You need the following libraries and tools installed on you system in order to
 build PyMaxflow:
 
-* `Boost.MPL <http://www.boost.org/>`_
 * `NumPy <http://numpy.scipy.org/>`_
 * `Cython <http://cython.org/>`_
 
-``NumPy`` and ``Cython`` should be automatically downloaded and installed if
-PyMaxflow is installed via PyPI (see below).
+They should be automatically downloaded and installed if PyMaxflow is installed
+via PyPI using ``pip install`` (see below).
 
 Installation via PyPI
 ---------------------
