@@ -1,5 +1,26 @@
 /* graph.h */
 /*
+    Copyright Vladimir Kolmogorov (vnk@ist.ac.at), Yuri Boykov (yuri@csd.uwo.ca) 
+
+    This file is part of MAXFLOW.
+
+    MAXFLOW is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MAXFLOW is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MAXFLOW.  If not, see <http://www.gnu.org/licenses/>.
+
+========================
+
+	version 3.03
+
 	This software library implements the maxflow algorithm
 	described in
 
@@ -29,6 +50,8 @@
 	If you use this option, you should cite
 	the aforementioned paper in any resulting publication.
 */
+	
+
 
 /*
 	For description, license, example usage see README.TXT.
@@ -43,30 +66,28 @@
 #include <assert.h>
 // NOTE: in UNIX you need to use -DNDEBUG preprocessor option to supress assert's!!!
 
-#include "../pyarraymodule.h"
 
-typedef enum
-{
-	SOURCE	= 0,
-	SINK	= 1
-} termtype; // terminals
 
 // captype: type of edge capacities (excluding t-links)
 // tcaptype: type of t-links (edges between nodes and terminals)
 // flowtype: type of total flow
 //
 // Current instantiations are in instances.inc
-template <typename T, typename tcaptype, typename flowtype> class Graph
+template <typename captype, typename tcaptype, typename flowtype> class Graph
 {
 public:
+	typedef enum
+	{
+		SOURCE	= 0,
+		SINK	= 1
+	} termtype; // terminals 
 	typedef int node_id;
-        typedef T captype;
-        
+
 	/////////////////////////////////////////////////////////////////////////
 	//                     BASIC INTERFACE FUNCTIONS                       //
-    //              (should be enough for most applications)               //
+	//              (should be enough for most applications)               //
 	/////////////////////////////////////////////////////////////////////////
-	
+
 	// Constructor. 
 	// The first argument gives an estimate of the maximum number of nodes that can be added
 	// to the graph, and the second argument is an estimate of the maximum number of edges.
@@ -153,7 +174,7 @@ public:
 	// the first arc returned will be i->j, and the second j->i.
 	// If there are no more arcs, then the function can still be called, but
 	// the returned arc_id is undetermined.
-	typedef uintptr_t arc_id;
+	typedef arc* arc_id;
 	arc_id get_first_arc();
 	arc_id get_next_arc(arc_id a);
 
@@ -161,8 +182,6 @@ public:
 	int get_node_num() { return node_num; }
 	int get_arc_num() { return (int)(arc_last - arcs); }
 	void get_arc_ends(arc_id a, node_id& i, node_id& j); // returns i,j to that a = i->j
-	node_id get_arc_from(arc_id a);
-	node_id get_arc_to(arc_id a);
 
 	///////////////////////////////////////////////////
 	// 3. Functions for reading residual capacities. //
@@ -171,7 +190,7 @@ public:
 	// returns residual capacity of SOURCE->i minus residual capacity of i->SINK
 	tcaptype get_trcap(node_id i); 
 	// returns residual capacity of arc a
-	captype get_rcap(arc_id a);
+	captype get_rcap(arc* a);
 
 	/////////////////////////////////////////////////////////////////
 	// 4. Functions for setting residual capacities.               //
@@ -248,15 +267,12 @@ public:
 		assert(i>=0 && i<node_num && nodes[i].is_in_changed_list); 
 		nodes[i].is_in_changed_list = 0;
 	}
-	
-	// Grid methods.
-	// void add_grid_edges(const PyArrayObject* nodeids, const captype& cap);
-	void add_grid_edges(PyArrayObject* nodeids, PyObject* weights,
-						PyObject* structure, int symmetric);
-	void add_grid_tedges(PyArrayObject* nodeids,
-            PyObject* sourcecaps, PyObject* sinkcaps);
-	PyArrayObject* get_grid_segments(PyArrayObject* nodeids);
-	
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -345,9 +361,21 @@ private:
 	void test_consistency(node* current_node=NULL); // debug function
 };
 
+
+
+
+
+
+
+
+
+
+
 ///////////////////////////////////////
 // Implementation - inline functions //
 ///////////////////////////////////////
+
+
 
 template <typename captype, typename tcaptype, typename flowtype> 
 	inline typename Graph<captype,tcaptype,flowtype>::node_id Graph<captype,tcaptype,flowtype>::add_node(int num)
@@ -356,40 +384,19 @@ template <typename captype, typename tcaptype, typename flowtype>
 
 	if (node_last + num > node_max) reallocate_nodes(num);
 
-	if (num == 1)
-	{
-		node_last -> first = NULL;
-		node_last -> tr_cap = 0;
-		node_last -> is_marked = 0;
-		node_last -> is_in_changed_list = 0;
+	memset(node_last, 0, num*sizeof(node));
 
-		node_last ++;
-		return node_num ++;
-	}
-	else
-	{
-		memset(node_last, 0, num*sizeof(node));
-
-		node_id i = node_num;
-		node_num += num;
-		node_last += num;
-		return i;
-	}
+	node_id i = node_num;
+	node_num += num;
+	node_last += num;
+	return i;
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
 	inline void Graph<captype,tcaptype,flowtype>::add_tweights(node_id i, tcaptype cap_source, tcaptype cap_sink)
 {
-	assert(i >= -1 && i < node_num);
-	
-	if(i == -1)
-		return;
-	
-	if(node_num == 0)
-		throw std::runtime_error("cannot add terminal edges; no nodes in the graph");
-	if(i >= node_num || i < 0)
-		throw std::runtime_error("cannot add terminal edges; the node is not in the graph");
-    
+	assert(i >= 0 && i < node_num);
+
 	tcaptype delta = nodes[i].tr_cap;
 	if (delta > 0) cap_source += delta;
 	else           cap_sink   -= delta;
@@ -400,21 +407,12 @@ template <typename captype, typename tcaptype, typename flowtype>
 template <typename captype, typename tcaptype, typename flowtype> 
 	inline void Graph<captype,tcaptype,flowtype>::add_edge(node_id _i, node_id _j, captype cap, captype rev_cap)
 {
-	assert(_i >= -1 && _i < node_num);
-	assert(_j >= -1 && _j < node_num);
+	assert(_i >= 0 && _i < node_num);
+	assert(_j >= 0 && _j < node_num);
+	assert(_i != _j);
 	assert(cap >= 0);
 	assert(rev_cap >= 0);
-	
-	if(_i == -1 || _j == -1 || _i == _j)
-		return;
-	
-	if(node_num == 0)
-		throw std::runtime_error("cannot add an edge; no nodes in the graph");
-	if(_i >= node_num || _i < 0)
-        throw std::runtime_error("cannot add an edge; the first node is not in the graph");
-    if(_j >= node_num || _j < 0)
-        throw std::runtime_error("cannot add an edge; the second node is not in the graph");
-    
+
 	if (arc_last == arc_max) reallocate_arcs();
 
 	arc *a = arc_last ++;
@@ -436,22 +434,20 @@ template <typename captype, typename tcaptype, typename flowtype>
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline size_t Graph<captype,tcaptype,flowtype>::get_first_arc()
+	inline typename Graph<captype,tcaptype,flowtype>::arc* Graph<captype,tcaptype,flowtype>::get_first_arc()
 {
-	return reinterpret_cast<size_t>(arcs);
+	return arcs;
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline size_t Graph<captype,tcaptype,flowtype>::get_next_arc(size_t _a) 
+	inline typename Graph<captype,tcaptype,flowtype>::arc* Graph<captype,tcaptype,flowtype>::get_next_arc(arc* a) 
 {
-	arc* a = reinterpret_cast<arc*>(_a);
-	return reinterpret_cast<size_t>(a + 1);
+	return a + 1; 
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline void Graph<captype,tcaptype,flowtype>::get_arc_ends(size_t _a, node_id& i, node_id& j)
+	inline void Graph<captype,tcaptype,flowtype>::get_arc_ends(arc* a, node_id& i, node_id& j)
 {
-	arc* a = reinterpret_cast<arc*>(_a);
 	assert(a >= arcs && a < arc_last);
 	i = (node_id) (a->sister->head - nodes);
 	j = (node_id) (a->head - nodes);
@@ -465,9 +461,8 @@ template <typename captype, typename tcaptype, typename flowtype>
 }
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline captype Graph<captype,tcaptype,flowtype>::get_rcap(arc_id _a)
+	inline captype Graph<captype,tcaptype,flowtype>::get_rcap(arc* a)
 {
-	arc* a = reinterpret_cast<arc*>(_a);
 	assert(a >= arcs && a < arc_last);
 	return a->r_cap;
 }
@@ -488,10 +483,8 @@ template <typename captype, typename tcaptype, typename flowtype>
 
 
 template <typename captype, typename tcaptype, typename flowtype> 
-	inline termtype Graph<captype,tcaptype,flowtype>::what_segment(node_id i, termtype default_segm)
+	inline typename Graph<captype,tcaptype,flowtype>::termtype Graph<captype,tcaptype,flowtype>::what_segment(node_id i, termtype default_segm)
 {
-    if(i >= node_num || i < 0)
-        throw std::runtime_error("cannot get the segment of the node; the node is not in the graph");
 	if (nodes[i].parent)
 	{
 		return (nodes[i].is_sink) ? SINK : SOURCE;
@@ -517,111 +510,5 @@ template <typename captype, typename tcaptype, typename flowtype>
 	i->is_marked = 1;
 }
 
-template <typename captype, typename tcaptype, typename flowtype> 
-	Graph<captype, tcaptype, flowtype>::Graph(int node_num_max, int edge_num_max, void (*err_function)(const char *))
-	: node_num(0),
-	  nodeptr_block(NULL),
-	  error_function(err_function)
-{
-	if (node_num_max < 16) node_num_max = 16;
-	if (edge_num_max < 16) edge_num_max = 16;
-
-	nodes = (node*) malloc(node_num_max*sizeof(node));
-	arcs = (arc*) malloc(2*edge_num_max*sizeof(arc));
-	if (!nodes || !arcs) { if (error_function) (*error_function)("Not enough memory!"); exit(1); }
-
-	node_last = nodes;
-	node_max = nodes + node_num_max;
-	arc_last = arcs;
-	arc_max = arcs + 2*edge_num_max;
-
-	maxflow_iteration = 0;
-	flow = 0;
-}
-
-template <typename captype, typename tcaptype, typename flowtype> 
-	Graph<captype,tcaptype,flowtype>::~Graph()
-{
-	if (nodeptr_block) 
-	{ 
-		delete nodeptr_block; 
-		nodeptr_block = NULL; 
-	}
-	free(nodes);
-	free(arcs);
-}
-
-template <typename captype, typename tcaptype, typename flowtype> 
-	void Graph<captype,tcaptype,flowtype>::reset()
-{
-	node_last = nodes;
-	arc_last = arcs;
-	node_num = 0;
-
-	if (nodeptr_block) 
-	{ 
-		delete nodeptr_block; 
-		nodeptr_block = NULL; 
-	}
-
-	maxflow_iteration = 0;
-	flow = 0;
-}
-
-template <typename captype, typename tcaptype, typename flowtype> 
-	void Graph<captype,tcaptype,flowtype>::reallocate_nodes(int num)
-{
-	int node_num_max = (int)(node_max - nodes);
-	node* nodes_old = nodes;
-
-	node_num_max += node_num_max / 2;
-	if (node_num_max < node_num + num) node_num_max = node_num + num;
-	nodes = (node*) realloc(nodes_old, node_num_max*sizeof(node));
-	if (!nodes) { if (error_function) (*error_function)("Not enough memory!"); exit(1); }
-
-	node_last = nodes + node_num;
-	node_max = nodes + node_num_max;
-
-	if (nodes != nodes_old)
-	{
-		arc* a;
-		for (a=arcs; a<arc_last; a++)
-		{
-			a->head = (node*) ((char*)a->head + (((char*) nodes) - ((char*) nodes_old)));
-		}
-	}
-}
-
-template <typename captype, typename tcaptype, typename flowtype> 
-	void Graph<captype,tcaptype,flowtype>::reallocate_arcs()
-{
-	int arc_num_max = (int)(arc_max - arcs);
-	int arc_num = (int)(arc_last - arcs);
-	arc* arcs_old = arcs;
-
-	arc_num_max += arc_num_max / 2; if (arc_num_max & 1) arc_num_max ++;
-	arcs = (arc*) realloc(arcs_old, arc_num_max*sizeof(arc));
-	if (!arcs) { if (error_function) (*error_function)("Not enough memory!"); exit(1); }
-
-	arc_last = arcs + arc_num;
-	arc_max = arcs + arc_num_max;
-
-	if (arcs != arcs_old)
-	{
-		node* i;
-		arc* a;
-		for (i=nodes; i<node_last; i++)
-		{
-			if (i->first) i->first = (arc*) ((char*)i->first + (((char*) arcs) - ((char*) arcs_old)));
-		}
-		for (a=arcs; a<arc_last; a++)
-		{
-			if (a->next) a->next = (arc*) ((char*)a->next + (((char*) arcs) - ((char*) arcs_old)));
-			a->sister = (arc*) ((char*)a->sister + (((char*) arcs) - ((char*) arcs_old)));
-		}
-	}
-}
-
-#include "../grid.h"
 
 #endif

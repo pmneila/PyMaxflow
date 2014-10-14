@@ -1,4 +1,6 @@
 /* block.h */
+/* Vladimir Kolmogorov vnk@ist.ac.at */
+/* Last modified 08/05/2012 */
 /*
 	Template classes Block and DBlock
 	Implement adding and deleting items of the same type in blocks.
@@ -161,6 +163,27 @@ public:
 		return scan_current_data ++;
 	}
 
+	struct iterator; // for overlapping scans
+	Type *ScanFirst(iterator& i)
+	{
+		for (i.scan_current_block=first; i.scan_current_block; i.scan_current_block = i.scan_current_block->next)
+		{
+			i.scan_current_data = & ( i.scan_current_block -> data[0] );
+			if (i.scan_current_data < i.scan_current_block -> current) return i.scan_current_data ++;
+		}
+		return NULL;
+	}
+	Type *ScanNext(iterator& i)
+	{
+		while (i.scan_current_data >= i.scan_current_block -> current)
+		{
+			i.scan_current_block = i.scan_current_block -> next;
+			if (!i.scan_current_block) return NULL;
+			i.scan_current_data = & ( i.scan_current_block -> data[0] );
+		}
+		return i.scan_current_data ++;
+	}
+
 	/* Marks all elements as empty */
 	void Reset()
 	{
@@ -188,7 +211,13 @@ private:
 	int		block_size;
 	block	*first;
 	block	*last;
-
+public:
+	struct iterator
+	{
+		block	*scan_current_block;
+		Type	*scan_current_data;
+	};
+private:
 	block	*scan_current_block;
 	Type	*scan_current_data;
 

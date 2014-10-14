@@ -1,3 +1,13 @@
+List of changes from version 3.02:
+
+- put under GPL license
+
+List of changes from version 3.01:
+
+- fixed a bug: using add_node() or add_edge() after the first maxflow() with the reuse_trees option
+  could have caused segmentation fault (if nodes or arcs are reallocated). Thanks to Jan Lellmann for pointing out this bug.
+- updated block.h to suppress compilation warnings
+
 List of changes from version 3.0:
 - Moved line
 	#include "instances.inc"

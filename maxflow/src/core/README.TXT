@@ -1,11 +1,11 @@
 ###################################################################
 #                                                                 #
 #    MAXFLOW - software for computing mincut/maxflow in a graph   #
-#                        Version 3.01                             #
-#    http://www.cs.ucl.ac.uk/staff/V.Kolmogorov/software.html     #
+#                        Version 3.03                             #
+#    http://http://pub.ist.ac.at/~vnk/software.html               #
 #                                                                 #
 #    Yuri Boykov (yuri@csd.uwo.ca)                                #
-#    Vladimir Kolmogorov (v.kolmogorov@cs.ucl.ac.uk)              #
+#    Vladimir Kolmogorov (vnk@ist.ac.at)                          #
 #    2001-2006                                                    #
 #                                                                 #
 ###################################################################
@@ -47,9 +47,9 @@ and RedHat Linux 7.0, GNU c++ compiler).
 
 2. License & disclaimer.
 
-    Copyright 2001-2006 Vladimir Kolmogorov (v.kolmogorov@cs.ucl.ac.uk), Yuri Boykov (yuri@csd.uwo.ca).
+    Copyright 2001-2006 Vladimir Kolmogorov (vnk@ist.ac.at), Yuri Boykov (yuri@csd.uwo.ca).
 
-    This software can be used for research purposes only.
+    This software is under the GPL license.
     If you require another license, you may consider using version 2.21
     (which implements exactly the same algorithm, but does not have the option of reusing search trees).
 

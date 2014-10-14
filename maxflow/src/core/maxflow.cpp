@@ -6,7 +6,7 @@
 
 
 /*
-	special constants for node->parent
+	special constants for node->parent. Duplicated in graph.cpp, both should match!
 */
 #define TERMINAL ( (arc *) 1 )		/* to terminal */
 #define ORPHAN   ( (arc *) 2 )		/* orphan */
@@ -363,7 +363,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 		}
 	}
 
-	if ((i->parent = a0_min))
+	if (i->parent = a0_min)
 	{
 		i -> TS = TIME;
 		i -> DIST = d_min + 1;
@@ -440,7 +440,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 		}
 	}
 
-	if ((i->parent = a0_min))
+	if (i->parent = a0_min)
 	{
 		i -> TS = TIME;
 		i -> DIST = d_min + 1;
@@ -474,12 +474,12 @@ template <typename captype, typename tcaptype, typename flowtype>
 	node *i, *j, *current_node = NULL;
 	arc *a;
 	nodeptr *np, *np_next;
-	
+
 	if (!nodeptr_block)
 	{
 		nodeptr_block = new DBlock<nodeptr>(NODEPTR_BLOCK_SIZE, error_function);
 	}
-	
+
 	changed_list = _changed_list;
 	if (maxflow_iteration == 0 && reuse_trees) { if (error_function) (*error_function)("reuse_trees cannot be used in the first call to maxflow()!"); exit(1); }
 	if (changed_list && !reuse_trees) { if (error_function) (*error_function)("changed_list cannot be used without reuse_trees!"); exit(1); }
