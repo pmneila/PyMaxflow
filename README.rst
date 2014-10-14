@@ -2,7 +2,7 @@ PyMaxflow is a Python library for graph construction and
 maxflow computation (commonly known as `graph cuts`)
 as described in Boykov04. The core of this library is
 the C++ implementation by Vladimir Kolmogorov, which
-can be downloaded from his `homepage <http://www.cs.ucl.ac.uk/staff/V.Kolmogorov/>`_.
+can be downloaded from his `homepage <http://pub.ist.ac.at/~vnk/software.html>`_.
 Besides the wrapper to the C++ library, PyMaxflow offers
 
 * NumPy integration, 
@@ -17,11 +17,15 @@ Take a look at the `PyMaxflow documentation <http://pmneila.github.com/PyMaxflow
 Requirements
 ------------
 
-You need the following libraries installed on you system in order to
+You need the following libraries and tools installed on you system in order to
 build PyMaxflow:
 
-* `Boost <http://www.boost.org/>`_
+* `Boost.MPL <http://www.boost.org/>`_
 * `NumPy <http://numpy.scipy.org/>`_
+* `Cython <http://cython.org/>`_
+
+``NumPy`` and ``Cython`` should be automatically downloaded and installed if
+PyMaxflow is installed via PyPI (see below).
 
 Installation via PyPI
 ---------------------

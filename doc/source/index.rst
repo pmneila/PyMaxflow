@@ -11,7 +11,7 @@ maxflow computation (commonly known as `graph cuts`)
 as described in [BOYKOV04]_. The
 core of this library is the C++ implementation by
 Vladimir Kolmogorov, which
-can be downloaded from his `homepage <http://www.cs.ucl.ac.uk/staff/V.Kolmogorov/>`_.
+can be downloaded from his `homepage <http://pub.ist.ac.at/~vnk/software.html>`_.
 Besides the wrapper to the C++ library, PyMaxflow offers
 
 * NumPy integration.
