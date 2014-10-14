@@ -4,14 +4,6 @@
 #include <stdio.h>
 #include "graph.h"
 
-
-/*
-	special constants for node->parent. Duplicated in graph.cpp, both should match!
-*/
-#define TERMINAL ( (arc *) 1 )		/* to terminal */
-#define ORPHAN   ( (arc *) 2 )		/* orphan */
-
-
 #define INFINITE_D ((int)(((unsigned)-1)/2))		/* infinite distance to the terminal */
 
 /***********************************************************************/
@@ -363,7 +355,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 		}
 	}
 
-	if (i->parent = a0_min)
+	if ((i->parent = a0_min))
 	{
 		i -> TS = TIME;
 		i -> DIST = d_min + 1;
@@ -440,7 +432,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 		}
 	}
 
-	if (i->parent = a0_min)
+	if ((i->parent = a0_min))
 	{
 		i -> TS = TIME;
 		i -> DIST = d_min + 1;
