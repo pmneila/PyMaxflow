@@ -16,8 +16,6 @@
 #define DL_IMPORT(t) t
 #include "_maxflow.h"
 
-#include <boost/mpl/at.hpp>
-
 void incr_indices(npy_intp* ind, int ndim, const npy_intp* shape)
 {
     // Update the index.
@@ -78,7 +76,7 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
         throw std::runtime_error("the binary term matrix V must be LxL (L=number of labels)");
     if(PyArray_DIM(v,0) != PyArray_DIM(d, ndim))
         throw std::runtime_error("the number of labels given by D differs from the number of labels given by V");
-    if(PyArray_TYPE(v) != mpl::at<numpy_typemap,T>::type::value)
+    if(PyArray_TYPE(v) != numpy_typemap<T>::type)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
     if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
         throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
@@ -168,17 +166,33 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
     return build_graph_energy_tuple<T>(g, energy);
 }
 
-DISPATCHER(aexpansion, (int alpha, PyArrayObject* d, PyArrayObject* v, PyArrayObject* labels),
-           (alpha, d, v, labels), labels)
+#define DISPATCH(name, ctype, parameters) \
+case numpy_typemap<ctype>::type: \
+    return name<T, ctype>parameters;
+
+template<class T>
+PyObject* aexpansion_(int alpha, PyArrayObject* d, PyArrayObject* v, PyArrayObject* labels)
+{
+    switch(PyArray_TYPE(labels))
+    {
+    DISPATCH(aexpansion, char, (alpha, d, v, labels));
+    DISPATCH(aexpansion, short, (alpha, d, v, labels));
+    DISPATCH(aexpansion, int, (alpha, d, v, labels));
+    DISPATCH(aexpansion, long, (alpha, d, v, labels));
+    DISPATCH(aexpansion, long long, (alpha, d, v, labels));
+    default:
+        throw std::runtime_error("invalid type for labels (should be any integer type)");
+    }
+}
 
 // Access point for the aexpansion function.
 PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
                 PyArrayObject* labels)
 {
     if(PyArray_TYPE(d) == NPY_DOUBLE)
-        return aexpansion_<double,signed_integer_types_begin>::apply(alpha, d, v, labels);
+        return aexpansion_<double>(alpha, d, v, labels);
     else if(PyArray_TYPE(d) == NPY_LONG)
-        return aexpansion_<long,signed_integer_types_begin>::apply(alpha, d, v, labels);
+        return aexpansion_<long>(alpha, d, v, labels);
     else
         throw std::runtime_error("the type of the unary term D is not valid (should be np.double or np.int)");
 }
@@ -211,7 +225,7 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
         throw std::runtime_error("the binary term matrix V must be LxL (L=number of labels)");
     if(PyArray_DIM(v,0) != PyArray_DIM(d,ndim))
         throw std::runtime_error("the number of labels given by D differs from the number of labels given by V");
-    if(PyArray_TYPE(v) != mpl::at<numpy_typemap,T>::type::value)
+    if(PyArray_TYPE(v) != numpy_typemap<T>::type)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
     if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
         throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
@@ -301,19 +315,29 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
     return build_graph_energy_tuple<T>(g, energy);
 }
 
-DISPATCHER(abswap, (int alpha, int beta, PyArrayObject* d, PyArrayObject* v, PyArrayObject* labels),
-           (alpha, beta, d, v, labels), labels);
+template<class T>
+PyObject* abswap_(int alpha, int beta, PyArrayObject* d, PyArrayObject* v, PyArrayObject* labels)
+{
+    switch(PyArray_TYPE(labels))
+    {
+    DISPATCH(abswap, char, (alpha, beta, d, v, labels));
+    DISPATCH(abswap, short, (alpha, beta, d, v, labels));
+    DISPATCH(abswap, int, (alpha, beta, d, v, labels));
+    DISPATCH(abswap, long, (alpha, beta, d, v, labels));
+    DISPATCH(abswap, long long, (alpha, beta, d, v, labels));
+    default:
+        throw std::runtime_error("invalid type for labels (should be any integer type)");
+    }
+}
 
 // Access point for the abswap function.
 PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
                 PyArrayObject* labels)
 {
     if(PyArray_TYPE(d) == NPY_DOUBLE)
-        return abswap_<double,signed_integer_types_begin>::apply(alpha, beta, d, v, labels);
-        //return abswap<double,unsigned char>(alpha, beta, d, v, labels);
+        return abswap_<double>(alpha, beta, d, v, labels);
     else if(PyArray_TYPE(d) == NPY_LONG)
-        return abswap_<long,signed_integer_types_begin>::apply(alpha, beta, d, v, labels);
-        //return abswap<long,unsigned char>(alpha, beta, d, v, labels);
+        return abswap_<long>(alpha, beta, d, v, labels);
     else
         throw std::runtime_error("the type of the unary term D is not v (should be np.double or np.int)");
 }

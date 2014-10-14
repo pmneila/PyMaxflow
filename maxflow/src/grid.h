@@ -2,7 +2,6 @@
 #ifndef _GRID_H
 #define _GRID_H
 
-#include <boost/mpl/at.hpp>
 #include <vector>
 #include <algorithm>
 
@@ -87,14 +86,14 @@ void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,
     if(nodeids == NULL)
         throw std::runtime_error("The horror");
     
-    PyArrayObject* weights = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_weights, (mpl::at<numpy_typemap,captype>::type::value), 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
+    PyArrayObject* weights = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_weights, numpy_typemap<captype>::type, 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
     if(weights == NULL)
     {
         Py_DECREF(nodeids);
         throw std::runtime_error("invalid number of dimensions");
     }
     
-    PyArrayObject* structureArr = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_structure, (mpl::at<numpy_typemap,captype>::type::value), 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
+    PyArrayObject* structureArr = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_structure, numpy_typemap<captype>::type, 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
     if(structureArr == NULL)
     {
         Py_DECREF(weights);
@@ -213,13 +212,13 @@ void Graph<captype,tcaptype,flowtype>::add_grid_tedges(PyArrayObject* _nodeids,
     PyArrayObject* nodeids = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY((PyObject*)_nodeids, NPY_LONG, 0, 0, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
     int ndim = PyArray_NDIM(nodeids);
     
-    PyArrayObject* sourcecaps = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_sourcecaps, (mpl::at<numpy_typemap,tcaptype>::type::value), 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
+    PyArrayObject* sourcecaps = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_sourcecaps, numpy_typemap<tcaptype>::type, 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
     if(sourcecaps == NULL)
     {
         Py_DECREF(nodeids);
         throw std::runtime_error("invalid number of dimensions for sourcecaps");
     }
-    PyArrayObject* sinkcaps = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_sinkcaps, (mpl::at<numpy_typemap,tcaptype>::type::value), 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
+    PyArrayObject* sinkcaps = reinterpret_cast<PyArrayObject*>(PyArray_FROMANY(_sinkcaps, numpy_typemap<tcaptype>::type, 0, ndim, NPY_ITER_ALIGNED | NPY_ARRAY_FORCECAST));
     if(sinkcaps == NULL)
     {
         Py_DECREF(sourcecaps);
