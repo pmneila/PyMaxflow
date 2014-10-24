@@ -33,7 +33,7 @@ def plot_graph(nxgraph, plot_weights=True, plot_terminals=True):
 # plot_terminal: plot s and t nodes
 # plot_weights: plot edges weights
 # font_size: font size of edges weights
-def draw_graph3D(graph, I_shape, plot_terminal=True, plot_weights=True, font_size=10):
+def plot_graph_3D(graph, I_shape, plot_terminal=True, plot_weights=True, font_size=7):
     w_h = I_shape[1] * I_shape[2]
     X, Y = np.mgrid[:I_shape[1], :I_shape[2]]
     aux = np.array([Y.ravel(), X[::-1].ravel()]).T

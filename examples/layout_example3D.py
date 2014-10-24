@@ -6,11 +6,11 @@ How to use draw_graph3D to create a tridimensional grid connected graph
 import numpy as np
 import maxflow
 
-from examples_utils import draw_graph3D
+from examples_utils import plot_graph_3D
 
 
-def create_graph(width=5, height=4, depth=2):
-    I = np.arange(width*height*depth).reshape(width, height, depth)
+def create_graph(width=6, height=5, depth=2):
+    I = np.arange(width*height*depth).reshape(depth, height, width)
     g = maxflow.Graph[float]()
     nodeids = g.add_grid_nodes(I.shape)
     structure = np.array([[[0, 1, 0],
@@ -37,6 +37,6 @@ def create_graph(width=5, height=4, depth=2):
 
 if __name__ == '__main__':
     nodeids, g = create_graph()
-    draw_graph3D(g, nodeids.shape)
+    plot_graph_3D(g, nodeids.shape)
     g.maxflow()
     print g.get_grid_segments(nodeids)
