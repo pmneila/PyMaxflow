@@ -9,7 +9,7 @@ import maxflow
 
 from matplotlib import pyplot as plt
 
-from examples_utils import plot_graph
+from examples_utils import plot_graph_2d
 
 def create_graph():
     g = maxflow.Graph[float]()
@@ -53,8 +53,7 @@ def create_graph():
 if __name__ == '__main__':
     nodeids, g = create_graph()
     
-    nxg = g.get_nx_graph()
-    plot_graph(nxg)
+    plot_graph_2d(g, nodeids.shape)
     
     g.maxflow()
     print g.get_grid_segments(nodeids)

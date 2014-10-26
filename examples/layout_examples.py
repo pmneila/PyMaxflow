@@ -8,7 +8,7 @@ import numpy as np
 import maxflow
 import matplotlib.pyplot as plt
 
-from examples_utils import plot_graph
+from examples_utils import plot_graph_2d
 
 # Standard 4-connected grid
 g = maxflow.Graph[int]()
@@ -19,8 +19,7 @@ g.add_grid_edges(nodeids, 1)
 # g.add_grid_edges(nodeids, 1,
 #                  structure=structure,
 #                  symmetric=False)
-nxgraph = g.get_nx_graph()
-plot_graph(nxgraph, plot_terminals=False)
+plot_graph_2d(g, nodeids.shape, plot_terminals=False)
 
 # 8-connected grid
 g = maxflow.Graph[int]()
@@ -30,7 +29,7 @@ structure = np.array([[0, 0, 0],
                       [1, 1, 1]])
 # Also structure = maxflow.moore_structure(ndim=2, directed=True)
 g.add_grid_edges(nodeids, 1, structure=structure, symmetric=True)
-plot_graph(g.get_nx_graph(), plot_terminals=False)
+plot_graph_2d(g, nodeids.shape, plot_terminals=False)
 
 # 24-connected 5x5 neighborhood
 g = maxflow.Graph[int]()
@@ -41,7 +40,7 @@ structure = np.array([[1, 1, 1, 1, 1],
                       [1, 1, 1, 1, 1],
                       [1, 1, 1, 1, 1]])
 g.add_grid_edges(nodeids, 1, structure=structure, symmetric=False)
-plot_graph(g.get_nx_graph(), plot_terminals=False, plot_weights=False)
+plot_graph_2d(g, nodeids.shape, plot_terminals=False, plot_weights=False)
 
 # Diagonal, not symmetric
 g = maxflow.Graph[int]()
@@ -50,7 +49,7 @@ structure = np.array([[0, 0, 0],
                       [0, 0, 0],
                       [0, 0, 1]])
 g.add_grid_edges(nodeids, 1, structure=structure, symmetric=False)
-plot_graph(g.get_nx_graph(), plot_terminals=False)
+plot_graph_2d(g, nodeids.shape, plot_terminals=False)
 
 # Central node connected to every other node
 g = maxflow.Graph[int]()
@@ -67,4 +66,4 @@ structure = np.array([[0, 0, 0],
                       [0, 0, 0],
                       [0, 1, 0]])
 g.add_grid_edges(nodeids, 1, structure=structure, symmetric=False)
-plot_graph(g.get_nx_graph(), plot_terminals=False)
+plot_graph_2d(g, (5, 5), plot_terminals=False)
