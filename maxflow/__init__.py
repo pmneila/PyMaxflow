@@ -34,9 +34,9 @@ paper in any resulting publication.
 """
 
 import numpy as np
-import _maxflow
-from _maxflow import GraphInt, GraphFloat, moore_structure, vonNeumann_structure
-from version import __version__, __version_str__, __version_core__
+from . import _maxflow
+from ._maxflow import GraphInt, GraphFloat, moore_structure, vonNeumann_structure
+from .version import __version__, __version_str__, __version_core__
 
 Graph = {int: GraphInt, float: GraphFloat}
 
