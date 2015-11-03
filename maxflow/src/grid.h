@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 // Some defines for backwards compatibility with previous APIs of NumPy
 #ifndef NPY_ARRAY_FORCECAST
