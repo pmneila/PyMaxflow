@@ -8,6 +8,7 @@ import numpy as np
 cdef extern from "pyarray_symbol.h":
     pass
 
+cimport cython
 cimport numpy as np
 
 np.import_array()
@@ -150,6 +151,37 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         **Important:** see note about the constructor.
         """
         self.thisptr.add_edge(i, j, capacity, rcapacity)
+    
+    def add_edges(self, i, j, capacity, rev_capacity):
+        """
+        Adds bidirectional edges between each pair of nodes ``i`` and ``j``
+        with the weights ``capacity`` and ``rev_capacity``. All arguments
+        are numpy vectors with the same length.
+        """
+        self._add_edges(i.astype(np.uint32).flatten(),
+                        j.astype(np.uint32).flatten(),
+                        capacity.astype(np.int64).flatten(),
+                        rev_capacity.astype(np.int64).flatten())
+    @cython.boundscheck(False)    
+    def _add_edges(self, 
+                  np.ndarray[dtype=np.uint32_t, ndim=1, negative_indices=False] i,
+                  np.ndarray[dtype=np.uint32_t, ndim=1, negative_indices=False] j, 
+                  np.ndarray[dtype=np.int64_t, ndim=1, negative_indices=False] capacity, 
+                  np.ndarray[dtype=np.int64_t, ndim=1, negative_indices=False] rcapacity):
+        """
+        Adds bidirectional edges between each pair of nodes ``i`` and ``j``
+        with the weights ``capacity`` and ``rev_capacity``. All arguments
+        are numpy vectors with the same length.
+        """
+        if len(i) != len(j) or len(i) != len(capacity) or len(i) != len(rcapacity):
+            raise ValueError("All vectors must be the same size")
+        cdef:
+            size_t n = len(i)
+            size_t idx
+        
+        for 0 <= idx < n:
+            self.thisptr.add_edge(i[idx], j[idx], capacity[idx], rcapacity[idx])
+            
     def add_tedge(self, int i, long cap_source, long cap_sink):
         """
         Add an edge 'SOURCE->i' with capacity ``cap_source`` and another edge
@@ -545,6 +577,33 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         **Important:** see note about the constructor.
         """
         self.thisptr.add_edge(i, j, capacity, rcapacity)
+    
+    def add_edges(self, i, j, capacity, rev_capacity):
+        """
+        Adds bidirectional edges between each pair of nodes ``i`` and ``j``
+        with the weights ``capacity`` and ``rev_capacity``. All arguments
+        are numpy vectors with the same length.
+        """
+        self._add_edges(i.astype(np.uint32).flatten(),
+                        j.astype(np.uint32).flatten(),
+                        capacity.astype(np.float64).flatten(),
+                        rev_capacity.astype(np.float64).flatten())
+    
+    @cython.boundscheck(False)    
+    def _add_edges(self, 
+                  np.ndarray[dtype=np.uint32_t, ndim=1, negative_indices=False] i,
+                  np.ndarray[dtype=np.uint32_t, ndim=1, negative_indices=False] j, 
+                  np.ndarray[dtype=np.float64_t, ndim=1, negative_indices=False] capacity, 
+                  np.ndarray[dtype=np.float64_t, ndim=1, negative_indices=False] rcapacity):
+        if len(i) != len(j) or len(i) != len(capacity) or len(i) != len(rcapacity):
+            raise ValueError("All vectors must be the same size")
+        cdef:
+            size_t n = len(i)
+            size_t idx
+        
+        for 0 <= idx < n:
+            self.thisptr.add_edge(i[idx], j[idx], capacity[idx], rcapacity[idx])
+            
     def add_tedge(self, int i, double cap_source, double cap_sink):
         """
         Add an edge 'SOURCE->i' with capacity ``cap_source`` and another edge
