@@ -13,6 +13,8 @@ cimport numpy as np
 
 np.import_array()
 
+from libcpp cimport bool as bool_t
+
 cdef extern from "fastmin.h":
     cdef object c_aexpansion "aexpansion"(int, np.ndarray, np.ndarray, np.ndarray) except +
     cdef object c_abswap "abswap"(int, int, np.ndarray, np.ndarray, np.ndarray) except +
@@ -84,7 +86,8 @@ cdef extern from "core/graph.h":
         int get_node_num()
         int get_arc_num()
         
-        T maxflow()
+        T maxflow(bool_t reuse_trees)
+        void mark_node(int i)
         
         int what_segment(int) except +
         np.ndarray get_grid_segments(np.ndarray) except +
@@ -427,12 +430,33 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
     def get_edge_count(self):
         """Returns the number of non-terminal edges."""
         return self.thisptr.get_arc_num()
-    def maxflow(self):
+    def maxflow(self, reuse_trees=False):
         """
         Perform the maxflow computation in the graph. Returns the capacity of
         the minimum cut or, equivalently, the maximum flow of the graph.
+
+        If flag reuse_trees is true while calling maxflow(), then search trees
+        are reused from previous maxflow computation, as described in
+
+            "Efficiently Solving Dynamic Markov Random Fields Using Graph Cuts."
+            Pushmeet Kohli and Philip H.S. Torr
+            International Conference on Computer Vision (ICCV), 2005
         """
-        return self.thisptr.maxflow()
+        return self.thisptr.maxflow(reuse_trees)
+    def mark_node(self, i):
+        """
+        If flag reuse_trees is true while calling maxflow(), then search trees
+        are reused from previous maxflow computation.
+
+        In this case before calling maxflow() the user must
+        specify which parts of the graph have changed by calling mark_node():
+          add_tweights(i),set_trcap(i)    => call mark_node(i)
+          add_edge(i,j),set_rcap(a)       => call mark_node(i); mark_node(j)
+
+        This option makes sense only if a small part of the graph is changed.
+        The initialization procedure goes only through marked nodes then.
+        """
+        return self.thisptr.mark_node(i)
     def get_segment(self, i):
         """Returns which segment the given node belongs to."""
         return self.thisptr.what_segment(i)
@@ -844,12 +868,33 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
     def get_edge_count(self):
         """Returns the number of non-terminal edges."""
         return self.thisptr.get_arc_num()
-    def maxflow(self):
+    def maxflow(self, reuse_trees=False):
         """
         Perform the maxflow computation in the graph. Returns the capacity of
         the minimum cut or, equivalently, the maximum flow of the graph.
+
+        If flag reuse_trees is true while calling maxflow(), then search trees
+        are reused from previous maxflow computation, as described in
+
+            "Efficiently Solving Dynamic Markov Random Fields Using Graph Cuts."
+            Pushmeet Kohli and Philip H.S. Torr
+            International Conference on Computer Vision (ICCV), 2005
         """
-        return self.thisptr.maxflow()
+        return self.thisptr.maxflow(reuse_trees)
+    def mark_node(self, i):
+        """
+        If flag reuse_trees is true while calling maxflow(), then search trees
+        are reused from previous maxflow computation.
+
+        In this case before calling maxflow() the user must
+        specify which parts of the graph have changed by calling mark_node():
+          add_tweights(i),set_trcap(i)    => call mark_node(i)
+          add_edge(i,j),set_rcap(a)       => call mark_node(i); mark_node(j)
+
+        This option makes sense only if a small part of the graph is changed.
+        The initialization procedure goes only through marked nodes then.
+        """
+        return self.thisptr.mark_node(i)
     def get_segment(self, i):
         """Returns which segment the given node belongs to."""
         return self.thisptr.what_segment(i)
