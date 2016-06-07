@@ -88,6 +88,7 @@ cdef extern from "core/graph.h":
         
         T maxflow(bool_t reuse_trees)
         void mark_node(int i)
+        void mark_grid_nodes(np.ndarray) except +
         
         int what_segment(int) except +
         np.ndarray get_grid_segments(np.ndarray) except +
@@ -457,6 +458,12 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         The initialization procedure goes only through marked nodes then.
         """
         return self.thisptr.mark_node(i)
+    def mark_grid_nodes(self, nodeids):
+        """
+        Mark nodes that have changed. This is equivalent to call ``mark_node``
+        for many nodes.
+        """
+        return self.thisptr.mark_grid_nodes(nodeids)
     def get_segment(self, i):
         """Returns which segment the given node belongs to."""
         return self.thisptr.what_segment(i)
@@ -895,6 +902,12 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         The initialization procedure goes only through marked nodes then.
         """
         return self.thisptr.mark_node(i)
+    def mark_grid_nodes(self, nodeids):
+        """
+        Mark nodes that have changed. This is equivalent to call ``mark_node``
+        for many nodes.
+        """
+        return self.thisptr.mark_grid_nodes(nodeids)
     def get_segment(self, i):
         """Returns which segment the given node belongs to."""
         return self.thisptr.what_segment(i)
