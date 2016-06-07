@@ -278,6 +278,7 @@ public:
 	void add_grid_tedges(PyArrayObject* nodeids,
             PyObject* sourcecaps, PyObject* sinkcaps);
 	PyArrayObject* get_grid_segments(PyArrayObject* nodeids);
+    void mark_grid_nodes(PyArrayObject* nodeids);
 	
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////

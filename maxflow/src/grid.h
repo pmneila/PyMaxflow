@@ -206,6 +206,25 @@ template <typename captype, typename tcaptype, typename flowtype>
 }
 
 template <typename captype, typename tcaptype, typename flowtype>
+void Graph<captype,tcaptype,flowtype>::mark_grid_nodes(PyArrayObject* nodeids)
+{
+    NpyIter* iter = NpyIter_New(nodeids, NPY_ITER_READONLY,  NPY_KEEPORDER, NPY_NO_CASTING, NULL);
+    if (iter == NULL) {
+        throw std::runtime_error("unknown error creating a NpyIter");
+    }
+
+    NpyIter_IterNextFunc *iternext = NpyIter_GetIterNext(iter, NULL);
+    char** dataptr = NpyIter_GetDataPtrArray(iter);
+
+    do {
+        long node = *reinterpret_cast<long*>(dataptr[0]);
+        mark_node(node);
+    } while(iternext(iter));
+
+    NpyIter_Deallocate(iter);
+}
+
+template <typename captype, typename tcaptype, typename flowtype>
 void Graph<captype,tcaptype,flowtype>::add_grid_tedges(PyArrayObject* _nodeids,
                                                        PyObject* _sourcecaps,
                                                        PyObject* _sinkcaps)
