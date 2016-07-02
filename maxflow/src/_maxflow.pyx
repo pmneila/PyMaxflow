@@ -457,13 +457,13 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         This option makes sense only if a small part of the graph is changed.
         The initialization procedure goes only through marked nodes then.
         """
-        return self.thisptr.mark_node(i)
+        self.thisptr.mark_node(i)
     def mark_grid_nodes(self, nodeids):
         """
         Mark nodes that have changed. This is equivalent to call ``mark_node``
         for many nodes.
         """
-        return self.thisptr.mark_grid_nodes(nodeids)
+        self.thisptr.mark_grid_nodes(nodeids)
     def get_segment(self, i):
         """Returns which segment the given node belongs to."""
         return self.thisptr.what_segment(i)
@@ -901,13 +901,13 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         This option makes sense only if a small part of the graph is changed.
         The initialization procedure goes only through marked nodes then.
         """
-        return self.thisptr.mark_node(i)
+        self.thisptr.mark_node(i)
     def mark_grid_nodes(self, nodeids):
         """
         Mark nodes that have changed. This is equivalent to call ``mark_node``
         for many nodes.
         """
-        return self.thisptr.mark_grid_nodes(nodeids)
+        self.thisptr.mark_grid_nodes(nodeids)
     def get_segment(self, i):
         """Returns which segment the given node belongs to."""
         return self.thisptr.what_segment(i)
