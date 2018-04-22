@@ -34,13 +34,13 @@ def energy_of_grid_labeling(D, V, labels):
     ndim = labels.ndim
     
     # Sum of the unary terms.
-    unary = np.sum([D[labels==i,i].sum() for i in xrange(num_labels)])
+    unary = np.sum([D[labels==i,i].sum() for i in range(num_labels)])
     
     slice0 = [slice(None)]*ndim
     slice1 = [slice(None)]*ndim
     # Binary terms.
     binary = 0
-    for i in xrange(ndim):
+    for i in range(ndim):
         slice0[i] = slice(1, None)
         slice1[i] = slice(None, -1)
         
@@ -86,7 +86,7 @@ def abswap_grid(D, V, max_cycles=None, labels=None):
     if max_cycles is None:
         rng = count()
     else:
-        rng = xrange(max_cycles)
+        rng = range(max_cycles)
     
     prev_labels = np.copy(labels)
     better_energy = np.inf
@@ -157,7 +157,7 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
     if max_cycles is None:
         rng = count()
     else:
-        rng = xrange(max_cycles)
+        rng = range(max_cycles)
     
     better_energy = np.inf
     # Cycles.
@@ -165,7 +165,7 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
         print >> sys.stderr, "Cycle", i
         improved = False
         # Iterate through the labels.
-        for alpha in xrange(num_labels):
+        for alpha in range(num_labels):
             energy, _ = aexpansion_grid_step(alpha, D, V, labels)
             strimproved = ""
             # Check if the better energy has been improved.

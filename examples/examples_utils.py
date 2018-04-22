@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def plot_graph_2d(graph, nodes_shape, plot_weights=True, plot_terminals=True, font_size=7):
     X, Y = np.mgrid[:nodes_shape[0], :nodes_shape[1]]
     aux = np.array([Y.ravel(), X[::-1].ravel()]).T
-    positions = {i: aux[i] for i in xrange(25)}
+    positions = {i: v for i, v in enumerate(aux)}
     positions['s'] = (-1, nodes_shape[0] / 2.0 - 0.5)
     positions['t'] = (nodes_shape[1], nodes_shape[0] / 2.0 - 0.5)
 
@@ -35,10 +35,10 @@ def plot_graph_3d(graph, nodes_shape, plot_terminal=True, plot_weights=True, fon
     w_h = nodes_shape[1] * nodes_shape[2]
     X, Y = np.mgrid[:nodes_shape[1], :nodes_shape[2]]
     aux = np.array([Y.ravel(), X[::-1].ravel()]).T
-    positions = {i: aux[i] for i in xrange(w_h)}
+    positions = {i: v for i, v in enumerate(aux)}
 
-    for i in xrange(1, nodes_shape[0]):
-        for j in xrange(w_h):
+    for i in range(1, nodes_shape[0]):
+        for j in range(w_h):
             positions[w_h * i + j] = [positions[j][0] + 0.3 * i, positions[j][1] + 0.2 * i]
 
     positions['s'] = np.array([-1, nodes_shape[1] / 2.0 - 0.5])

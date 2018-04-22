@@ -231,7 +231,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
                                   [0, 0, 1],
                                   [0, 1, 0]])
         >>> # Or structure = maxflow.vonNeumann_structure(ndim=2, directed=True)
-        >>> g.add_grid_edges(nodeids, weights, structure=structure,
+        >>> g.add_grid_edges(nodeids, weights=1, structure=structure,
                 symmetric=True)
         
         ::
@@ -521,7 +521,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         cdef int n1
         cdef int n2
         cdef long w
-        for i in xrange(num_edges):
+        for i in range(num_edges):
             
             n1 = self.thisptr.get_arc_from(e)
             n2 = self.thisptr.get_arc_to(e)
@@ -541,7 +541,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         cdef int num_nodes = self.get_node_count()
         cdef long rcap
         cdef int segment
-        for i in xrange(num_nodes):
+        for i in range(num_nodes):
             
             segment = self.thisptr.what_segment(i)
             
@@ -680,7 +680,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
                                   [0, 0, 1],
                                   [0, 1, 0]])
         >>> # Or structure = maxflow.vonNeumann_structure(ndim=2, directed=True)
-        >>> g.add_grid_edges(nodeids, weights, structure=structure,
+        >>> g.add_grid_edges(nodeids, weights=1, structure=structure,
                 symmetric=True)
         
         
@@ -966,7 +966,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         cdef int n1
         cdef int n2
         cdef double w
-        for i in xrange(num_edges):
+        for i in range(num_edges):
             
             n1 = self.thisptr.get_arc_from(e)
             n2 = self.thisptr.get_arc_to(e)
@@ -986,7 +986,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         cdef int num_nodes = self.get_node_count()
         cdef double rcap
         cdef int segment
-        for i in xrange(num_nodes):
+        for i in range(num_nodes):
             
             segment = self.thisptr.what_segment(i)
             
@@ -1055,7 +1055,7 @@ def vonNeumann_structure(ndim=2, directed=False):
     """
     
     res = np.zeros((3,)*ndim)
-    for i in xrange(ndim):
+    for i in range(ndim):
         
         idx = [1,]*ndim
         idx[i] = 2

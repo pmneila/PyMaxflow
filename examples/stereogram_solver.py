@@ -20,7 +20,7 @@ def localssd(im1, im2, K):
         return ndimage.convolve(diff2, H, mode='constant')
     if diff2.ndim == 3 and 3<=diff2.shape[-1]<=4:
         res = np.empty_like(diff2)
-        for channel in xrange(diff2.shape[-1]):
+        for channel in range(diff2.shape[-1]):
             res[...,channel] = ndimage.convolve(diff2[...,channel], H, mode='constant')
         return res.sum(2)
     raise ValueError, "invalid number of dimensions for input images"
