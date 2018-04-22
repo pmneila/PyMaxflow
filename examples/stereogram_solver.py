@@ -1,4 +1,6 @@
 
+import sys
+import logging
 import argparse
 
 import numpy as np
@@ -7,6 +9,7 @@ from scipy.misc import imread, imsave
 
 import maxflow
 from maxflow import fastmin
+
 
 def localssd(im1, im2, K):
     """
@@ -23,7 +26,9 @@ def localssd(im1, im2, K):
         for channel in range(diff2.shape[-1]):
             res[...,channel] = ndimage.convolve(diff2[...,channel], H, mode='constant')
         return res.sum(2)
-    raise ValueError, "invalid number of dimensions for input images"
+    else:
+        raise ValueError("invalid number of dimensions for input images")
+
 
 def ssd_volume(im1, im2, disps, K):
     """
@@ -64,6 +69,7 @@ def ssd_volume(im1, im2, disps, K):
     D = D[:, colmask]
     return D
 
+
 def solve(img, disp_min, disp_max, smoothness):
     """img must be an array of np.float_"""
     D = ssd_volume(img, img, np.arange(disp_min, disp_max), 5)
@@ -73,13 +79,25 @@ def solve(img, disp_min, disp_max, smoothness):
     sol = fastmin.aexpansion_grid(D, V, 3)
     return sol
 
+
 def example():
     img = imread("stereogram.png")/255.0
     return solve(img, 100, 160, 2.0)
 
+
+class MyParser(argparse.ArgumentParser): 
+   def error(self, message):
+      sys.stderr.write('error: %s\n' % message)
+      self.print_help()
+      sys.exit(2)
+
+
 def main():
     
-    parser = argparse.ArgumentParser(description="Solve a stereogram using alpha-expansion")
+    parser = MyParser(
+        description="Solve a stereogram using alpha-expansion",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="Example of use:\n\tpython stereogram_solver.py stereogram.png 50 200 solution.png")
     parser.add_argument('input_image', type=str,
         help="stereogram image file name")
     parser.add_argument('min', type=int,
@@ -97,8 +115,11 @@ def main():
     if img.dtype == np.uint8:
         img = img / 255.0
     
+    logging.basicConfig(level=logging.INFO)
+    
     res = solve(img, args.min, args.max, args.smooth)
     imsave(args.output_image, res)
+
 
 if __name__ == '__main__':
     main()

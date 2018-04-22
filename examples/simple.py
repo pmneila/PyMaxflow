@@ -15,8 +15,8 @@ g.add_tedge(nodes[1], 9, 4)
 
 # Find the maxflow.
 flow = g.maxflow()
-print "Maximum flow:", flow
+print("Maximum flow: {}".format(flow))
 
 # Print the segment of each node.
-print "Segment of the node 0:", g.get_segment(nodes[0])
-print "Segment of the node 1:", g.get_segment(nodes[1])
+print("Segment of the node 0: {}".format(g.get_segment(nodes[0])))
+print("Segment of the node 1: {}".format(g.get_segment(nodes[1])))

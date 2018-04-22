@@ -32,4 +32,4 @@ if __name__ == '__main__':
     nodeids, g = create_graph()
     plot_graph_3d(g, nodeids.shape)
     g.maxflow()
-    print g.get_grid_segments(nodeids)
+    print(g.get_grid_segments(nodeids))

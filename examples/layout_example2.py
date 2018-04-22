@@ -56,4 +56,4 @@ if __name__ == '__main__':
     plot_graph_2d(g, nodeids.shape)
     
     g.maxflow()
-    print g.get_grid_segments(nodeids)
+    print(g.get_grid_segments(nodeids))
