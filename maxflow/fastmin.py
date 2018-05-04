@@ -19,7 +19,7 @@ import sys
 import logging
 from itertools import count, combinations
 import numpy as np
-from _maxflow import aexpansion_grid_step, abswap_grid_step
+from ._maxflow import aexpansion_grid_step, abswap_grid_step
 
 logger = logging.getLogger(__name__)
 
