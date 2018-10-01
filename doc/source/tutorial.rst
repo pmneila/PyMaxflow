@@ -79,7 +79,7 @@ implicitly defined both nodes. Moreover, you cannot create more
 terminal nodes. The non-terminal edges (those connecting
 two non-terminal nodes) are created with ``add_edge``. The
 terminal edges (those connecting a non-terminal node to a
-terminal node) are created with ``add_tweights``.
+terminal node) are created with ``add_tedge``.
 
 Now we can find the maximum flow in the graph::
 
