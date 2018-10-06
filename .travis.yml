@@ -14,8 +14,8 @@ matrix:
     sudo: false
     python: '3.6'
   - os: linux
-    dist: trusty
-    sudo: false
+    dist: xenial
+    sudo: required
     python: '3.7'
 
 # See http://docs.travis-ci.com/user/caching/#pip-cache
@@ -28,6 +28,7 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install nose>=1.3.7 coverage codecov pytest>=3.0.5
+  - python setup.py build
 
 before_script:
   - mkdir output
