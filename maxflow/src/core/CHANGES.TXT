@@ -1,3 +1,7 @@
+List of changes from version 3.03:
+
+- changed types of node::TS and TIME from int to long (to prevent overflows for very large graphs). Thanks to Alexander Bersenev for the suggestion.
+
 List of changes from version 3.02:
 
 - put under GPL license
