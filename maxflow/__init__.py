@@ -19,15 +19,14 @@ Example:
 
 >>> import maxflow
 >>> g = maxflow.Graph[int](2, 2)
->>> g.add_nodes(2)
-0
->>> g.add_edge(0, 1, 1, 2)
->>> g.add_tedge(0, 2, 5)
->>> g.add_tedge(1, 9, 4)
+>>> nodes = g.add_nodes(2)
+>>> g.add_edge(nodes[0], nodes[1], 1, 2)
+>>> g.add_tedge(nodes[0], 2, 5)
+>>> g.add_tedge(nodes[1], 9, 4)
 >>> g.maxflow()
 8
->>> g.get_segments()
-array([ True, False], dtype=bool)
+>>> g.get_grid_segments(nodes)
+array([ True, False])
 
 If you use this library for research purposes, you must cite the aforementioned
 paper in any resulting publication.
