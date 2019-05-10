@@ -14,6 +14,7 @@ cimport numpy as np
 np.import_array()
 
 from libcpp cimport bool as bool_t
+from libc.stdint cimport uintptr_t
 
 cdef extern from "fastmin.h":
     cdef object c_aexpansion "aexpansion"(int, np.ndarray, np.ndarray, np.ndarray) except +
@@ -94,10 +95,10 @@ cdef extern from "core/graph.h":
         np.ndarray get_grid_segments(np.ndarray) except +
         
         # Inspection methods
-        long get_first_arc()
-        long get_next_arc(long a)
-        long get_arc_from(long a)
-        long get_arc_to(long a)
+        uintptr_t get_first_arc()
+        uintptr_t get_next_arc(uintptr_t a)
+        long get_arc_from(uintptr_t a)
+        long get_arc_to(uintptr_t a)
         T get_rcap(int a)
         T get_trcap(int node)
     
@@ -516,7 +517,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         
         # Add non-terminal edges with capacities
         cdef int num_edges = self.get_edge_count()
-        cdef long e = self.thisptr.get_first_arc()
+        cdef uintptr_t e = self.thisptr.get_first_arc()
         
         cdef int n1
         cdef int n2
@@ -961,7 +962,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         
         # Add non-terminal edges with capacities
         cdef int num_edges = self.get_edge_count()
-        cdef long e = self.thisptr.get_first_arc()
+        cdef uintptr_t e = self.thisptr.get_first_arc()
         
         cdef int n1
         cdef int n2
