@@ -35,6 +35,7 @@ def extensions():
             "maxflow/src/core/maxflow.cpp",
             "maxflow/src/fastmin.cpp"
         ],
+        extra_compile_args=['-std=c++11', '--stdlib=libc++', '-Wall'],
         language="c++",
         include_dirs=[
             numpy_include_dir,
@@ -68,7 +69,7 @@ setup(
 
     """,
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
