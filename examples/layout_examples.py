@@ -6,7 +6,6 @@ obtained using the ``add_grid_edges`` method.
 
 import numpy as np
 import maxflow
-import matplotlib.pyplot as plt
 
 from examples_utils import plot_graph_2d
 

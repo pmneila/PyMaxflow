@@ -4,7 +4,9 @@ import networkx as nx
 
 import matplotlib.pyplot as plt
 
+
 def plot_graph_2d(graph, nodes_shape, plot_weights=True, plot_terminals=True, font_size=7):
+
     X, Y = np.mgrid[:nodes_shape[0], :nodes_shape[1]]
     aux = np.array([Y.ravel(), X[::-1].ravel()]).T
     positions = {i: v for i, v in enumerate(aux)}
@@ -21,7 +23,7 @@ def plot_graph_2d(graph, nodes_shape, plot_weights=True, plot_terminals=True, fo
     if plot_weights:
         edge_labels = {}
         for u, v, d in nxgraph.edges(data=True):
-            edge_labels[(u,v)] = d['weight']
+            edge_labels[(u, v)] = d['weight']
         nx.draw_networkx_edge_labels(nxgraph,
                                      pos=positions,
                                      edge_labels=edge_labels,
@@ -31,7 +33,9 @@ def plot_graph_2d(graph, nodes_shape, plot_weights=True, plot_terminals=True, fo
     plt.axis('equal')
     plt.show()
 
+
 def plot_graph_3d(graph, nodes_shape, plot_terminal=True, plot_weights=True, font_size=7):
+
     w_h = nodes_shape[1] * nodes_shape[2]
     X, Y = np.mgrid[:nodes_shape[1], :nodes_shape[2]]
     aux = np.array([Y.ravel(), X[::-1].ravel()]).T
@@ -51,9 +55,8 @@ def plot_graph_3d(graph, nodes_shape, plot_terminal=True, plot_weights=True, fon
     nx.draw(nxg, pos=positions)
     nx.draw_networkx_labels(nxg, pos=positions)
     if plot_weights:
-        edge_labels = dict([((u, v,), d['weight'])
-                     for u, v, d in nxg.edges(data=True)])
-        nx.draw_networkx_edge_labels(nxg, 
+        edge_labels = dict([((u, v), d['weight']) for u, v, d in nxg.edges(data=True)])
+        nx.draw_networkx_edge_labels(nxg,
                                      pos=positions,
                                      edge_labels=edge_labels,
                                      label_pos=0.3,

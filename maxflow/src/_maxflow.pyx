@@ -407,7 +407,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         capacities of the edges from the source node and to the sink node,
         respectively. The shape of all these arrays must be equal.
 
-        This is equivalent to call ``add_tedge`` for many nodes, but much faster.
+        This is equivalent to calling ``add_tedge`` for many nodes, but much faster.
         """
         self.thisptr.add_grid_tedges(nodeids, sourcecaps, sinkcaps)
     def get_node_num(self):
@@ -461,7 +461,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         self.thisptr.mark_node(i)
     def mark_grid_nodes(self, nodeids):
         """
-        Mark nodes that have changed. This is equivalent to call ``mark_node``
+        Mark nodes that have changed. This is equivalent to calling ``mark_node``
         for many nodes.
         """
         self.thisptr.mark_grid_nodes(nodeids)
@@ -474,7 +474,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         segment the given nodes belong to. The output is a boolean array
         of the same shape than the input array ``nodeids``.
 
-        This is equivalent to call ``get_segment`` for many nodes, but much faster.
+        This is equivalent to calling ``get_segment`` for many nodes, but much faster.
         """
         return self.thisptr.get_grid_segments(nodeids)
     def get_nx_graph(self):
@@ -851,7 +851,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         capacities of the edges from the source node and to the sink node,
         respectively. The shape of all these arrays must be equal.
 
-        This is equivalent to call ``add_tedge`` for many nodes, but much faster.
+        This is equivalent to calling ``add_tedge`` for many nodes, but much faster.
         """
         self.thisptr.add_grid_tedges(nodeids, sourcecaps, sinkcaps)
     def get_node_num(self):
@@ -905,7 +905,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         self.thisptr.mark_node(i)
     def mark_grid_nodes(self, nodeids):
         """
-        Mark nodes that have changed. This is equivalent to call ``mark_node``
+        Mark nodes that have changed. This is equivalent to calling ``mark_node``
         for many nodes.
         """
         self.thisptr.mark_grid_nodes(nodeids)
@@ -918,7 +918,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         segment the given nodes belong to. The output is a boolean array
         of the same shape than the input array ``nodeids``.
 
-        This is equivalent to call ``get_segment`` for many nodes, but much faster.
+        This is equivalent to calling ``get_segment`` for many nodes, but much faster.
         """
         return self.thisptr.get_grid_segments(nodeids)
     def get_nx_graph(self):
