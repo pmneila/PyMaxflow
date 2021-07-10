@@ -1,33 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Maxflow package &mdash; PyMaxflow 1.2.0 documentation</title>
-    
-    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maxflow package &#8212; PyMaxflow 1.2.13 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.2.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="PyMaxflow 1.2.0 documentation" href="index.html" />
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Tutorial" href="tutorial.html" /> 
-  </head>
-  <body>
-    <div class="related">
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -39,127 +28,129 @@
         <li class="right" >
           <a href="tutorial.html" title="Tutorial"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">PyMaxflow 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyMaxflow 1.2.13 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Maxflow package</a></li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-maxflow">
 <span id="maxflow-package"></span><h1>Maxflow package<a class="headerlink" href="#module-maxflow" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="maxflow">
 <h2>maxflow<a class="headerlink" href="#maxflow" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal"><span class="pre">maxflow</span></tt> is a Python module for max-flow/min-cut computations. It wraps
+<p><code class="docutils literal notranslate"><span class="pre">maxflow</span></code> is a Python module for max-flow/min-cut computations. It wraps
 the C++ maxflow library by Vladimir Kolmogorov, which implements the
 algorithm described in</p>
 <blockquote>
-<div>An Experimental Comparison of Min-Cut/Max-Flow Algorithms for Energy
-Minimization in Vision. Yuri Boykov and Vladimir Kolmogorov. TPAMI.</div></blockquote>
+<div><p>An Experimental Comparison of Min-Cut/Max-Flow Algorithms for Energy
+Minimization in Vision. Yuri Boykov and Vladimir Kolmogorov. TPAMI.</p>
+</div></blockquote>
 <p>This module aims to simplify the construction of graphs with complex
-layouts. It provides two Graph classes, <tt class="docutils literal"><span class="pre">Graph[int]</span></tt> and <tt class="docutils literal"><span class="pre">Graph[float]</span></tt>,
+layouts. It provides two Graph classes, <code class="docutils literal notranslate"><span class="pre">Graph[int]</span></code> and <code class="docutils literal notranslate"><span class="pre">Graph[float]</span></code>,
 for integer and real data types.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">maxflow</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">maxflow</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">Graph</span><span class="p">[</span><span class="nb">int</span><span class="p">](</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_tedge</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">maxflow</span><span class="p">()</span>
 <span class="go">8</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_segments</span><span class="p">()</span>
-<span class="go">array([ True, False], dtype=bool)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_grid_segments</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+<span class="go">array([ True, False])</span>
 </pre></div>
 </div>
 <p>If you use this library for research purposes, you must cite the aforementioned
 paper in any resulting publication.</p>
 </div>
-<p>The module <a class="reference internal" href="#module-maxflow" title="maxflow"><tt class="xref py py-mod docutils literal"><span class="pre">maxflow</span></tt></a> has the classes <a class="reference internal" href="#maxflow.GraphInt" title="maxflow.GraphInt"><tt class="xref py py-class docutils literal"><span class="pre">maxflow.GraphInt</span></tt></a> and
-<tt class="xref py py-class docutils literal"><span class="pre">maxflow.GraphFloat</span></tt>. Both have the same methods and behavior.
-They only differ in the data type with which they work. Therefore,
-we only include here the documentation of one of them. You can access these
-classes using the dictionary <tt class="docutils literal"><span class="pre">maxflow.Graph</span></tt>: <tt class="docutils literal"><span class="pre">maxflow.Graph[int]</span></tt> and
-<tt class="docutils literal"><span class="pre">maxflow.Graph[float]</span></tt>.</p>
-<dl class="class">
+<p>The module <a class="reference internal" href="#module-maxflow" title="maxflow"><code class="xref py py-mod docutils literal notranslate"><span class="pre">maxflow</span></code></a> has the classes <a class="reference internal" href="#maxflow.GraphInt" title="maxflow.GraphInt"><code class="xref py py-class docutils literal notranslate"><span class="pre">maxflow.GraphInt</span></code></a> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">maxflow.GraphFloat</span></code>. Both have the same methods and behavior. They
+only differ in the data type of the flow network. For conciseness, this page
+includes the documentation of just one of these classes.</p>
+<p>Note that these classes can be accessed with a template-like syntax using the
+dictionary <code class="docutils literal notranslate"><span class="pre">maxflow.Graph</span></code>: <code class="docutils literal notranslate"><span class="pre">maxflow.Graph[int]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">maxflow.Graph[float]</span></code>.</p>
+<dl class="py class">
 <dt id="maxflow.GraphInt">
-<em class="property">class </em><tt class="descclassname">maxflow.</tt><tt class="descname">GraphInt</tt><a class="headerlink" href="#maxflow.GraphInt" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<em class="property">class </em><code class="sig-prename descclassname">maxflow.</code><code class="sig-name descname">GraphInt</code><a class="headerlink" href="#maxflow.GraphInt" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
 <dt id="maxflow.GraphInt.__init__">
-<tt class="descname">__init__</tt><a class="headerlink" href="#maxflow.GraphInt.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="maxflow.GraphInt.add_edge">
-<tt class="descname">add_edge</tt><big>(</big><em>self</em>, <em>int i</em>, <em>int j</em>, <em>long capacity</em>, <em>long rcapacity</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a bidirectional edge between nodes <tt class="docutils literal"><span class="pre">i</span></tt> and <tt class="docutils literal"><span class="pre">j</span></tt> with the
-weights <tt class="docutils literal"><span class="pre">cap</span></tt> and <tt class="docutils literal"><span class="pre">rev_cap</span></tt>.</p>
+<code class="sig-name descname">add_edge</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">int i</em>, <em class="sig-param">int j</em>, <em class="sig-param">long capacity</em>, <em class="sig-param">long rcapacity</em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.add_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a bidirectional edge between nodes <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> with the
+weights <code class="docutils literal notranslate"><span class="pre">cap</span></code> and <code class="docutils literal notranslate"><span class="pre">rev_cap</span></code>.</p>
 <p>To add edges between a non-terminal node and terminal nodes, see
-<tt class="docutils literal"><span class="pre">add_tedge</span></tt>.</p>
+<code class="docutils literal notranslate"><span class="pre">add_tedge</span></code>.</p>
 <p><strong>Important:</strong> see note about the constructor.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="maxflow.GraphInt.add_grid_edges">
-<tt class="descname">add_grid_edges</tt><big>(</big><em>self</em>, <em>ndarray nodeids</em>, <em>weights=1</em>, <em>structure=None</em>, <em>int symmetric=0</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_grid_edges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_grid_edges</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">ndarray nodeids</em>, <em class="sig-param">weights=1</em>, <em class="sig-param">structure=None</em>, <em class="sig-param">int symmetric=0</em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.add_grid_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add edges to a grid of nodes in a structured manner.</p>
-<p>The grid of nodes is given by <tt class="docutils literal"><span class="pre">nodeids</span></tt>, that contains the
-identifiers of the nodes. <tt class="docutils literal"><span class="pre">weights</span></tt> is an array containing the
-capacities of the edges starting at every node. <tt class="docutils literal"><span class="pre">nodeids</span></tt>
-and <tt class="docutils literal"><span class="pre">weights</span></tt> must have the same shape or be broadcastable to
+<p>The grid of nodes is given by <code class="docutils literal notranslate"><span class="pre">nodeids</span></code>, that contains the
+identifiers of the nodes. <code class="docutils literal notranslate"><span class="pre">weights</span></code> is an array containing the
+capacities of the edges starting at every node. <code class="docutils literal notranslate"><span class="pre">nodeids</span></code>
+and <code class="docutils literal notranslate"><span class="pre">weights</span></code> must have the same shape or be broadcastable to
 the same shape.</p>
-<p><tt class="docutils literal"><span class="pre">structure</span></tt> indicates the neighborhood around each node. For every
-node the <tt class="docutils literal"><span class="pre">structure</span></tt> array will be centered on it (in a sliding
+<p><code class="docutils literal notranslate"><span class="pre">structure</span></code> indicates the neighborhood around each node. For every
+node the <code class="docutils literal notranslate"><span class="pre">structure</span></code> array will be centered on it (in a sliding
 window manner) and edges will be added from the central node to the
-nodes corresponding to non-zero entries of <tt class="docutils literal"><span class="pre">structure</span></tt>. The
+nodes corresponding to non-zero entries of <code class="docutils literal notranslate"><span class="pre">structure</span></code>. The
 capacities of these added edges is computed as the product between the
-weight corresponding to the central node and the value in <tt class="docutils literal"><span class="pre">structure</span></tt>.</p>
-<p>If <tt class="docutils literal"><span class="pre">structure</span></tt> is None (by default), it is equivalent to the output of
+weight corresponding to the central node and the value in <code class="docutils literal notranslate"><span class="pre">structure</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">structure</span></code> is None (by default), it is equivalent to the output of
 vonNeumann_structure(ndim=nodeids.ndim, directed=symmetric). This
 creates a 4-connected grid.</p>
 <p>If symmetric is True, for every edge i-&gt;j another edge j-&gt;i with the
 same capacity will be added.</p>
 <p>Examples</p>
 <p>Standard 4-connected grid, all capacities set to 1:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nodeids</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_grid_nodes</span><span class="p">((</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">structure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="go">                          [0, 0, 1],</span>
 <span class="go">                          [0, 1, 0]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># Or structure = maxflow.vonNeumann_structure(ndim=2, directed=True)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_grid_edges</span><span class="p">(</span><span class="n">nodeids</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Or structure = maxflow.vonNeumann_structure(ndim=2, directed=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_grid_edges</span><span class="p">(</span><span class="n">nodeids</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span>
 <span class="go">        symmetric=True)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre> XXX----1---&gt;XXX----1---&gt;XXX
- XXX&lt;---1----XXX&lt;---1----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-1| |1       1| |1       1| |1
- | |         | |         | |
- V |         V |         V |
- XXX----1---&gt;XXX----1---&gt;XXX    ...
- XXX&lt;---1----XXX&lt;---1----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-1| |1       1| |1       1| |1
- | |         | |         | |
- V |         V |         V |
- XXX----1---&gt;XXX----1---&gt;XXX
- XXX&lt;---1----XXX&lt;---1----XXX
- 
-               .                .
-               .                 .
-               .                  .
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">1</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">1</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span>    <span class="o">...</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">1</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">1</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">1</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">1</span><span class="o">----</span><span class="n">XXX</span>
+
+               <span class="o">.</span>                <span class="o">.</span>
+               <span class="o">.</span>                 <span class="o">.</span>
+               <span class="o">.</span>                  <span class="o">.</span>
 </pre></div>
 </div>
 <p>4-connected 3x3 grid, different capacities for different positions,
 not symmetric:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nodeids</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_grid_nodes</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">structure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="go">                          [0, 0, 1],</span>
@@ -171,27 +162,27 @@ not symmetric:</p>
 <span class="go">        symmetric=False)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre> XXX----1---&gt;XXX----2---&gt;XXX
- XXX         XXX         XXX
- |           |           | 
- |           |           | 
-1|          2|          3| 
- |           |           | 
- V           V           V 
- XXX----4---&gt;XXX----5---&gt;XXX 
- XXX         XXX         XXX
- |           |           |
- |           |           |
-4|          5|          6|
- |           |           |
- V           V           V
- XXX----7---&gt;XXX----8---&gt;XXX
- XXX         XXX         XXX
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span>         <span class="n">XXX</span>         <span class="n">XXX</span>
+ <span class="o">|</span>           <span class="o">|</span>           <span class="o">|</span>
+ <span class="o">|</span>           <span class="o">|</span>           <span class="o">|</span>
+<span class="mi">1</span><span class="o">|</span>          <span class="mi">2</span><span class="o">|</span>          <span class="mi">3</span><span class="o">|</span>
+ <span class="o">|</span>           <span class="o">|</span>           <span class="o">|</span>
+ <span class="n">V</span>           <span class="n">V</span>           <span class="n">V</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">4</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">5</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span>         <span class="n">XXX</span>         <span class="n">XXX</span>
+ <span class="o">|</span>           <span class="o">|</span>           <span class="o">|</span>
+ <span class="o">|</span>           <span class="o">|</span>           <span class="o">|</span>
+<span class="mi">4</span><span class="o">|</span>          <span class="mi">5</span><span class="o">|</span>          <span class="mi">6</span><span class="o">|</span>
+ <span class="o">|</span>           <span class="o">|</span>           <span class="o">|</span>
+ <span class="n">V</span>           <span class="n">V</span>           <span class="n">V</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">7</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">8</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span>         <span class="n">XXX</span>         <span class="n">XXX</span>
 </pre></div>
 </div>
 <p>4-connected 3x3 grid, different capacities for different positions,
 symmetric:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nodeids</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_grid_nodes</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">structure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="go">                          [0, 0, 1],</span>
@@ -203,27 +194,27 @@ symmetric:</p>
 <span class="go">        symmetric=True)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre> XXX----1---&gt;XXX----2---&gt;XXX
- XXX&lt;---1----XXX&lt;---2----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-1| |1       2| |2       3| |3
- | |         | |         | |
- V |         V |         V |
- XXX----4---&gt;XXX----5---&gt;XXX 
- XXX&lt;---4----XXX&lt;---5----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-4| |4       5| |5       6| |6
- | |         | |         | |
- V |         V |         V |
- XXX----7---&gt;XXX----8---&gt;XXX
- XXX&lt;---7----XXX&lt;---8----XXX
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">1</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">2</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">2</span><span class="o">|</span> <span class="o">|</span><span class="mi">2</span>       <span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">3</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">4</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">5</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">4</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">5</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">4</span><span class="o">|</span> <span class="o">|</span><span class="mi">4</span>       <span class="mi">5</span><span class="o">|</span> <span class="o">|</span><span class="mi">5</span>       <span class="mi">6</span><span class="o">|</span> <span class="o">|</span><span class="mi">6</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">7</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">8</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">7</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">8</span><span class="o">----</span><span class="n">XXX</span>
 </pre></div>
 </div>
 <p>4-connected 3x3 grid, different capacities for different positions,
 undirected structure and not symmetric:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nodeids</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_grid_nodes</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">structure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="go">                          [1, 0, 1],</span>
@@ -235,27 +226,27 @@ undirected structure and not symmetric:</p>
 <span class="go">        symmetric=False)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre> XXX----1---&gt;XXX----2---&gt;XXX
- XXX&lt;---2----XXX&lt;---3----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-1| |4       2| |5       3| |6
- | |         | |         | |
- V |         V |         V |
- XXX----4---&gt;XXX----5---&gt;XXX 
- XXX&lt;---5----XXX&lt;---6----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-4| |7       5| |8       6| |9
- | |         | |         | |
- V |         V |         V |
- XXX----7---&gt;XXX----8---&gt;XXX
- XXX&lt;---8----XXX&lt;---9----XXX
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">XXX</span><span class="o">----</span><span class="mi">1</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">2</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">3</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">1</span><span class="o">|</span> <span class="o">|</span><span class="mi">4</span>       <span class="mi">2</span><span class="o">|</span> <span class="o">|</span><span class="mi">5</span>       <span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">6</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">4</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">5</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">5</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">6</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">4</span><span class="o">|</span> <span class="o">|</span><span class="mi">7</span>       <span class="mi">5</span><span class="o">|</span> <span class="o">|</span><span class="mi">8</span>       <span class="mi">6</span><span class="o">|</span> <span class="o">|</span><span class="mi">9</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">7</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">8</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">8</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">9</span><span class="o">----</span><span class="n">XXX</span>
 </pre></div>
 </div>
 <p>4-connected 3x3 grid, different capacities for different orientations,
 not symmetric:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">maxflow</span><span class="o">.</span><span class="n">GraphFloat</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nodeids</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_grid_nodes</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">structure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="go">                          [4, 0, 2],</span>
@@ -264,168 +255,196 @@ not symmetric:</p>
 <span class="go">        symmetric=False)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre> XXX----2---&gt;XXX----2---&gt;XXX
- XXX&lt;---4----XXX&lt;---4----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-3| |1       3| |1       3| |1
- | |         | |         | |
- V |         V |         V |
- XXX----2---&gt;XXX----2---&gt;XXX 
- XXX&lt;---4----XXX&lt;---4----XXX
- | ^         | ^         | ^ 
- | |         | |         | |
-3| |1       3| |1       3| |1
- | |         | |         | |
- V |         V |         V |
- XXX----2---&gt;XXX----2---&gt;XXX
- XXX&lt;---4----XXX&lt;---4----XXX
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">4</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">4</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">4</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">4</span><span class="o">----</span><span class="n">XXX</span>
+ <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>         <span class="o">|</span> <span class="o">^</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+<span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>       <span class="mi">3</span><span class="o">|</span> <span class="o">|</span><span class="mi">1</span>
+ <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>         <span class="o">|</span> <span class="o">|</span>
+ <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>         <span class="n">V</span> <span class="o">|</span>
+ <span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span><span class="o">----</span><span class="mi">2</span><span class="o">---&gt;</span><span class="n">XXX</span>
+ <span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">4</span><span class="o">----</span><span class="n">XXX</span><span class="o">&lt;---</span><span class="mi">4</span><span class="o">----</span><span class="n">XXX</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="maxflow.GraphInt.add_grid_nodes">
-<tt class="descname">add_grid_nodes</tt><big>(</big><em>self</em>, <em>shape</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_grid_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_grid_nodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.add_grid_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a grid of non-terminal nodes. Return the identifiers of the added
 nodes in an array with the shape of the grid.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="maxflow.GraphInt.add_grid_tedges">
+<code class="sig-name descname">add_grid_tedges</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">ndarray nodeids</em>, <em class="sig-param">sourcecaps</em>, <em class="sig-param">sinkcaps</em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.add_grid_tedges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add terminal edges to a grid of nodes, given their identifiers in
+<code class="docutils literal notranslate"><span class="pre">nodeids</span></code>. <code class="docutils literal notranslate"><span class="pre">sourcecaps</span></code> and <code class="docutils literal notranslate"><span class="pre">sinkcaps</span></code> are arrays with the
+capacities of the edges from the source node and to the sink node,
+respectively. The shape of all these arrays must be equal.</p>
+<p>This is equivalent to calling <code class="docutils literal notranslate"><span class="pre">add_tedge</span></code> for many nodes, but much faster.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="maxflow.GraphInt.add_nodes">
-<tt class="descname">add_nodes</tt><big>(</big><em>self</em>, <em>int num_nodes</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_nodes</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">int num_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.add_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add non-terminal node(s) to the graph. By default, one node is
-added. If <tt class="docutils literal"><span class="pre">num_nodes</span></tt>&gt;1, then <tt class="docutils literal"><span class="pre">num_nodes</span></tt> nodes are inserted. It
+added. If <code class="docutils literal notranslate"><span class="pre">num_nodes</span></code>&gt;1, then <code class="docutils literal notranslate"><span class="pre">num_nodes</span></code> nodes are inserted. It
 returns the identifiers of the nodes added.</p>
 <p>The source and terminal nodes are included in the graph by default, and
 you must not add them.</p>
 <p><strong>Important:</strong> see note about the constructor.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="maxflow.GraphInt.add_tedge">
-<tt class="descname">add_tedge</tt><big>(</big><em>self</em>, <em>int i</em>, <em>long cap_source</em>, <em>long cap_sink</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.add_tedge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add an edge &#8216;SOURCE-&gt;i&#8217; with capacity <tt class="docutils literal"><span class="pre">cap_source</span></tt> and another edge
-&#8216;i-&gt;SINK&#8217; with capacity <tt class="docutils literal"><span class="pre">cap_sink</span></tt>. This method can be called multiple
+<code class="sig-name descname">add_tedge</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">int i</em>, <em class="sig-param">long cap_source</em>, <em class="sig-param">long cap_sink</em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.add_tedge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an edge ‘SOURCE-&gt;i’ with capacity <code class="docutils literal notranslate"><span class="pre">cap_source</span></code> and another edge
+‘i-&gt;SINK’ with capacity <code class="docutils literal notranslate"><span class="pre">cap_sink</span></code>. This method can be called multiple
 times for each node. Capacities can be negative.</p>
 <p><strong>Note:</strong> No internal memory is allocated by this call. The capacities
 of terminal edges are stored in each node.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="maxflow.GraphInt.get_grid_segments">
-<tt class="descname">get_grid_segments</tt><big>(</big><em>self</em>, <em>ndarray nodeids</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.get_grid_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>After the maxflow is computed, this function returns which
-segment the given nodes belong to. The output is a boolean array
-of the same shape than the input array <tt class="docutils literal"><span class="pre">nodeids</span></tt>.</p>
-<p>This is equivalent to call <tt class="docutils literal"><span class="pre">get_segment</span></tt> for many nodes, but much faster.</p>
+<dl class="py method">
+<dt id="maxflow.GraphInt.get_edge_count">
+<code class="sig-name descname">get_edge_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.get_edge_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of non-terminal edges.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="maxflow.GraphInt.get_grid_segments">
+<code class="sig-name descname">get_grid_segments</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">ndarray nodeids</em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.get_grid_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>After the maxflow is computed, this function returns which
+segment the given nodes belong to. The output is a boolean array
+of the same shape than the input array <code class="docutils literal notranslate"><span class="pre">nodeids</span></code>.</p>
+<p>This is equivalent to calling <code class="docutils literal notranslate"><span class="pre">get_segment</span></code> for many nodes, but much faster.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="maxflow.GraphInt.get_node_count">
+<code class="sig-name descname">get_node_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.get_node_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of non-terminal nodes.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="maxflow.GraphInt.get_nx_graph">
-<tt class="descname">get_nx_graph</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.get_nx_graph" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_nx_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.get_nx_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a NetworkX DiGraph with the status of the maxflow network. The
 resulting graph will contain the terminal and non-terminal nodes and
-edges. The attribute <tt class="docutils literal"><span class="pre">weight</span></tt> of every edge will be set to its
+edges. The attribute <code class="docutils literal notranslate"><span class="pre">weight</span></code> of every edge will be set to its
 residual capacity. If the residual capacity of an edge is 0, the edge is
 not included in the DiGraph.</p>
 <p>The residual capacity for an edge is defined as the full capacity of the
-edge (set with the methods <tt class="docutils literal"><span class="pre">add_tedge</span></tt>, <tt class="docutils literal"><span class="pre">add_edge</span></tt> and their
-corresponding grid equivalents, <tt class="docutils literal"><span class="pre">add_grid_tedges</span></tt> and
-<tt class="docutils literal"><span class="pre">add_grid_edges</span></tt>) minus the amount of flow passing through it.
+edge (set with the methods <code class="docutils literal notranslate"><span class="pre">add_tedge</span></code>, <code class="docutils literal notranslate"><span class="pre">add_edge</span></code> and their
+corresponding grid equivalents, <code class="docutils literal notranslate"><span class="pre">add_grid_tedges</span></code> and
+<code class="docutils literal notranslate"><span class="pre">add_grid_edges</span></code>) minus the amount of flow passing through it.
 Therefore, the weights of the DiGraph depend on the amount of flow
 passing through the network and, in turn, this depends on whether the
-call to <tt class="docutils literal"><span class="pre">get_nx_graph</span></tt> is done before or after calling
-<tt class="docutils literal"><span class="pre">GraphInt.maxflow</span></tt>.</p>
-<p>Before calling the <tt class="docutils literal"><span class="pre">GraphInt.maxflow</span></tt>, there is no flow and therefore
+call to <code class="docutils literal notranslate"><span class="pre">get_nx_graph</span></code> is done before or after calling
+<code class="docutils literal notranslate"><span class="pre">GraphInt.maxflow</span></code>.</p>
+<p>Before calling the <code class="docutils literal notranslate"><span class="pre">GraphInt.maxflow</span></code>, there is no flow and therefore
 the residual capacity of every edge is equal to its full capacity.</p>
-<p>After calling <tt class="docutils literal"><span class="pre">GraphInt.maxflow</span></tt>, a virtual flow traverses the network
+<p>After calling <code class="docutils literal notranslate"><span class="pre">GraphInt.maxflow</span></code>, a virtual flow traverses the network
 from the source node to the sink node, and the residual capacities will
 be lower than the full capacities. Note that in this case, since
-<tt class="docutils literal"><span class="pre">get_nx_graph</span></tt> ignores edges with residual capacity 0, the edges in
+<code class="docutils literal notranslate"><span class="pre">get_nx_graph</span></code> ignores edges with residual capacity 0, the edges in
 the minimum cut will not be included in the final DiGraph.</p>
 <p>Note that this function is slow and should be used only for debugging
 purposes.</p>
 <p>This method requires the Python NetworkX package.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="maxflow.GraphInt.get_segment">
-<tt class="descname">get_segment</tt><big>(</big><em>self</em>, <em>i</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.get_segment" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_segment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.get_segment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns which segment the given node belongs to.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="maxflow.GraphInt.maxflow">
-<tt class="descname">maxflow</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#maxflow.GraphInt.maxflow" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">maxflow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">reuse_trees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.GraphInt.maxflow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform the maxflow computation in the graph. Returns the capacity of
 the minimum cut or, equivalently, the maximum flow of the graph.</p>
+<p>If flag reuse_trees is true while calling maxflow(), then search trees
+are reused from previous maxflow computation, as described in</p>
+<blockquote>
+<div><p>“Efficiently Solving Dynamic Markov Random Fields Using Graph Cuts.”
+Pushmeet Kohli and Philip H.S. Torr
+International Conference on Computer Vision (ICCV), 2005</p>
+</div></blockquote>
 </dd></dl>
 
 </dd></dl>
 
 <span class="target" id="module-maxflow.fastmin"></span><div class="section" id="maxflow-fastmin">
 <h2>maxflow.fastmin<a class="headerlink" href="#maxflow-fastmin" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal"><span class="pre">fastmin</span></tt> provides implementations of the algorithms for
-fast energy minimization described in <a class="reference internal" href="#boykov01" id="id1">[BOYKOV01]</a>: the alpha-expansion
+<p><code class="docutils literal notranslate"><span class="pre">fastmin</span></code> provides implementations of the algorithms for
+fast energy minimization described in <a class="reference internal" href="#boykov01" id="id1"><span>[BOYKOV01]</span></a>: the alpha-expansion
 and the alpha-beta-swap.</p>
-<table class="docutils citation" frame="void" id="boykov01" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[BOYKOV01]</a></td><td><em>Fast approximate energy minimization via graph cuts.</em>
-Yuri Boykov, Olga Veksler and Ramin Zabih. TPAMI 2001.</td></tr>
-</tbody>
-</table>
+<dl class="citation">
+<dt class="label" id="boykov01"><span class="brackets"><a class="fn-backref" href="#id1">BOYKOV01</a></span></dt>
+<dd><p><em>Fast approximate energy minimization via graph cuts.</em>
+Yuri Boykov, Olga Veksler and Ramin Zabih. TPAMI 2001.</p>
+</dd>
+</dl>
 <p>Currently, the functions in this module are restricted to
 grids with von Neumann neighborhood.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="maxflow.fastmin.abswap_grid">
-<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">abswap_grid</tt><big>(</big><em>D</em>, <em>V</em>, <em>max_cycles=None</em>, <em>labels=None</em><big>)</big><a class="headerlink" href="#maxflow.fastmin.abswap_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">maxflow.fastmin.</code><code class="sig-name descname">abswap_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span></em>, <em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">max_cycles</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.fastmin.abswap_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimize an energy function iterating the alpha-beta-swap
 until convergence or until a maximum number of cycles,
-given by <tt class="docutils literal"><span class="pre">max_cycles</span></tt>, is reached.</p>
-<p><tt class="docutils literal"><span class="pre">D</span></tt> must be a N+1-dimensional array with shape (S1,...,SN,L),
-where L is the number of labels considered. <em>D[p1,...,pn,lbl]</em> is the unary
-cost of assigning the label <em>lbl</em> to the variable <em>(p1,...,pn)</em>.</p>
-<p><tt class="docutils literal"><span class="pre">V</span></tt> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
+given by <code class="docutils literal notranslate"><span class="pre">max_cycles</span></code>, is reached.</p>
+<p><code class="docutils literal notranslate"><span class="pre">D</span></code> must be a N+1-dimensional array with shape (S1,…,SN,L),
+where L is the number of labels considered. <em>D[p1,…,pn,lbl]</em> is the unary
+cost of assigning the label <em>lbl</em> to the variable <em>(p1,…,pn)</em>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">V</span></code> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
 assigning the labels <em>lbl1</em> and <em>lbl2</em> to a pair of neighbor variables.
 Note that the abswap algorithm, unlike the aexpansion, does not require
-<tt class="docutils literal"><span class="pre">V</span></tt> to define a metric.</p>
-<p>The optional N-dimensional array <tt class="docutils literal"><span class="pre">labels</span></tt> gives the initial labeling
+<code class="docutils literal notranslate"><span class="pre">V</span></code> to define a metric.</p>
+<p>The optional N-dimensional array <code class="docutils literal notranslate"><span class="pre">labels</span></code> gives the initial labeling
 for the algorithm. If not given, the function uses a plain initialization
 with all the labels set to 0.</p>
 <p>This function return the labeling reached at the end of the algorithm.
-If the user provides the parameter <tt class="docutils literal"><span class="pre">labels</span></tt>, the algorithm will work
+If the user provides the parameter <code class="docutils literal notranslate"><span class="pre">labels</span></code>, the algorithm will work
 modifying this array in-place.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="maxflow.fastmin.aexpansion_grid">
-<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">aexpansion_grid</tt><big>(</big><em>D</em>, <em>V</em>, <em>max_cycles=None</em>, <em>labels=None</em><big>)</big><a class="headerlink" href="#maxflow.fastmin.aexpansion_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">maxflow.fastmin.</code><code class="sig-name descname">aexpansion_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span></em>, <em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">max_cycles</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.fastmin.aexpansion_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimize an energy function iterating the alpha-expansion until
 convergence or until a maximum number of cycles,
-given by <tt class="docutils literal"><span class="pre">max_cycles</span></tt>, is reached.</p>
-<p><tt class="docutils literal"><span class="pre">D</span></tt> must be an N+1-dimensional array with shape (S1,...,SN,L),
-where L is the number of labels considered. <em>D[p1,...,pn,lbl]</em> is the unary
-cost of assigning the label <em>lbl</em> to the variable <em>(p1,...,pn)</em>.</p>
-<p><tt class="docutils literal"><span class="pre">V</span></tt> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
+given by <code class="docutils literal notranslate"><span class="pre">max_cycles</span></code>, is reached.</p>
+<p><code class="docutils literal notranslate"><span class="pre">D</span></code> must be an N+1-dimensional array with shape (S1,…,SN,L),
+where L is the number of labels considered. <em>D[p1,…,pn,lbl]</em> is the unary
+cost of assigning the label <em>lbl</em> to the variable <em>(p1,…,pn)</em>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">V</span></code> is a two-dimensional array. <em>V[lbl1,lbl2]</em> is the binary cost of
 assigning the labels <em>lbl1</em> and <em>lbl2</em> to a pair of neighbor variables.
-Note that the distance defined by <tt class="docutils literal"><span class="pre">V</span></tt> must be a metric or the aexpansion
+Note that the distance defined by <code class="docutils literal notranslate"><span class="pre">V</span></code> must be a metric or the aexpansion
 might fail.</p>
-<p>The optional N-dimensional array <tt class="docutils literal"><span class="pre">labels</span></tt> gives the initial labeling
+<p>The optional N-dimensional array <code class="docutils literal notranslate"><span class="pre">labels</span></code> gives the initial labeling
 of the algorithm. If not given, the function uses a plain initialization
 with all the labels set to 0.</p>
 <p>This function return the labeling reached at the end of the algorithm.
-If the user provides the parameter <tt class="docutils literal"><span class="pre">labels</span></tt>, the algorithm will work
+If the user provides the parameter <code class="docutils literal notranslate"><span class="pre">labels</span></code>, the algorithm will work
 modifying this array in-place.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="maxflow.fastmin.energy_of_grid_labeling">
-<tt class="descclassname">maxflow.fastmin.</tt><tt class="descname">energy_of_grid_labeling</tt><big>(</big><em>D</em>, <em>V</em>, <em>labels</em><big>)</big><a class="headerlink" href="#maxflow.fastmin.energy_of_grid_labeling" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">maxflow.fastmin.</code><code class="sig-name descname">energy_of_grid_labeling</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span></em>, <em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">labels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#maxflow.fastmin.energy_of_grid_labeling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the energy of the labeling of a grid.</p>
-<p>For details about <tt class="docutils literal"><span class="pre">D</span></tt>, <tt class="docutils literal"><span class="pre">V</span></tt> and <tt class="docutils literal"><span class="pre">labels</span></tt>, see the
-documentation of <tt class="docutils literal"><span class="pre">aexpansion_grid</span></tt>.</p>
+<p>For details about <code class="docutils literal notranslate"><span class="pre">D</span></code>, <code class="docutils literal notranslate"><span class="pre">V</span></code> and <code class="docutils literal notranslate"><span class="pre">labels</span></code>, see the
+documentation of <code class="docutils literal notranslate"><span class="pre">aexpansion_grid</span></code>.</p>
 <p>Returns the energy of the labeling.</p>
 </dd></dl>
 
@@ -433,12 +452,13 @@ documentation of <tt class="docutils literal"><span class="pre">aexpansion_grid<
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Maxflow package</a><ul>
 <li><a class="reference internal" href="#maxflow">maxflow</a></li>
@@ -450,29 +470,28 @@ documentation of <tt class="docutils literal"><span class="pre">aexpansion_grid<
   <h4>Previous topic</h4>
   <p class="topless"><a href="tutorial.html"
                         title="previous chapter">Tutorial</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/maxflow.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/maxflow.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -484,12 +503,13 @@ documentation of <tt class="docutils literal"><span class="pre">aexpansion_grid<
         <li class="right" >
           <a href="tutorial.html" title="Tutorial"
              >previous</a> |</li>
-        <li><a href="index.html">PyMaxflow 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyMaxflow 1.2.13 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Maxflow package</a></li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2011-2014, Pablo Márquez Neila.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2021, @pmneila.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
   </body>
 </html>

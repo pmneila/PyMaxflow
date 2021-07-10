@@ -1,33 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Welcome to PyMaxflow’s documentation! &mdash; PyMaxflow 1.2.0 documentation</title>
-    
-    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to PyMaxflow’s documentation! &#8212; PyMaxflow 1.2.13 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.2.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="PyMaxflow 1.2.0 documentation" href="#" />
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Tutorial" href="tutorial.html" /> 
-  </head>
-  <body>
-    <div class="related">
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -39,37 +28,34 @@
         <li class="right" >
           <a href="tutorial.html" title="Tutorial"
              accesskey="N">next</a> |</li>
-        <li><a href="#">PyMaxflow 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">PyMaxflow 1.2.13 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to PyMaxflow’s documentation!</a></li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="welcome-to-pymaxflow-s-documentation">
-<h1>Welcome to PyMaxflow&#8217;s documentation!<a class="headerlink" href="#welcome-to-pymaxflow-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>PyMaxflow is a Python library for graph construction and
-maxflow computation (commonly known as <cite>graph cuts</cite>)
-as described in <a class="reference internal" href="#boykov04" id="id1">[BOYKOV04]</a>. The
-core of this library is the C++ implementation by
-Vladimir Kolmogorov, which
-can be downloaded from his <a class="reference external" href="http://www.cs.ucl.ac.uk/staff/V.Kolmogorov/">homepage</a>.
-Besides the wrapper to the C++ library, PyMaxflow offers</p>
+<h1>Welcome to PyMaxflow’s documentation!<a class="headerlink" href="#welcome-to-pymaxflow-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p><em>PyMaxflow</em> is a Python library to build flow networks and compute their maximum
+flow/minimum cut (commonly known as <cite>graph cuts</cite>) as described in <a class="reference internal" href="#boykov04" id="id1"><span>[BOYKOV04]</span></a>.
+This is a common technique used in different problems of image processing,
+computer vision and computer graphics. The core of this library is the C++
+maxflow implementation by Vladimir Kolmogorov, which can be downloaded from his
+<a class="reference external" href="http://pub.ist.ac.at/~vnk/software.html">homepage</a>. Besides being a wrapper
+to the C++ library, PyMaxflow also offers</p>
 <ul class="simple">
-<li>NumPy integration.</li>
-<li>Methods for fast construction of common graph
-layouts in computer vision and graphics. This is
-probably the most powerful feature of PyMaxflow,
-since the creation of large graphs
-using the standard &#8220;one edge per call&#8221; functions
-of the C++ library is extremely slow from Python.</li>
-<li>Implementation of algorithms for fast energy
-minimization which use the <cite>maxflow</cite> method: the <img class="math" src="_images/math/76ecab143b64f4b69591a78b5085da7c760d5b66.png" alt="\alpha\beta"/>-swap
-and the <img class="math" src="_images/math/ad59b6e24a4a00ac621801f8d7513d68be654ab5.png" alt="\alpha"/>-expansion.</li>
+<li><p>NumPy integration,</p></li>
+<li><p>methods for fast declaration of complex network layouts with a single API
+call, which avoids the much slower one-call-per-edge alternative offered by
+the wrapped functions of the core C++ library, and</p></li>
+<li><p>implementation of algorithms for fast energy minimization with more than two
+labels: the αβ-swap and the α-expansion.</p></li>
 </ul>
-<p>Take a look at the <a class="reference internal" href="tutorial.html#tutorial"><em>Tutorial</em></a>.</p>
+<p>Take a look at the <a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial</span></a>.</p>
 </div>
 <div class="section" id="contents">
 <h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
@@ -77,9 +63,9 @@ and the <img class="math" src="_images/math/ad59b6e24a4a00ac621801f8d7513d68be65
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#getting-started">Getting started</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#a-first-example">A first example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#a-flow-network-with-two-nodes">A flow network with two nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#binary-image-restoration">Binary image restoration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#complex-grids-with-add-grid-edges">Complex grids with <tt class="docutils literal"><span class="pre">add_grid_edges</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#complex-grids-with-add-grid-edges">Complex grids with <code class="docutils literal notranslate"><span class="pre">add_grid_edges</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="maxflow.html">Maxflow package</a><ul>
@@ -94,81 +80,69 @@ and the <img class="math" src="_images/math/ad59b6e24a4a00ac621801f8d7513d68be65
 <h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
 <p>This software is licensed under the GPL.</p>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">The core of the library is
-the C++ implementation by Vladimir Kolmogorov. It is also
-licensed under the GPL, but it <strong>REQUIRES</strong> that you cite <a class="reference internal" href="#boykov04" id="id2">[BOYKOV04]</a>
-in any resulting publication if you use this code for
-research purposes. This requirement extends to <em>PyMaxflow</em>.</p>
+<p class="admonition-title">Important</p>
+<p>The core of the library is the C++ implementation by Vladimir Kolmogorov. It
+is also licensed under the GPL, but it <strong>REQUIRES</strong> that you cite <a class="reference internal" href="#boykov04" id="id2"><span>[BOYKOV04]</span></a>
+in any resulting publication if you use this code for research purposes. This
+requirement extends to <em>PyMaxflow</em>.</p>
 </div>
-</div>
-<div class="section" id="bugs-and-wishes-on-the-version-version">
-<h1>Bugs and wishes on the version 1.2.0<a class="headerlink" href="#bugs-and-wishes-on-the-version-version" title="Permalink to this headline">¶</a></h1>
-<p><em>PyMaxflow</em> has been used
-under different conditions but it has not been thoroughly
-tested. Therefore, you might find bugs.</p>
-<p>If you find bugs or have some special needs that you
-think should be available in <em>PyMaxflow</em>, please
-let me know.</p>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-<table class="docutils citation" frame="void" id="boykov04" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[BOYKOV04]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> <em>An Experimental Comparison of Min-Cut/Max-Flow Algorithms for
+<dl class="citation">
+<dt class="label" id="boykov04"><span class="brackets">BOYKOV04</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p><em>An Experimental Comparison of Min-Cut/Max-Flow Algorithms for
 Energy Minimization in Vision.</em> Yuri Boykov and Vladimir Kolmogorov. In
-IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI), September 2004</td></tr>
-</tbody>
-</table>
+IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI), September 2004</p>
+</dd>
+</dl>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
+  <h3><a href="#">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to PyMaxflow&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#">Welcome to PyMaxflow’s documentation!</a></li>
 <li><a class="reference internal" href="#contents">Contents</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
-<li><a class="reference internal" href="#bugs-and-wishes-on-the-version-version">Bugs and wishes on the version 1.2.0</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
   <h4>Next topic</h4>
   <p class="topless"><a href="tutorial.html"
                         title="next chapter">Tutorial</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -180,12 +154,13 @@ IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI), September
         <li class="right" >
           <a href="tutorial.html" title="Tutorial"
              >next</a> |</li>
-        <li><a href="#">PyMaxflow 1.2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">PyMaxflow 1.2.13 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to PyMaxflow’s documentation!</a></li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2011-2014, Pablo Márquez Neila.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2021, @pmneila.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
   </body>
 </html>
