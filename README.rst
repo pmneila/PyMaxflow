@@ -11,7 +11,7 @@ the C++ library, PyMaxflow offers
   minimization which use the ``maxflow`` method: the αβ-swap
   and the α-expansion.
 
-Take a look at the `PyMaxflow documentation <http://pmneila.github.com/PyMaxflow/>`_.
+Take a look at the `PyMaxflow documentation <http://pmneila.github.io/PyMaxflow/>`_.
 
 Requirements
 ------------
