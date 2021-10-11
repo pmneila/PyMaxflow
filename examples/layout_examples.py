@@ -20,13 +20,16 @@ g.add_grid_edges(nodeids, 1)
 #                  symmetric=False)
 plot_graph_2d(g, nodeids.shape, plot_terminals=False)
 
-# 8-connected grid
+# 8-connected grid, ignore two nodes
 g = maxflow.Graph[int]()
 nodeids = g.add_grid_nodes((5, 5))
 structure = np.array([[0, 0, 0],
                       [0, 0, 1],
                       [1, 1, 1]])
 # Also structure = maxflow.moore_structure(ndim=2, directed=True)
+# Nodeid -1 is ignored when adding edges
+nodeids[1, 1] = -1
+nodeids[3, 2] = -1
 g.add_grid_edges(nodeids, 1, structure=structure, symmetric=True)
 plot_graph_2d(g, nodeids.shape, plot_terminals=False)
 
