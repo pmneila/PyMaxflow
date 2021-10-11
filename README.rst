@@ -1,8 +1,14 @@
+PyMaxflow
+---------
 PyMaxflow is a Python library for graph construction and maxflow computation
-(commonly known as `graph cuts`). The core of this library is the C++
-implementation by Vladimir Kolmogorov, which can be downloaded from his
-`homepage <http://pub.ist.ac.at/~vnk/software.html>`_. Besides the wrapper to
-the C++ library, PyMaxflow offers
+(commonly known as `graph cuts`).
+
+.. image:: doc/source/_static/small_layout_07.png
+   :scale: 10 %
+
+The core of this library is the C++ implementation by Vladimir Kolmogorov,
+which can be downloaded from his `homepage <http://pub.ist.ac.at/~vnk/software.html>`_.
+Besides the wrapper to the C++ library, PyMaxflow offers
 
 * NumPy integration,
 * methods for fast construction of common graph
@@ -17,30 +23,9 @@ Example layouts
 ---------------
 
 PyMaxflow offers methods to easily build advanced network layouts with a few API
-calls:
+calls. These are examples from `layout_examples.py <https://github.com/pmneila/PyMaxflow/tree/master/examples/layout_examples.py>`_.
 
-.. image:: doc/source/_static/layout_01.png
-   :scale: 25 %
-
-.. image:: doc/source/_static/layout_02.png
-   :scale: 25 %
-
-.. image:: doc/source/_static/layout_03.png
-   :scale: 25 %
-
-.. image:: doc/source/_static/layout_04.png
-   :scale: 25 %
-
-.. image:: doc/source/_static/layout_05.png
-   :scale: 25 %
-
-.. image:: doc/source/_static/layout_06.png
-   :scale: 25 %
-
-.. image:: doc/source/_static/layout_07.png
-   :scale: 25 %
-
-Check the `examples <https://github.com/pmneila/PyMaxflow/tree/master/examples>`_ for details.
+.. image:: doc/source/_static/montage.png
 
 
 Installation
