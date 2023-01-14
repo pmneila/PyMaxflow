@@ -56,22 +56,20 @@ PyObject* build_graph_energy_tuple<long>(Graph<long,long,long>* g, long energy)
 
 /*
  * Alpha-expansion with a graph cut.
- *
- * Pablo Márquez Neila 2010
  */
 template<class T, class S>
 PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
                         PyArrayObject* labels)
 {
     typedef Graph<T,T,T> GraphT;
-    
+
     // Size of the labels matrix.
     int ndim = PyArray_NDIM(labels);
     npy_intp* shape = PyArray_DIMS(labels);
-    
+
     // Some shape checks.
     if(PyArray_NDIM(d) != ndim+1)
-        throw std::runtime_error("the unary term matrix D must be SxL (L=number of labels, S=shape of labels array)");
+        throw std::runtime_error("the unary term matrix D must be SxL (S=shape of labels array, L=number of labels)");
     if(PyArray_NDIM(v) != 2 || PyArray_DIM(v, 0) != PyArray_DIM(v, 1))
         throw std::runtime_error("the binary term matrix V must be LxL (L=number of labels)");
     if(PyArray_DIM(v,0) != PyArray_DIM(d, ndim))
@@ -79,18 +77,18 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
     if(PyArray_TYPE(v) != numpy_typemap<T>::type)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
     if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
-        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
-    
+        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the first dimensions of D (S1,...,SN,L)");
+
     // Create the graph.
     // The number of nodes and edges is unknown at this point,
     // so they are roughly estimated.
     int num_nodes = std::accumulate(shape, shape+ndim, 1, std::multiplies<int>());
     GraphT* g = new GraphT(num_nodes, 2*ndim*num_nodes);
     g->add_node(num_nodes);
-    
+
     // Get the array v from v_f.
     // Esmooth<T> v(v_f);
-    
+
     // For each pixel in labels...
     npy_intp* head_ind = new npy_intp[ndim+1];
     npy_intp* ind = head_ind;
@@ -109,9 +107,9 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
             head_ind[ndim] = label;
             t2 = *reinterpret_cast<T*>(PyArray_GetPtr(d, head_ind));
         }
-        
+
         g->add_tweights(node_index, t1, t2);
-        
+
         // Process the neighbors.
         for(int n = 0; n < ndim; ++n)
         {
@@ -120,48 +118,49 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
             // Discard bad neighbors.
             if(nind[n] >= shape[n])
                 continue;
-            
+
             // Neighbor index and label.
             int nnode_index = node_index + std::accumulate(shape+n+1, shape+ndim, 1, std::multiplies<int>());
             S nlabel = *reinterpret_cast<S*>(PyArray_GetPtr(labels, nind));
-            
+
             T dist_label_alpha = *reinterpret_cast<T*>(PyArray_GETPTR2(v, label, alpha));
             if(label == nlabel)
             {
                 g->add_edge(node_index, nnode_index, dist_label_alpha, dist_label_alpha);
-                continue;
             }
-            
-            // If labels are different, add an extra node.
-            T dist_label_nlabel = *reinterpret_cast<T*>(PyArray_GETPTR2(v, label, nlabel));
-            T dist_nlabel_alpha = *reinterpret_cast<T*>(PyArray_GETPTR2(v, nlabel, alpha));
-            int extra_index = g->add_node(1);
-            g->add_tweights(extra_index, 0, dist_label_nlabel);
-            g->add_edge(node_index, extra_index, dist_label_alpha, dist_label_alpha);
-            g->add_edge(nnode_index, extra_index, dist_nlabel_alpha, dist_nlabel_alpha);
+            else
+            {
+                // If labels are different, add an extra node.
+                T dist_label_nlabel = *reinterpret_cast<T*>(PyArray_GETPTR2(v, label, nlabel));
+                T dist_nlabel_alpha = *reinterpret_cast<T*>(PyArray_GETPTR2(v, nlabel, alpha));
+                int extra_index = g->add_node(1);
+                g->add_tweights(extra_index, 0, dist_label_nlabel);
+                g->add_edge(node_index, extra_index, dist_label_alpha, dist_label_alpha);
+                g->add_edge(nnode_index, extra_index, dist_nlabel_alpha, dist_nlabel_alpha);
+            }
         }
-        
+
         // Update the index.
         incr_indices(ind, ndim, shape);
     }
-    
+
     // The graph cut.
     T energy = g->maxflow();
-    
+
     // Update the labels with the maxflow result.
     std::fill(ind, ind+ndim, 0);
     for(int node_index = 0; node_index < num_nodes; ++node_index)
     {
         if(g->what_segment(node_index) == SINK)
             *reinterpret_cast<S*>(PyArray_GetPtr(labels, ind)) = alpha;
-        
+
         // Update the index.
         incr_indices(ind, ndim, shape);
     }
-    
+
     delete [] head_ind;
     delete [] nind;
-    
+
     // Return the graph and the energy of the mincut.
     return build_graph_energy_tuple<T>(g, energy);
 }
@@ -199,28 +198,26 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
 
 /*
  * Alpha-beta swap with a graph cut.
- *
- * Pablo Márquez Neila 2010
  */
 template<class T, class S>
 PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
                         PyArrayObject* labels)
 {
     typedef Graph<T,T,T> GraphT;
-    
+
     // Map graph node -> label index.
     std::vector<int> lookup;
     // Map label index -> graph node.
     std::map<int,int> reverse;
-    
+
     // Size of the labels matrix.
     int ndim = PyArray_NDIM(labels);
     npy_intp* shape = PyArray_DIMS(labels);
     npy_intp* strides = PyArray_STRIDES(labels);
-    
+
     // Some shape checks.
     if(PyArray_NDIM(d) != ndim+1)
-        throw std::runtime_error("the unary term matrix D must be SxL (L=number of labels, S=shape of labels array)");
+        throw std::runtime_error("the unary term matrix D must be SxL (S=shape of labels array, L=number of labels)");
     if(PyArray_NDIM(v) != 2 || PyArray_DIM(v, 0) != PyArray_DIM(v, 1))
         throw std::runtime_error("the binary term matrix V must be LxL (L=number of labels)");
     if(PyArray_DIM(v,0) != PyArray_DIM(d,ndim))
@@ -228,58 +225,58 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
     if(PyArray_TYPE(v) != numpy_typemap<T>::type)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
     if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
-        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
-    
+        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the first dimensions of D (S1,...,SN,L)");
+
     // Create the graph.
     // The number of nodes and edges is unknown at this point,
     // so they are roughly estimated.
     int num_nodes = std::accumulate(shape, shape+ndim, 1, std::multiplies<int>());
     GraphT* g = new GraphT(num_nodes, 2*ndim*num_nodes);
-    
+
     // Get the distance V(a,b).
     T Vab = *reinterpret_cast<T*>(PyArray_GETPTR2(v, alpha, beta));
-    
+
     // For each pixel in labels...
     npy_intp* head_ind = new npy_intp[ndim+1];
     npy_intp* ind = head_ind;
     npy_intp* nind = new npy_intp[ndim];
     std::fill(ind, ind+ndim, 0);
-    
+
     for(int i = 0; i < num_nodes; ++i, incr_indices(ind, ndim, shape))
     {
         // Offset of the current pixel.
         //int labels_index = labels_indexbase + j * PyArray_STRIDE(labels, 1);
         int labels_index = std::inner_product(ind, ind+ndim, strides, 0);
-        
+
         // Take the label of current pixel.
         S label = *reinterpret_cast<S*>(PyArray_BYTES(labels) + labels_index);
-        
+
         // Discard pixels not in the set P_{ab}.
         if(label != alpha && label != beta)
             continue;
-        
+
         int node_index = g->add_node(1);
         // Add to the lookup table.
         lookup.push_back(labels_index);
         // Add to the reverse map.
         reverse[labels_index] = node_index;
-        
+
         // T-links weights initialization.
         head_ind[ndim] = alpha;
         T ta = *reinterpret_cast<T*>(PyArray_GetPtr(d, head_ind));
         head_ind[ndim] = beta;
         T tb = *reinterpret_cast<T*>(PyArray_GetPtr(d, head_ind));
-        
+
         // Process the neighbors.
         for(int n = 0, dir = -1; n < ndim; n = dir == 1 ? n+1 : n, dir*=-1)
         {
             std::copy(ind, ind+ndim, nind);
             nind[n] += dir;
-            
+
             // Discard bad neighbors.
             if(nind[n] < 0 || nind[n] >= shape[n])
                 continue;
-            
+
             int labels_neighbor = std::inner_product(nind, nind+ndim, strides, 0);
             S label2 = *reinterpret_cast<S*>(PyArray_BYTES(labels) + labels_neighbor);
             if(label2 != alpha && label2 != beta)
@@ -293,13 +290,13 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
                 // Add edges to the neighbors in P_{ab}.
                 g->add_edge(node_index, reverse[labels_neighbor], Vab, Vab);
         }
-        
+
         g->add_tweights(node_index, ta, tb);
     }
-    
+
     // The graph cut.
     T energy = g->maxflow();
-    
+
     // Update the labels with the maxflow result.
     for(unsigned int i = 0; i < lookup.size(); ++i)
     {
@@ -307,10 +304,10 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
         S* label = reinterpret_cast<S*>(PyArray_BYTES(labels) + labels_index);
         *label = g->what_segment(i) == SINK ? alpha : beta;
     }
-    
+
     delete [] head_ind;
     delete [] nind;
-    
+
     // Return the graph and the energy of the mincut.
     return build_graph_energy_tuple<T>(g, energy);
 }

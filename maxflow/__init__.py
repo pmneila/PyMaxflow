@@ -36,8 +36,10 @@ import numpy as np
 from . import _maxflow
 from ._maxflow import GraphInt, GraphFloat, moore_structure, vonNeumann_structure
 from .version import __version__, __version_str__, __version_core__
+from .fastmin import aexpansion_grid, abswap_grid
 
 Graph = {int: GraphInt, float: GraphFloat}
 
 __all__ = ['Graph', "GraphInt", "GraphFloat", "np", "_maxflow",
-           "moore_structure", "vonNeumann_structure"]
+           "moore_structure", "vonNeumann_structure",
+           "aexpansion_grid", "abswap_grid"]

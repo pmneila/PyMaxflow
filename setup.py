@@ -1,32 +1,18 @@
 # -*- encoding: utf-8 -*-
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 import runpy
 from distutils.extension import Extension
 
+import numpy
+from Cython.Build import cythonize
+
 # Get the version number.
 __version_str__ = runpy.run_path("maxflow/version.py")["__version_str__"]
 
-# Lazy evaluate extension definition, to allow correct requirements install
-class lazy_cythonize(list):
-    def __init__(self, callback):
-        self._list, self.callback = None, callback
-    def c_list(self):
-        if self._list is None: self._list = self.callback()
-        return self._list
-    def __iter__(self):
-        for e in self.c_list(): yield e
-    def __getitem__(self, ii): return self.c_list()[ii]
-    def __len__(self): return len(self.c_list())
-
 
 def extensions():
-    import numpy
-    from Cython.Build import cythonize
     numpy_include_dir = numpy.get_include()
     maxflow_module = Extension(
         "maxflow._maxflow",
@@ -36,11 +22,24 @@ def extensions():
             "maxflow/src/fastmin.cpp"
         ],
         language="c++",
-        include_dirs=[
-            numpy_include_dir,
-        ]
+        extra_compile_args=['-std=c++11', '-Wall'],
+        include_dirs=[numpy_include_dir],
+        depends=[
+            "maxflow/src/fastmin.h",
+            "maxflow/src/grid.h",
+            "maxflow/src/pyarray_symbol.h",
+            "maxflow/src/pyarraymodule.h",
+            "maxflow/src/core/block.h",
+            "maxflow/src/core/graph.h"
+        ],
+        # Cython 0.29 generates code using the deprecated pre 1.7 NumPy API
+        # This line should be uncommented when Cython 3.0 is officially released
+        # define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
     )
-    return cythonize([maxflow_module])
+    return cythonize(
+        [maxflow_module],
+        language_level="3"
+    )
 
 
 setup(
@@ -48,7 +47,7 @@ setup(
     version=__version_str__,
     description="A mincut/maxflow package for Python",
     author="Pablo Márquez Neila",
-    author_email="pablo.marquezneila@epfl.ch",
+    author_email="pablo.marquez@unibe.ch",
     url="https://github.com/pmneila/PyMaxflow",
     license="GPL",
     long_description="""
@@ -82,7 +81,6 @@ setup(
         "Topic :: Scientific/Engineering :: Mathematics"
     ],
     packages=["maxflow"],
-    ext_modules=lazy_cythonize(extensions),
-    requires=['numpy', 'Cython'],
-    setup_requires=['numpy', 'Cython']
+    ext_modules=extensions(),
+    install_requires=['numpy>=1.11.3']
 )
