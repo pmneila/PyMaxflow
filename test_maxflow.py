@@ -1,6 +1,6 @@
 
 import numpy as np
-from imageio import imread
+from imageio.v3 import imread
 
 import maxflow
 
