@@ -77,7 +77,7 @@ PyObject* aexpansion(int alpha, PyArrayObject* d, PyArrayObject* v,
     if(PyArray_TYPE(v) != numpy_typemap<T>::type)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
     if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
-        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
+        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the first dimensions of D (S1,...,SN,L)");
 
     // Create the graph.
     // The number of nodes and edges is unknown at this point,
@@ -217,7 +217,7 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
 
     // Some shape checks.
     if(PyArray_NDIM(d) != ndim+1)
-        throw std::runtime_error("the unary term matrix D must be SxL (L=number of labels, S=shape of labels array)");
+        throw std::runtime_error("the unary term matrix D must be SxL (S=shape of labels array, L=number of labels)");
     if(PyArray_NDIM(v) != 2 || PyArray_DIM(v, 0) != PyArray_DIM(v, 1))
         throw std::runtime_error("the binary term matrix V must be LxL (L=number of labels)");
     if(PyArray_DIM(v,0) != PyArray_DIM(d,ndim))
@@ -225,7 +225,7 @@ PyObject* abswap(int alpha, int beta, PyArrayObject* d, PyArrayObject* v,
     if(PyArray_TYPE(v) != numpy_typemap<T>::type)
         throw std::runtime_error("the type for the binary term matrix V must match the type of the unary matrix D");
     if(!std::equal(shape, shape+ndim, PyArray_DIMS(d)))
-        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the last dimensions of D (S1,...,SN,L)");
+        throw std::runtime_error("the shape of the labels array (S1,...,SN) must match the shape of the first dimensions of D (S1,...,SN,L)");
 
     // Create the graph.
     // The number of nodes and edges is unknown at this point,

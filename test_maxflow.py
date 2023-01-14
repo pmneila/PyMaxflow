@@ -1,4 +1,6 @@
 
+import pytest
+
 import numpy as np
 from numpy.testing import assert_array_equal
 
@@ -76,6 +78,66 @@ def test_aexpansion():
 
     labels = maxflow.aexpansion_grid(unary, 2 * binary)
     assert not np.any(labels == 1)
+
+
+def test_fastmin_edge_cases():
+
+    # Array with 0 spatial dimensions
+    unary = np.zeros((0, 0, 3))
+    binary = np.ones((3, 3), dtype=np.float_) - np.eye(3, dtype=np.float_)
+    labels = maxflow.aexpansion_grid(unary, binary)
+    assert labels.shape == (0, 0)
+
+    # Unary term is a scalar
+    unary = np.zeros(())
+    binary = np.ones(())
+    with pytest.raises(ValueError):
+        maxflow.aexpansion_grid(unary, binary)
+    with pytest.raises(ValueError):
+        maxflow.abswap_grid(unary, binary)
+
+    # num_labels is 0
+    unary = np.zeros((3, 3, 0))
+    binary = np.zeros((0, 0))
+    with pytest.raises(ValueError):
+        maxflow.aexpansion_grid(unary, binary)
+    with pytest.raises(ValueError):
+        maxflow.abswap_grid(unary, binary)
+
+    # num_labels mismatch for the unary and the binary terms
+    unary = np.zeros((3, 3, 3))
+    binary = np.zeros((2, 2))
+    with pytest.raises(ValueError):
+        maxflow.aexpansion_grid(unary, binary)
+    with pytest.raises(ValueError):
+        maxflow.abswap_grid(unary, binary)
+
+    # Shape of initial labels do not match the shape of the unary array
+    unary = np.zeros((3, 3, 3))
+    binary = np.zeros((3, 3))
+    labels = np.ones((4, 4), dtype=np.int_)
+    with pytest.raises(Exception):
+        maxflow.aexpansion_grid(unary, binary, labels=labels)
+    with pytest.raises(Exception):
+        maxflow.abswap_grid(unary, binary, labels=labels)
+
+    # Initial labels contain values larger than num_labels
+    unary = np.zeros((3, 3, 3))
+    binary = np.zeros((3, 3))
+    labels = np.full((3, 3), 5, dtype=np.int_)
+    with pytest.raises(ValueError):
+        maxflow.aexpansion_grid(unary, binary, labels=labels)
+    with pytest.raises(ValueError):
+        maxflow.abswap_grid(unary, binary, labels=labels)
+
+    # Initial labels contain negative values
+    unary = np.zeros((3, 3, 3))
+    binary = np.zeros((3, 3))
+    labels = np.full((3, 3), -1, dtype=np.int_)
+    with pytest.raises(ValueError):
+        maxflow.aexpansion_grid(unary, binary, labels=labels)
+    with pytest.raises(ValueError):
+        maxflow.abswap_grid(unary, binary, labels=labels)
 
 
 def test_abswap():
