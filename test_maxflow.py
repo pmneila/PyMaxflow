@@ -1,5 +1,7 @@
 
 import numpy as np
+from numpy.testing import assert_array_equal
+
 from imageio.v3 import imread
 
 import maxflow
@@ -38,5 +40,76 @@ def test_restoration():
     assert sgm.sum() == 758
 
 
-if __name__ == "__main__":
-    np.testing.run_module_suite()
+def test_aexpansion():
+
+    unary = np.array([
+        [
+            [5.0, 10.0, 10.0],
+            [0.0, 5.0, 10.0],
+            [0.0, 0.0, 5.0]
+        ],
+        [
+            [4.0, 5.0, 5.0],
+            [5.0, 4.0, 5.0],
+            [5.0, 5.0, 4.0]
+        ],
+        [
+            [5.0, 0.0, 0.0],
+            [10.0, 5.0, 0.0],
+            [10.0, 10.0, 5.0]
+        ],
+    ]).transpose((1, 2, 0))
+
+    binary = np.array([
+        [0.0, 1.0, 1.0],
+        [1.0, 0.0, 1.0],
+        [1.0, 1.0, 0.0]
+    ])
+
+    labels = maxflow.aexpansion_grid(unary, 0.1 * binary)
+    result = np.array([
+        [1, 2, 2],
+        [0, 1, 2],
+        [0, 0, 1]
+    ])
+    assert_array_equal(labels, result)
+
+    labels = maxflow.aexpansion_grid(unary, 2 * binary)
+    assert not np.any(labels == 1)
+
+
+def test_abswap():
+
+    unary = np.array([
+        [
+            [5.0, 10.0, 10.0],
+            [0.0, 5.0, 10.0],
+            [0.0, 0.0, 5.0]
+        ],
+        [
+            [10.0, 5.0, 5.0],
+            [5.0, 10.0, 5.0],
+            [5.0, 5.0, 10.0]
+        ],
+        [
+            [5.0, 0.0, 0.0],
+            [10.0, 5.0, 0.0],
+            [10.0, 10.0, 5.0]
+        ],
+    ]).transpose((1, 2, 0))
+
+    binary = np.array([
+        [0.0, 1.0, 50.0],
+        [1.0, 0.0, 1.0],
+        [50.0, 1.0, 0.0]
+    ])
+
+    labels = maxflow.abswap_grid(unary, binary)
+
+    result = np.array([
+        [1, 2, 2],
+        [0, 1, 2],
+        [0, 0, 1]
+    ])
+
+    assert_array_equal(labels, result)

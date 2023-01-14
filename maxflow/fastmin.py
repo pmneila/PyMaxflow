@@ -47,7 +47,7 @@ def energy_of_grid_labeling(D, V, labels):
         slice0[i] = slice(1, None)
         slice1[i] = slice(None, -1)
 
-        binary += V[labels[slice0], labels[slice1]].sum()
+        binary += V[labels[tuple(slice0)], labels[tuple(slice1)]].sum()
 
         slice0[i] = slice(None)
         slice1[i] = slice(None)
@@ -57,26 +57,24 @@ def energy_of_grid_labeling(D, V, labels):
 
 def abswap_grid(D, V, max_cycles=None, labels=None):
     """
-    Minimize an energy function iterating the alpha-beta-swap
-    until convergence or until a maximum number of cycles,
-    given by ``max_cycles``, is reached.
+    Minimize an energy function iterating the alpha-beta-swap until convergence
+    or until a maximum number of cycles, given by ``max_cycles``, is reached.
 
-    ``D`` must be a N+1-dimensional array with shape (S1,...,SN,L),
-    where L is the number of labels considered. *D[p1,...,pn,lbl]* is the unary
-    cost of assigning the label *lbl* to the variable *(p1,...,pn)*.
+    ``D`` must be a N+1-dimensional array with shape (S1, ..., SN, L), where L
+    is the number of labels. *D[p1, ..., pn, lbl]* is the unary cost of
+    assigning the label *lbl* to the variable *(p1, ..., pn)*.
 
-    ``V`` is a two-dimensional array. *V[lbl1,lbl2]* is the binary cost of
-    assigning the labels *lbl1* and *lbl2* to a pair of neighbor variables.
-    Note that the abswap algorithm, unlike the aexpansion, does not require
-    ``V`` to define a metric.
+    ``V`` is a two-dimensional array. *V[lbl1, lbl2]* is the binary cost of
+    assigning the labels *lbl1* and *lbl2* to a pair of neighbor variables. Note
+    that the abswap algorithm, unlike the aexpansion, does not require ``V`` to
+    define a metric.
 
-    The optional N-dimensional array ``labels`` gives the initial labeling
-    for the algorithm. If not given, the function uses a plain initialization
-    with all the labels set to 0.
+    The optional N-dimensional array ``labels`` gives the initial labeling for
+    the algorithm. If omitted, the function will initialize the labels using the
+    minimum unary costs given by ``D``.
 
-    This function return the labeling reached at the end of the algorithm.
-    If the user provides the parameter ``labels``, the algorithm will work
-    modifying this array in-place.
+    The function return the labeling reached at the end of the algorithm. If the
+    parameter ``labels`` is given, the function will modify this array in-place.
     """
     num_labels = D.shape[-1]
 
@@ -93,7 +91,7 @@ def abswap_grid(D, V, max_cycles=None, labels=None):
         rng = range(max_cycles)
 
     prev_labels = np.copy(labels)
-    better_energy = np.inf
+    best_energy = np.inf
     # Cycles.
     for i in rng:
         logger.info("Cycle {}...".format(i))
@@ -108,10 +106,10 @@ def abswap_grid(D, V, max_cycles=None, labels=None):
             strimproved = ""
             energy = energy_of_grid_labeling(D, V, labels)
 
-            # Check if the better energy has been improved.
-            if energy < better_energy:
+            # Check if the best energy has been improved.
+            if energy < best_energy:
                 prev_labels = np.copy(labels)
-                better_energy = energy
+                best_energy = energy
                 improved = True
                 strimproved = "(Improved!)"
             else:
@@ -129,26 +127,24 @@ def abswap_grid(D, V, max_cycles=None, labels=None):
 
 def aexpansion_grid(D, V, max_cycles=None, labels=None):
     """
-    Minimize an energy function iterating the alpha-expansion until
-    convergence or until a maximum number of cycles,
-    given by ``max_cycles``, is reached.
+    Minimize an energy function iterating the alpha-expansion until convergence
+    or until a maximum number of cycles, given by ``max_cycles``, is reached.
 
-    ``D`` must be an N+1-dimensional array with shape (S1,...,SN,L),
-    where L is the number of labels considered. *D[p1,...,pn,lbl]* is the unary
-    cost of assigning the label *lbl* to the variable *(p1,...,pn)*.
+    ``D`` must be an N+1-dimensional array with shape (S1, ..., SN, L), where L
+    is the number of labels. *D[p1, ... ,pn ,lbl]* is the unary cost of
+    assigning the label *lbl* to the variable *(p1, ..., pn)*.
 
-    ``V`` is a two-dimensional array. *V[lbl1,lbl2]* is the binary cost of
-    assigning the labels *lbl1* and *lbl2* to a pair of neighbor variables.
-    Note that the distance defined by ``V`` must be a metric or the aexpansion
-    might fail.
+    ``V`` is a two-dimensional array. *V[lbl1, lbl2]* is the binary cost of
+    assigning the labels *lbl1* and *lbl2* to a pair of neighbor variables. Note
+    that the distance defined by ``V`` must be a metric or else the aexpansion
+    might converge to invalid results.
 
-    The optional N-dimensional array ``labels`` gives the initial labeling
-    of the algorithm. If not given, the function uses a plain initialization
-    with all the labels set to 0.
+    The optional N-dimensional array ``labels`` gives the initial labeling of
+    the algorithm. If omitted, the function will initialize the labels using the
+    minimum unary costs given by ``D``.
 
-    This function return the labeling reached at the end of the algorithm.
-    If the user provides the parameter ``labels``, the algorithm will work
-    modifying this array in-place.
+    The function return the labeling reached at the end of the algorithm. If the
+    parameter ``labels`` is given, the function will modify this array in-place.
     """
     num_labels = D.shape[-1]
 
@@ -164,7 +160,7 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
     else:
         rng = range(max_cycles)
 
-    better_energy = np.inf
+    best_energy = np.inf
     # Cycles.
     for i in rng:
         logger.info("Cycle {}...".format(i))
@@ -173,9 +169,9 @@ def aexpansion_grid(D, V, max_cycles=None, labels=None):
         for alpha in range(num_labels):
             energy, _ = aexpansion_grid_step(alpha, D, V, labels)
             strimproved = ""
-            # Check if the better energy has been improved.
-            if energy < better_energy:
-                better_energy = energy
+            # Check if the best energy has been improved.
+            if energy < best_energy:
+                best_energy = energy
                 improved = True
                 strimproved = "(Improved!)"
             logger.info("Energy of the last cut (α={}): {:.6g} {}".format(alpha, energy, strimproved))
