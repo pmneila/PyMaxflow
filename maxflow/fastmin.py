@@ -15,7 +15,6 @@ Currently, the functions in this module are restricted to
 grids with von Neumann neighborhood.
 """
 
-import sys
 import logging
 from itertools import count, combinations
 import numpy as np
