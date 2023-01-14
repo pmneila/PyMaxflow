@@ -24,6 +24,14 @@ def extensions():
         language="c++",
         extra_compile_args=['-std=c++11', '-Wall'],
         include_dirs=[numpy_include_dir],
+        depends=[
+            "maxflow/src/fastmin.h",
+            "maxflow/src/grid.h",
+            "maxflow/src/pyarray_symbol.h",
+            "maxflow/src/pyarraymodule.h",
+            "maxflow/src/core/block.h",
+            "maxflow/src/core/graph.h"
+        ],
         # Cython 0.29 generates code using the deprecated pre 1.7 NumPy API
         # This line should be uncommented when Cython 3.0 is officially released
         # define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
