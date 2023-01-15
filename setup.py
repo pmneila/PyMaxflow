@@ -82,5 +82,5 @@ setup(
     ],
     packages=["maxflow"],
     ext_modules=extensions(),
-    install_requires=['numpy>=1.11.3']
+    install_requires=['numpy']
 )
