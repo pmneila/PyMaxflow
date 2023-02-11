@@ -231,6 +231,7 @@ void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,
 
     NpyIter_Deallocate(iter);
 
+    Py_DECREF(periodicArr);
     Py_DECREF(structureArr);
     Py_DECREF(weights);
     Py_DECREF(nodeids);
