@@ -3,6 +3,7 @@ import pytest
 
 import numpy as np
 from numpy.testing import assert_array_equal
+from networkx.utils import graphs_equal
 
 from imageio.v3 import imread
 
@@ -40,6 +41,35 @@ def test_restoration():
     sgm = g.get_grid_segments(nodeids)
 
     assert sgm.sum() == 758
+
+
+def test_copy():
+    g = maxflow.Graph[int]()
+    nodeids = g.add_grid_nodes((5, 5))
+    structure = np.array([[2, 1, 1, 1, 2],
+                          [1, 1, 1, 1, 1],
+                          [1, 1, 0, 1, 1],
+                          [1, 1, 1, 1, 1],
+                          [2, 1, 1, 1, 2]])
+    g.add_grid_edges(nodeids, 1, structure=structure, symmetric=False)
+    g.add_grid_tedges(nodeids, structure, 2-structure)
+    g2 = g.copy()
+
+    assert g.get_node_count() == g2.get_node_count()
+    assert g.get_edge_count() == g2.get_edge_count()
+
+    nx1 = g.get_nx_graph()
+    nx2 = g2.get_nx_graph()
+
+    assert graphs_equal(nx1, nx2)
+
+    g.maxflow()
+
+    nx1_after_mf = g.get_nx_graph()
+    nx2_after_mf = g2.get_nx_graph()
+
+    assert not graphs_equal(nx1, nx1_after_mf)
+    assert graphs_equal(nx1, nx2_after_mf)
 
 
 def test_aexpansion():

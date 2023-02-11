@@ -9,6 +9,7 @@ cdef extern from "pyarray_symbol.h":
     pass
 
 cimport cython
+from cython.operator cimport dereference as deref
 cimport numpy as np
 
 np.import_array()
@@ -75,6 +76,7 @@ def abswap_grid_step(int alpha, int beta, np.ndarray D, np.ndarray V, np.ndarray
 cdef extern from "core/graph.h":
     cdef cppclass Graph[T,T,T]:
         Graph(int, int)
+        Graph(Graph)
 
         void reset()
 
@@ -105,7 +107,7 @@ cdef extern from "core/graph.h":
 
 cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
     cdef Graph[long, long, long]* thisptr
-    def __cinit__(self, int est_node_num=0, int est_edge_num=0):
+    def __cinit__(self, int est_node_num=0, int est_edge_num=0, GraphInt copy_rhs=None):
         """
         ``est_node_num`` gives an estimate of the maximum number of non-terminal
         nodes that can be added to the graph, while ``est_edge_num`` is an
@@ -117,9 +119,25 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         Also, temporarily the amount of allocated memory would be more than
         twice than needed. Similarly for edges.
         """
-        self.thisptr = new Graph[long, long, long](est_node_num, est_edge_num)
+        if copy_rhs is not None:
+            self.thisptr = new Graph[long, long, long](deref(copy_rhs.thisptr))
+        else:
+            self.thisptr = new Graph[long, long, long](est_node_num, est_edge_num)
     def __dealloc__(self):
         del self.thisptr
+    def copy(self):
+        """
+        Returns a copy of the current graph, including all nodes, edges, and
+        edge capacities.
+
+        Note:
+        The capacities of the edges may change during the computation of the
+        maximum flow. If the graph is copied after the `maxflow` method has been
+        called, the capacities in the new graph will reflect the residual
+        capacities. To preserve the original capacities, make a copy of the
+        graph before calling the `maxflow` method.
+        """
+        return GraphInt(0, 0, self)
     def reset(self):
         """Remove all nodes and edges."""
         self.thisptr.reset()
@@ -559,7 +577,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
 
 cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
     cdef Graph[double, double, double]* thisptr
-    def __cinit__(self, int est_node_num=0, int est_edge_num=0):
+    def __cinit__(self, int est_node_num=0, int est_edge_num=0, GraphFloat copy_rhs=None):
         """
         ``est_node_num`` gives an estimate of the maximum number of non-terminal
         nodes that can be added to the graph, while ``est_edge_num`` is an
@@ -571,9 +589,25 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         Also, temporarily the amount of allocated memory would be more than
         twice than needed. Similarly for edges.
         """
-        self.thisptr = new Graph[double, double, double](est_node_num, est_edge_num)
+        if copy_rhs is not None:
+            self.thisptr = new Graph[double, double, double](deref(copy_rhs.thisptr))
+        else:
+            self.thisptr = new Graph[double, double, double](est_node_num, est_edge_num)
     def __dealloc__(self):
         del self.thisptr
+    def copy(self):
+        """
+        Returns a copy of the current graph, including all nodes, edges, and
+        edge capacities.
+
+        Note:
+        The capacities of the edges may change during the computation of the
+        maximum flow. If the graph is copied after the `maxflow` method has been
+        called, the capacities in the new graph will reflect the residual
+        capacities. To preserve the original capacities, make a copy of the
+        graph before calling the `maxflow` method.
+        """
+        return GraphInt(0, 0, self)
     def reset(self):
         """Remove all nodes and edges."""
         self.thisptr.reset()
