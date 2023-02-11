@@ -607,7 +607,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         capacities. To preserve the original capacities, make a copy of the
         graph before calling the `maxflow` method.
         """
-        return GraphInt(0, 0, self)
+        return GraphFloat(0, 0, self)
     def reset(self):
         """Remove all nodes and edges."""
         self.thisptr.reset()

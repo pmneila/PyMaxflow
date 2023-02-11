@@ -43,6 +43,13 @@ def test_restoration():
     assert sgm.sum() == 758
 
 
+def test_copy_empty():
+    g = maxflow.Graph[float]()
+    g2 = g.copy()
+    assert g.get_node_count() == g2.get_node_count()
+    assert g.get_edge_count() == g2.get_edge_count()
+
+
 def test_copy():
     g = maxflow.Graph[int]()
     nodeids = g.add_grid_nodes((5, 5))
