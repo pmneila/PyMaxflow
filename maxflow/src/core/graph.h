@@ -277,7 +277,7 @@ public:
 	// Grid methods.
 	// void add_grid_edges(const PyArrayObject* nodeids, const captype& cap);
 	void add_grid_edges(PyArrayObject* nodeids, PyObject* weights,
-						PyObject* structure, int symmetric);
+						PyObject* structure, int symmetric, PyObject* periodic);
 	void add_grid_tedges(PyArrayObject* nodeids,
             PyObject* sourcecaps, PyObject* sinkcaps);
 	PyArrayObject* get_grid_segments(PyArrayObject* nodeids);

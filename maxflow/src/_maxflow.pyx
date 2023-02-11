@@ -83,7 +83,7 @@ cdef extern from "core/graph.h":
         int add_node(int)
         void add_edge(int, int, T, T) except +
         void add_tweights(int, T, T) except +
-        void add_grid_edges(np.ndarray, object, object, int) except +
+        void add_grid_edges(np.ndarray, object, object, int, object) except +
         void add_grid_tedges(np.ndarray, object, object) except +
 
         int get_node_num()
@@ -215,32 +215,41 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         of terminal edges are stored in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=0):
+    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=0, object periodic=False):
         """
-        Add edges to a grid of nodes in a structured manner.
+        Adds edges to a grid of nodes in a structured manner.
 
-        The grid of nodes is given by ``nodeids``, that contains the
-        identifiers of the nodes. ``weights`` is an array containing the
-        capacities of the edges starting at every node. ``nodeids``
-        and ``weights`` must have the same shape or be broadcastable to
-        the same shape.
+        Parameters
+        ----------
+        nodeids : ndarray
+            An array containing the node identifiers of the grid.
+        weights : array-like, optional
+            An array containing the capacities of the edges starting at every
+            node. The shape of `weights` must be broadcastable to the shape of
+            `nodeids`. The default value is 1.
+        structure : array-like, optional
+            Indicates the neighborhood around each node. Edges will be added
+            from the central node to the nodes corresponding to non-zero entries
+            in the `structure` array. The capacities of these added edges will
+            be computed as the product of the weight from `weights` corresponding
+            to the node and the value in `structure`. If `structure` is
+            None (default), it is equivalent to
+            `vonNeumann_structure(ndim=nodeids.ndim, directed=symmetric)`,
+            which creates a 4-connected grid.
+        symmetric : bool, optional
+            If True, for every edge `i->j`, another edge `j->i` with the same
+            capacity will be added. The default value is False.
+        periodic : bool or array of bools, optional
+            Indicates whether the grid is periodic. If True, nodes in the
+            borders of the grid will be neighbors of the nodes in the opposite
+            border.
 
-        ``structure`` indicates the neighborhood around each node. For every
-        node the ``structure`` array will be centered on it (in a sliding
-        window manner) and edges will be added from the central node to the
-        nodes corresponding to non-zero entries of ``structure``. The
-        capacities of these added edges is computed as the product between the
-        weight corresponding to the central node and the value in ``structure``.
-
-        If ``structure`` is None (by default), it is equivalent to the output of
-        vonNeumann_structure(ndim=nodeids.ndim, directed=symmetric). This
-        creates a 4-connected grid.
-
-        If symmetric is True, for every edge i->j another edge j->i with the
-        same capacity will be added.
-
+            If an array is given, its length must be equal to `nodeids.ndim`.
+            `periodic[d]` indicates whether the boundary of the grid is periodic
+            along the dimension `d`.
 
         Examples
+        --------
 
         Standard 4-connected grid, all capacities set to 1:
 
@@ -417,7 +426,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         if structure is None:
             structure = vonNeumann_structure(nodeids.ndim, symmetric)
 
-        self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
+        self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric, periodic)
     def add_grid_tedges(self, np.ndarray nodeids, sourcecaps, sinkcaps):
         """
         Add terminal edges to a grid of nodes, given their identifiers in
@@ -680,32 +689,42 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         of terminal edges are stored in each node.
         """
         self.thisptr.add_tweights(i, cap_source, cap_sink)
-    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=0):
+
+    def add_grid_edges(self, np.ndarray nodeids, object weights=1, object structure=None, int symmetric=0, object periodic=False):
         """
-        Add edges to a grid of nodes in a structured manner.
+        Adds edges to a grid of nodes in a structured manner.
 
-        The grid of nodes is given by ``nodeids``, that contains the
-        identifiers of the nodes. ``weights`` is an array containing the
-        capacities of the edges starting at every node. ``nodeids``
-        and ``weights`` must have the same shape or be broadcastable to
-        the same shape.
+        Parameters
+        ----------
+        nodeids : ndarray
+            An array containing the node identifiers of the grid.
+        weights : array-like, optional
+            An array containing the capacities of the edges starting at every
+            node. The shape of `weights` must be broadcastable to the shape of
+            `nodeids`. The default value is 1.
+        structure : array-like, optional
+            Indicates the neighborhood around each node. Edges will be added
+            from the central node to the nodes corresponding to non-zero entries
+            in the `structure` array. The capacities of these added edges will
+            be computed as the product of the weight from `weights` corresponding
+            to the node and the value in `structure`. If `structure` is
+            None (default), it is equivalent to
+            `vonNeumann_structure(ndim=nodeids.ndim, directed=symmetric)`,
+            which creates a 4-connected grid.
+        symmetric : bool, optional
+            If True, for every edge `i->j`, another edge `j->i` with the same
+            capacity will be added. The default value is False.
+        periodic : bool or array of bools, optional
+            Indicates whether the grid is periodic. If True, nodes in the
+            borders of the grid will be neighbors of the nodes in the opposite
+            border.
 
-        ``structure`` indicates the neighborhood around each node. For every
-        node the ``structure`` array will be centered on it (in a sliding
-        window manner) and edges will be added from the central node to the
-        nodes corresponding to non-zero entries of ``structure``. The
-        capacities of these added edges is computed as the product between the
-        weight corresponding to the central node and the value in ``structure``.
-
-        If ``structure`` is None (by default), it is equivalent to the output of
-        vonNeumann_structure(ndim=nodeids.ndim, directed=symmetric). This
-        creates a 4-connected grid.
-
-        If symmetric is True, for every edge i->j another edge j->i with the
-        same capacity will be added.
-
+            If an array is given, its length must be equal to `nodeids.ndim`.
+            `periodic[d]` indicates whether the boundary of the grid is periodic
+            along the dimension `d`.
 
         Examples
+        --------
 
         Standard 4-connected grid, all capacities set to 1:
 
@@ -877,7 +896,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         if structure is None:
             structure = vonNeumann_structure(nodeids.ndim, symmetric)
 
-        self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric)
+        self.thisptr.add_grid_edges(nodeids, weights, structure, symmetric, periodic)
     def add_grid_tedges(self, np.ndarray nodeids, sourcecaps, sinkcaps):
         """
         Add terminal edges to a grid of nodes, given their identifiers in
