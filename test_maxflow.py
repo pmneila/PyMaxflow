@@ -3,27 +3,27 @@ import pytest
 
 import numpy as np
 from numpy.testing import assert_array_equal
+from networkx.utils import graphs_equal
 
 from imageio.v3 import imread
 
 import maxflow
 
 
-def test_simple():
+@pytest.mark.parametrize("type", [int, float])
+def test_simple(type):
+    g = maxflow.Graph[type](2, 2)
+    nodes = g.add_nodes(2)
+    g.add_edge(nodes[0], nodes[1], 1, 2)
+    g.add_tedge(nodes[0], 2, 5)
+    g.add_tedge(nodes[1], 9, 4)
 
-    for dtype in [int, float]:
-        g = maxflow.Graph[dtype](2, 2)
-        nodes = g.add_nodes(2)
-        g.add_edge(nodes[0], nodes[1], 1, 2)
-        g.add_tedge(nodes[0], 2, 5)
-        g.add_tedge(nodes[1], 9, 4)
+    # Find the maxflow.
+    flow = g.maxflow()
 
-        # Find the maxflow.
-        flow = g.maxflow()
-
-        assert flow == 8
-        assert g.get_segment(nodes[0]) == 1
-        assert g.get_segment(nodes[1]) == 0
+    assert flow == 8
+    assert g.get_segment(nodes[0]) == 1
+    assert g.get_segment(nodes[1]) == 0
 
 
 def test_restoration():
@@ -40,6 +40,94 @@ def test_restoration():
     sgm = g.get_grid_segments(nodeids)
 
     assert sgm.sum() == 758
+
+
+@pytest.mark.parametrize("type", [int, float])
+def test_copy_empty(type):
+    g = maxflow.Graph[type]()
+    g2 = g.copy()
+    assert g.get_node_count() == g2.get_node_count()
+    assert g.get_edge_count() == g2.get_edge_count()
+
+
+@pytest.mark.parametrize("type", [int, float])
+def test_copy(type):
+    g = maxflow.Graph[type]()
+    nodeids = g.add_grid_nodes((5, 5))
+    structure = np.array([[2, 1, 1, 1, 2],
+                          [1, 1, 1, 1, 1],
+                          [1, 1, 0, 1, 1],
+                          [1, 1, 1, 1, 1],
+                          [2, 1, 1, 1, 2]])
+    g.add_grid_edges(nodeids, 1, structure=structure, symmetric=False)
+    g.add_grid_tedges(nodeids, structure, 2-structure)
+    g2 = g.copy()
+
+    assert g.get_node_count() == g2.get_node_count()
+    assert g.get_edge_count() == g2.get_edge_count()
+
+    nx1 = g.get_nx_graph()
+    nx2 = g2.get_nx_graph()
+
+    assert graphs_equal(nx1, nx2)
+
+    g.maxflow()
+
+    nx1_after_mf = g.get_nx_graph()
+    nx2_after_mf = g2.get_nx_graph()
+
+    assert not graphs_equal(nx1, nx1_after_mf)
+    assert graphs_equal(nx1, nx2_after_mf)
+
+
+@pytest.mark.parametrize("type", [int, float])
+def test_periodic(type):
+    g = maxflow.Graph[type]()
+    nodeids = g.add_grid_nodes((5, 5))
+    g.add_grid_edges(nodeids, 1, periodic=False)
+    nx = g.get_nx_graph()
+    assert (nodeids[0, 0], nodeids[0, 4]) not in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 0]) not in nx.edges
+    assert (nodeids[4, 0], nodeids[4, 4]) not in nx.edges
+    assert (nodeids[0, 4], nodeids[4, 4]) not in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 4]) not in nx.edges
+    assert (nodeids[4, 0], nodeids[0, 1]) not in nx.edges
+
+    g = maxflow.Graph[type]()
+    nodeids = g.add_grid_nodes((5, 5))
+    g.add_grid_edges(nodeids, 1, periodic=True)
+    nx = g.get_nx_graph()
+    assert (nodeids[0, 0], nodeids[0, 4]) in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 0]) in nx.edges
+    assert (nodeids[4, 0], nodeids[4, 4]) in nx.edges
+    assert (nodeids[0, 4], nodeids[4, 4]) in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 4]) not in nx.edges
+    assert (nodeids[4, 0], nodeids[0, 1]) not in nx.edges
+
+    g = maxflow.Graph[type]()
+    nodeids = g.add_grid_nodes((5, 5))
+    g.add_grid_edges(nodeids, 1, periodic=[True, False])
+    nx = g.get_nx_graph()
+    assert (nodeids[0, 0], nodeids[0, 4]) not in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 0]) in nx.edges
+    assert (nodeids[4, 0], nodeids[4, 4]) not in nx.edges
+    assert (nodeids[0, 4], nodeids[4, 4]) in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 4]) not in nx.edges
+    assert (nodeids[4, 0], nodeids[0, 1]) not in nx.edges
+
+    g = maxflow.Graph[type]()
+    nodeids = g.add_grid_nodes((5, 5))
+    structure = np.array([[0, 0, 0],
+                          [0, 0, 1],
+                          [1, 1, 1]])
+    g.add_grid_edges(nodeids, 1, structure=structure, symmetric=True, periodic=True)
+    nx = g.get_nx_graph()
+    assert (nodeids[0, 0], nodeids[0, 4]) in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 0]) in nx.edges
+    assert (nodeids[4, 0], nodeids[4, 4]) in nx.edges
+    assert (nodeids[0, 4], nodeids[4, 4]) in nx.edges
+    assert (nodeids[0, 0], nodeids[4, 4]) in nx.edges
+    assert (nodeids[4, 0], nodeids[0, 1]) in nx.edges
 
 
 def test_aexpansion():
