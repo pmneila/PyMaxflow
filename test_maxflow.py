@@ -172,7 +172,7 @@ def test_fastmin_edge_cases():
 
     # Array with 0 spatial dimensions
     unary = np.zeros((0, 0, 3))
-    binary = np.ones((3, 3), dtype=np.float_) - np.eye(3, dtype=np.float_)
+    binary = np.ones((3, 3), dtype=np.float64) - np.eye(3, dtype=np.float64)
     labels = maxflow.aexpansion_grid(unary, binary)
     assert labels.shape == (0, 0)
 
