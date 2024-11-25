@@ -88,7 +88,7 @@ std::vector<T> getVector(PyArrayObject* arr, int length)
         return std::vector<T>(length, value);
     }
 
-    // add_ndim == 1
+    // arr_ndim == 1
     if(arr_shape[0] < length)
         throw std::runtime_error("the length of `periodic` must be equal to the number of dimensions of `nodeids`");
 
@@ -149,11 +149,11 @@ void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,
     }
     catch(std::exception& e)
     {
-            Py_DECREF(periodicArr);
-            Py_DECREF(structureArr);
-            Py_DECREF(weights);
-            Py_DECREF(nodeids);
-            throw e;
+        Py_DECREF(periodicArr);
+        Py_DECREF(structureArr);
+        Py_DECREF(weights);
+        Py_DECREF(nodeids);
+        throw e;
     }
 
     // Create the edges
@@ -168,6 +168,7 @@ void Graph<captype,tcaptype,flowtype>::add_grid_edges(PyArrayObject* _nodeids,
 
     if(iter == NULL)
     {
+        Py_DECREF(periodicArr);
         Py_DECREF(structureArr);
         Py_DECREF(weights);
         Py_DECREF(nodeids);

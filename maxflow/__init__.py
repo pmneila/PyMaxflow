@@ -35,7 +35,7 @@ paper in any resulting publication.
 import numpy as np
 from . import _maxflow
 from ._maxflow import GraphInt, GraphFloat, moore_structure, vonNeumann_structure
-from .version import __version__, __version_str__, __version_core__
+from .version import __version__, __version_core__
 from .fastmin import aexpansion_grid, abswap_grid
 
 Graph = {int: GraphInt, float: GraphFloat}

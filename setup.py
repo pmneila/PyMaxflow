@@ -9,7 +9,7 @@ import numpy
 from Cython.Build import cythonize
 
 # Get the version number.
-__version_str__ = runpy.run_path("maxflow/version.py")["__version_str__"]
+__version__ = runpy.run_path("maxflow/version.py")["__version__"]
 
 
 def extensions():
@@ -44,7 +44,7 @@ def extensions():
 
 setup(
     name="PyMaxflow",
-    version=__version_str__,
+    version=__version__,
     description="A mincut/maxflow package for Python",
     author="Pablo Márquez Neila",
     author_email="pablo.marquez@unibe.ch",
@@ -82,5 +82,5 @@ setup(
     ],
     packages=["maxflow"],
     ext_modules=extensions(),
-    install_requires=['numpy']
+    install_requires=['numpy>=1.26']
 )
