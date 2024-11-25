@@ -60,7 +60,7 @@ nodeids = g.add_grid_nodes((5, 5)).ravel()
 central_node = nodeids[12]
 rest_of_nodes = np.hstack([nodeids[:12], nodeids[13:]])
 
-nodeids = np.empty((2, 24), dtype=np.int_)
+nodeids = np.empty((2, 24), dtype=np.int64)
 nodeids[0] = central_node
 nodeids[1] = rest_of_nodes
 

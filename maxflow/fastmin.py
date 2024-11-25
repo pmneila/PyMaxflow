@@ -95,7 +95,7 @@ def abswap_grid(unary, binary, max_cycles=None, labels=None):
         if num_labels <= 127:
             labels = np.int8(unary.argmin(axis=-1))
         else:
-            labels = np.int_(unary.argmin(axis=-1))
+            labels = np.int64(unary.argmin(axis=-1))
     else:
         if labels.min() < 0:
             raise ValueError("Values of labels must be non-negative")
@@ -182,7 +182,7 @@ def aexpansion_grid(unary, binary, max_cycles=None, labels=None):
         if num_labels <= 127:
             labels = np.int8(unary.argmin(axis=-1))
         else:
-            labels = np.int_(unary.argmin(axis=-1))
+            labels = np.int64(unary.argmin(axis=-1))
     else:
         if labels.min() < 0:
             raise ValueError("Values of labels must be non-negative")

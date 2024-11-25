@@ -161,7 +161,7 @@ cdef public class GraphInt [object PyObject_GraphInt, type GraphInt]:
         """
         num_nodes = np.prod(shape)
         first = self.thisptr.add_node(int(num_nodes))
-        nodes = np.arange(first, first+num_nodes, dtype=np.int_)
+        nodes = np.arange(first, first+num_nodes, dtype=np.int64)
         return np.reshape(nodes, shape)
     def add_edge(self, int i, int j, long capacity, long rcapacity):
         """
@@ -639,7 +639,7 @@ cdef public class GraphFloat [object PyObject_GraphFloat, type GraphFloat]:
         """
         num_nodes = np.prod(shape)
         first = self.thisptr.add_node(int(num_nodes))
-        nodes = np.arange(first, first+num_nodes, dtype=np.int_)
+        nodes = np.arange(first, first+num_nodes, dtype=np.int64)
         return np.reshape(nodes, shape)
     def add_edge(self, int i, int j, double capacity, double rcapacity):
         """

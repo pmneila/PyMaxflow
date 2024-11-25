@@ -194,7 +194,7 @@ belongs to the sink segment (i.e., the corresponding pixel has the label 0). We
 now get the labels for each pixel::
 
   # The labels should be 1 where sgm is False and 0 otherwise.
-  img2 = np.int_(np.logical_not(sgm))
+  img2 = np.int64(np.logical_not(sgm))
   # Show the result.
   from matplotlib import pyplot as ppl
   ppl.imshow(img2)

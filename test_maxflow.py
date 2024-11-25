@@ -203,7 +203,7 @@ def test_fastmin_edge_cases():
     # Shape of initial labels do not match the shape of the unary array
     unary = np.zeros((3, 3, 3))
     binary = np.zeros((3, 3))
-    labels = np.ones((4, 4), dtype=np.int_)
+    labels = np.ones((4, 4), dtype=np.int64)
     with pytest.raises(Exception):
         maxflow.aexpansion_grid(unary, binary, labels=labels)
     with pytest.raises(Exception):
@@ -212,7 +212,7 @@ def test_fastmin_edge_cases():
     # Initial labels contain values larger than num_labels
     unary = np.zeros((3, 3, 3))
     binary = np.zeros((3, 3))
-    labels = np.full((3, 3), 5, dtype=np.int_)
+    labels = np.full((3, 3), 5, dtype=np.int64)
     with pytest.raises(ValueError):
         maxflow.aexpansion_grid(unary, binary, labels=labels)
     with pytest.raises(ValueError):
@@ -221,7 +221,7 @@ def test_fastmin_edge_cases():
     # Initial labels contain negative values
     unary = np.zeros((3, 3, 3))
     binary = np.zeros((3, 3))
-    labels = np.full((3, 3), -1, dtype=np.int_)
+    labels = np.full((3, 3), -1, dtype=np.int64)
     with pytest.raises(ValueError):
         maxflow.aexpansion_grid(unary, binary, labels=labels)
     with pytest.raises(ValueError):
